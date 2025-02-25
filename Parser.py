@@ -9,24 +9,15 @@ class Parser:
     def __init__(self, id):
         self.id = id
 
-    def _makedir(self):
-        #name = "/app/" + self.dir_name
-        name = "/home/heliohsilva/projects/ray-fractal/graphein-on-ray/" + self.dir_name
-        directory = os.path.expanduser(name)  # Expands '~' to the full home path
-        os.makedirs(directory, exist_ok=True)
-
-        self.dir_name = directory
-
-
-    def parse(self, graph_ad, dir_name):
+    def parse(self, graph, dir_name, GLOBAL_STORAGE):
         self.dir_name = dir_name
         self._makedir()
         graphdir = self.dir_name
         print("generating fractal input files...")
 
-        print(self.dir_name)
+        print(self.dir_name)        
 
-        graph = ray.get(graph_ad[0])
+        print(graph.edges(data=True))
 
         if graph == None :
             raise ValueError("graph does not exist")
@@ -103,3 +94,11 @@ class Parser:
                 f.write(f"{elabel}\n")
 
         return 0
+
+    def _makedir(self):
+        #name = "/app/" + self.dir_name
+        name = "/home/heliohsilva/projects/ray-fractal/graphein-on-ray/" + self.dir_name
+        directory = os.path.expanduser(name)  # Expands '~' to the full home path
+        os.makedirs(directory, exist_ok=True)
+
+        self.dir_name = directory

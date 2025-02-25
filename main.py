@@ -1,35 +1,58 @@
 from Builder import *
 from Parser import *
 from Executor import *
+from GlobalStorage import *
 import networkx as nx
 import time
 import matplotlib.pyplot as plt
 from graphein.ppi.visualisation import plotly_ppi_graph
 import queue
 
-# r1 = Executor.remote()
-# r2 = Executor.remote()
 
-# ray.get(r1.setup.remote())
-# ray.get(r2.setup.remote())
+def unpack_function_params(edge_functions):
+        function_definition = {
+            "add_atomic_edges": add_atomic_edges,
+            "add_bond_order": add_bond_order,
+            "add_ring_status": add_ring_status,
+            "assign_bond_states_to_dataframe": assign_bond_states_to_dataframe,
+            "assign_covalent_radii_to_dataframe": assign_covalent_radii_to_dataframe,
+            "identify_bond_type_from_mapping": identify_bond_type_from_mapping,
+        }
 
-# ray.get(b.build.remote())
+        functions = list()
 
-# graph_ad = b.get_graph.remote()
+        for func in edge_functions:
+            functions.append(function_definition[func])
 
-# p = Parser.remote("test2")
-# ray.get(p.parser.remote(graph_ad))
-
-
-# future1 = r1.run.remote("test2", False, "clique")
-# future2 = r2.run.remote("test2", False, "enum")
-
-# ray.get([future1,future2])
-
+        return functions
 
 
-def fetch_object_memory(object_id):
-    pass
+def pack_config(config):
+    config["edge_construction_functions"] = [(func.__name__ if type(func) != type(str()) else func) for func in config["edge_construction_functions"]] if config["edge_construction_functions"] else None
+    config["node_metadata_functions"] = [(func.__name__ if type(func) != type(str()) else func) for func in config["node_metadata_functions"]] if config["node_metadata_functions"] else None
+    config["edge_metadata_functions"] = [(func.__name__ if type(func) != type(str()) else func) for func in config["edge_metadata_functions"]] if config["edge_metadata_functions"] else None
+    config["graph_metadata_functions"] = [(func.__name__ if type(func) != type(str()) else func)for func in config["graph_metadata_functions"]] if config["graph_metadata_functions"] else None
+
+    return config
+
+def generate_config(type, params): #edge_func is only for ppi graphs
+    if "edge_construction_functions" in params:
+        params["edge_construction_functions"] = unpack_function_params(params["edge_construction_functions"])
+
+    match type:
+        case "ppi":
+            return PPIGraphConfig()
+        case "pdb":
+            return ProteinGraphConfig(**params)
+        case _:
+            raise ValueError("Invalid type")
+        
+
+def get_from_store(config, pdb, GLOBAL_STORAGE):
+
+    config = pack_config(config)
+
+    return GLOBAL_STORAGE.get.remote(f'{pack_config(config)}#{pdb}')
 
 
 def main():
@@ -51,67 +74,67 @@ def main():
         executor_queue.put(Executor.remote(i))
 
 
-    pdbs = ['AP3B1', 'BRD4', '104l', 'CWC27']    
+    
+    pdbs = ['AP3B1', 'BRD4', '104l', 'CWC27']
 
-    test1 = {
-        "pdb_codes": ["3eiy"],
-        "graph_type": "pdb",
-        "params_to_change": {
-            "granularity": "atom", 
-            "edge_construction_functions": ["add_atomic_edges", "add_bond_order"]
+    tests = [
+        {
+            "pdb_codes": ["3eiy"],
+            "graph_type": "pdb",
+            "params_to_change": {
+                "granularity": "atom", 
+                "edge_construction_functions": ["add_atomic_edges", "add_bond_order"]
+            },
+            "name_file": "test1",
         },
-        "name_file": "test1",
-    }
+        {
+            "pdb_codes": ["3eiy"],
+            "graph_type": "pdb",
+            "params_to_change": {
+                "granularity": "atom", 
+                "edge_construction_functions": ["add_atomic_edges", "add_bond_order"]
+            },
+            "name_file": "test2",
+        }
+    ]
 
-    test2 = {
-        "pdb_codes": [pdbs[2]],
-        "graph_type": "pdb",
-        "params_to_change": {
-            "granularity": "atom",
-            "edge_construction_functions": ["add_atomic_edges", "add_bond_order"]
-        },
-        "name_file": "test2",
-    }
 
-    tests = [test1, test2]
+    configs = [generate_config(test["graph_type"], test["params_to_change"]) for test in tests]
+    addresses = []
+    GLOBAL_STORAGE = GlobalStorage.remote()
+
+    c = configs[0].dict()
 
     while tests:
         b = builder_queue.get()
-        p = parser_queue.get()
         e = executor_queue.get()
+        p = parser_queue.get()
 
         e.setup.remote()
 
-        graph_ad = b.build.remote(tests[0])
-        ray.get(p.parse.remote(graph_ad,tests[0]["name_file"]))
+        begin = time.time()
 
+        ref = get_from_store(configs[0].dict(), tests[0]["pdb_codes"][0], GLOBAL_STORAGE)
+
+        if ray.get(ref):
+            print("Config already exists")
+        else:
+            ray.get(b.build.remote(configs[0], tests[0]["graph_type"], tests[0]["pdb_codes"], GLOBAL_STORAGE))
+            print("Config created")
+            ref = get_from_store(configs[0].dict(), tests[0]["pdb_codes"][0], GLOBAL_STORAGE)            
+
+        print(ref)
+
+        ray.get(p.parse.remote(ref, tests[0]["name_file"], GLOBAL_STORAGE))
         ray.get(e.run.remote(tests[0]["name_file"], False, "clique"))
 
-        builder_queue.put(b)
-        parser_queue.put(p)
+        tests.pop(0)
+        configs.pop(0)
         executor_queue.put(e)
 
-        tests.pop(0)
 
-
-    # for i in range(len(tests)):
-    #     b = builders[i % BUILDER_REPLICAS]
-    #     p = parsers[i % PARSER_REPLICAS]
-    #     e = executors[i % EXECUTOR_REPLICAS]
-
-    #     graph_ad = b.build.remote(tests[i])
-
-    #     print(test1["name_file"])
-
-    #     ray.get(p.parse.remote(graph_ad,tests[i]["name_file"]))
-
-    #     while ray.get(e.get_status.remote()) == "busy":
-    #         time.sleep(1)
-
-    #     futures.append(e.run.remote(tests[i]["name_file"], False, "clique"))
-
-    # ray.get(futures)
-
+        print(time.time() - begin)
+    
 
 
 if __name__ == '__main__':
