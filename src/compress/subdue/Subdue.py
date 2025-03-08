@@ -8,9 +8,9 @@ import sys
 import time
 import json
 import contextlib
-import Parameters
-import Graph
-import Pattern
+from . import Parameters
+from . import Graph
+from . import Pattern
 
 DEBUGFLAG = False
 
@@ -51,7 +51,7 @@ def DiscoverPatterns(parameters, graph):
     startTime = time.time()
     parentPatternList = GetInitialPatternList(parentPatternListGen)
     elapsedTime = time.time() - startTime
-    print("new pattern list: ", len(parentPatternList), elapsedTime, " seconds", file=sys.stderr)
+    print("new pattern list: ", len(parentPatternList), elapsedTime, " seconds", file=sys.stdout)
     while ((patternCount < parameters.limit) and parentPatternList):
         print(str(int(parameters.limit - patternCount)) + " patterns left", flush=True)
         childPatternList = []
@@ -79,13 +79,13 @@ def DiscoverPatterns(parameters, graph):
             if parentPatternListGen is not None:
                 parentPatternList = GetInitialPatternList(parentPatternListGen)
                 elapsedTime = time.time() - startTime
-                print("ElapsedTime", elapsedTime, " seconds", flush=True, file=sys.stderr)
-                if elapsedTime > 2:
+                print("ElapsedTime", elapsedTime, " seconds", flush=True, file=sys.stdout)
+                if elapsedTime > 5:
                     parentPatternListGen = None
                 if not parentPatternList:
                     print("No more patterns to consider", flush=True, file=sys.stderr)
                 else:
-                    print("new pattern list: ", len(parentPatternList), file=sys.stderr)
+                    print("new pattern list: ", len(parentPatternList), file=sys.stdout)
     # insert any remaining patterns in parent list on to discovered list
     while (parentPatternList):
         parentPattern = parentPatternList.pop(0)
@@ -98,23 +98,24 @@ def GetInitialPatterns(parameters, graph):
     initialPatternList = []
     # Create a graph and an instance for each edge
     edgeGraphInstancePairs = []
-    #label_count = {}
-    #for edge in graph.edges.values():
-    #    l1 = edge.source.attributes['label']
-    #    l2 = edge.target.attributes['label']
-    #    l = frozenset([l1,l2])
-    #    label_count[l] = label_count.get(l, 0) + 1
-    #selected_labels = list(label_count.keys())
+    label_count = {}
+    for edge in graph.edges.values():
+        l1 = edge.source.attributes['label']
+        l2 = edge.target.attributes['label']
+        l = frozenset([l1,l2])
+        label_count[l] = label_count.get(l, 0) + 1
+    selected_labels = list(label_count.keys())
 
-    #selected_labels.sort(key=lambda l: label_count[l], reverse=True)
-    #selected_labels = selected_labels[:100]
-    #selected_labels = set(selected_labels)
+    selected_labels.sort(key=lambda l: label_count[l], reverse=True)
+    selected_labels = selected_labels[:1000]
+    print("FrequentLabels", selected_labels[:5], [label_count[l] for l in selected_labels[:5]], file=sys.stderr)
+    selected_labels = set(selected_labels)
 
     for edge in graph.edges.values():
-        #l1 = edge.source.attributes['label']
-        #l2 = edge.target.attributes['label']
-        #l = frozenset([l1,l2])
-        #if l not in selected_labels: continue
+        l1 = edge.source.attributes['label']
+        l2 = edge.target.attributes['label']
+        l = frozenset([l1,l2])
+        if l not in selected_labels: continue
         graph1 = Graph.CreateGraphFromEdge(edge)
         if parameters.temporal:
             graph1.TemporalOrder()
@@ -182,6 +183,7 @@ def Subdue(parameters, graph):
         deltaReprCost = totalReprCostNew - totalReprCost
         totalReprCost = totalReprCostNew
 
+        print(f"instances={matchInstances} edgesPattern={edgesPattern}", file=sys.stderr)
         print(f"totalGraphReprCost={totalGraphReprCost} totalPatternReprCost={totalPatternReprCost} totalMatchInstancesReprCost={totalMatchInstancesReprCost}", file=sys.stderr)
         print(f"totalReprCost={totalReprCost} deltaReprCost={deltaReprCost}", file=sys.stderr)
 
@@ -271,10 +273,10 @@ def nx_subdue(
     iterations = unwrap_output(iterations)
     if parameters.iterations == 1:
         if len(iterations) == 0:
-            return None
-        return iterations[0]
+            return subdue_graph, None
+        return subdue_graph, iterations[0]
     else:
-        return iterations
+        return subdue_graph, iterations
 
 def unwrap_output(iterations):
     """
