@@ -1,6 +1,7 @@
 import bisect
 import pickle
 import random
+import time
 from typing import Dict
 
 import networkx as nx
@@ -18,7 +19,7 @@ def compress_with_composition(protein_graphs):
     isolated_node_to_pdbs = {}
     pdb_to_view = {}
     for pdb_code, g in protein_graphs.items():
-        pdb_to_view[pdb_code] = (BitMap64(), BitMap64())
+        pdb_to_view[pdb_code] = ([BitMap64()], [BitMap64()])
         for u in nx.isolates(g):
             pdbs = isolated_node_to_pdbs.get(u, [])
             pdbs.append(pdb_code)
@@ -34,7 +35,7 @@ def compress_with_composition(protein_graphs):
         edge_to_id[e] = edge_id
         pdbs = edge_to_pdbs[e]
         for pdb_code in pdbs:
-            pdb_to_view[pdb_code][1].add(edge_id)
+            pdb_to_view[pdb_code][1][0].add(edge_id)
         edge_id += 1
 
     del edge_to_pdbs
@@ -45,7 +46,7 @@ def compress_with_composition(protein_graphs):
         isolated_node_to_id[u] = node_id
         pdbs = isolated_node_to_pdbs[u]
         for pdb_code in pdbs:
-            pdb_to_view[pdb_code][0].add(node_id)
+            pdb_to_view[pdb_code][0][0].add(node_id)
         node_id += 1
 
     del isolated_node_to_pdbs
@@ -53,36 +54,17 @@ def compress_with_composition(protein_graphs):
     isolated_node_to_id = bidict(isolated_node_to_id)
     edge_to_id = bidict(edge_to_id)
 
-    print("--- Compressed ---")
-    print("IsolatedNodes", len(isolated_node_to_id))
-    print("IsolatedNodesBytes", asizeof.asizeof(isolated_node_to_id))
-    print("NumEdges", len(edge_to_id))
-    print("NumEdgesBytes", asizeof.asizeof(edge_to_id))
-    print("PdbToView", len(pdb_to_view))
-    print("PdbToViewBytes", asizeof.asizeof(pdb_to_view))
-    print("TotalBytesCompressed",
-          asizeof.asizeof(isolated_node_to_id) + asizeof.asizeof(edge_to_id) + asizeof.asizeof(pdb_to_view))
-
-    total_nodes = sum([g.number_of_nodes() for g in protein_graphs.values()])
-    total_edges = sum([g.number_of_edges() for g in protein_graphs.values()])
-    print("--- Uncompressed ---")
-    print("TotalNodes", total_nodes)
-    print("TotalEdges", total_edges)
-    print("TotalBytesUncompressed", asizeof.asizeof(protein_graphs))
-
-    print("--- Pickled comparison ---")
-    print("CompressedPickledBytes", len(pickle.dumps((isolated_node_to_id, edge_to_id, pdb_to_view))))
-    print("UncompressedPickledBytes", len(pickle.dumps(protein_graphs)))
-
+    # TODO: assertion code (remove) {
     for pdb_code, view in pdb_to_view.items():
         original_graph = protein_graphs[pdb_code]
 
-        isolated_nodes = [isolated_node_to_id.inverse[node_id] for node_id in view[0]]
-        edges = [edge_to_id.inverse[edge_id] for edge_id in view[1]]
+        isolated_nodes = [isolated_node_to_id.inverse[node_id] for node_id in view[0][0]]
+        edges = [edge_to_id.inverse[edge_id] for edge_id in view[1][0]]
         extracted_graph = nx.Graph()
         extracted_graph.update(edges=edges, nodes=isolated_nodes)
 
         assert nx.utils.graphs_equal(extracted_graph, original_graph)
+    # }
 
     return PDBGraphStoreBitmap(isolated_node_to_id, edge_to_id, pdb_to_view)
 
@@ -257,11 +239,100 @@ class PDBGraphStoreBitmap:
 
     def extract_pdb_graph(self, pdb_code):
         view = self.pdb_to_view[pdb_code]
-        isolated_nodes = [self.isolated_node_to_id.inverse[node_id] for node_id in view[0]]
-        edges = [self.edge_to_id.inverse[edge_id] for edge_id in view[1]]
+
+        def union_bitmaps(bms):
+            union_bm = BitMap64()
+            for bm in bms: union_bm = union_bm | bm
+            return union_bm
+
+        isolated_nodes = [self.isolated_node_to_id.inverse[node_id] for node_id in union_bitmaps(view[0])]
+        edges = [self.edge_to_id.inverse[edge_id] for edge_id in union_bitmaps(view[1])]
         extracted_graph = nx.Graph()
         extracted_graph.update(edges=edges, nodes=isolated_nodes)
         return extracted_graph
+
+    def run_tree_compression(self):
+        # build pairs jaccard
+        def get_max_pair(pdb_to_bitmaps):
+            best_pair = None
+            best_jacc = None
+            for pdb_code1, bms1 in pdb_to_bitmaps.items():
+                bm_1 = bms1[0]
+                for pdb_code2, bms2 in pdb_to_bitmaps.items():
+                    if pdb_code1 >= pdb_code2: continue
+                    bm_2 = bms2[0]
+                    jacc = bm_1.jaccard_index(bm_2)
+                    if best_jacc is None or jacc > best_jacc:
+                        best_jacc = jacc
+                        best_pair = (pdb_code1, pdb_code2)
+            return best_pair
+
+        def get_optimized_bitmaps(reconstructions):
+            while len(reconstructions) >= 2:
+                pdb_code1, pdb_code2 = get_max_pair(reconstructions)
+                # print(pdb_code1, pdb_code2)
+                left = reconstructions[pdb_code1][0]
+                right = reconstructions[pdb_code2][0]
+                intersection = left & right
+                delta_1 = left - intersection
+                delta_2 = right - intersection
+
+                left_child = (delta_1, reconstructions[pdb_code1][1])
+                right_child = (delta_2, reconstructions[pdb_code2][1])
+                reconstructions[pdb_code1 + '_' + pdb_code2] = (
+                    intersection, {pdb_code1: left_child, pdb_code2: right_child})
+
+                del reconstructions[pdb_code1]
+                del reconstructions[pdb_code2]
+
+            def key_in_keys(key, keys):
+                for k in keys:
+                    if key in k: return k
+                return None
+
+            root_tree_node = list(reconstructions.items())[0]
+
+            pdb_to_view_opt = {}
+
+            for pdb_code in self.pdb_to_view:
+                tree_node = root_tree_node
+                bms = [tree_node[1][0]]
+                bm_height = 1
+                key = key_in_keys(pdb_code, tree_node[1][1])
+                while key:
+                    bm_height += 1
+                    tree_node = (key, tree_node[1][1][key])
+                    if len(tree_node[1][0]) > 0:
+                        tree_node[1][0].run_optimize()
+                        bms.append(tree_node[1][0])
+                    key = key_in_keys(pdb_code, tree_node[1][1])
+                pdb_to_view_opt[pdb_code] = bms
+
+            return pdb_to_view_opt
+
+        edge_bitmaps = get_optimized_bitmaps(
+            {pdb_code: (view[1][0], {}) for pdb_code, view in self.pdb_to_view.items()})
+        isolated_node_bitmaps = get_optimized_bitmaps(
+            {pdb_code: (view[0][0], {}) for pdb_code, view in self.pdb_to_view.items()})
+
+        # TODO: assertion code (remove) {
+        for pdb_code, view in self.pdb_to_view.items():
+            union_bm1 = BitMap64()
+            for bm in isolated_node_bitmaps[pdb_code]:
+                union_bm1 = union_bm1 | bm
+
+            assert union_bm1.symmetric_difference_cardinality(view[0][0]) == 0
+
+            union_bm1 = BitMap64()
+            for bm in edge_bitmaps[pdb_code]:
+                union_bm1 = union_bm1 | bm
+
+            assert union_bm1.symmetric_difference_cardinality(view[1][0]) == 0
+        # }
+
+        # replace existing views with optimized ones
+        self.pdb_to_view = {pdb_code: (isolated_node_bitmaps[pdb_code], edge_bitmaps[pdb_code]) for pdb_code in
+                            self.pdb_to_view}
 
 
 if __name__ == "__main__":
@@ -278,9 +349,9 @@ if __name__ == "__main__":
     file_path = os.path.dirname(os.path.realpath(compress.__file__))
     print(file_path)
 
-    params_to_change = {"granularity": "atom", "edge_construction_functions": [add_atomic_edges]}
-    #params_to_change = {"granularity": "CA",
-    #                    "edge_construction_functions": [add_peptide_bonds, add_hydrogen_bond_interactions]}
+    # params_to_change = {"granularity": "atom", "edge_construction_functions": [add_atomic_edges]}
+    params_to_change = {"granularity": "CA",
+                        "edge_construction_functions": [add_peptide_bonds, add_hydrogen_bond_interactions]}
 
     config = ProteinGraphConfig(**params_to_change)
     print(config.model_dump())
@@ -310,65 +381,29 @@ if __name__ == "__main__":
         except:
             continue
 
-    #pdb_code_to_id, reduced_graph, patterns, graph_ids_set, graph_offsets = compress_with_subdue(protein_graphs,
-    #                                                                                               node_attributes=[
-    #                                                                                                   'label'], \
-    #                                                                                               numBest=1,
-    #                                                                                               iterations=10,
-    #                                                                                               minSize=0,
-    #                                                                                               maxSize=5, limit=0, \
-    #                                                                                               prune=False,
-    #                                                                                               verbose=False,
-    #                                                                                               overlap="vertex")
-
-    #pdb_graph_store_subdue = PDBGraphStoreSubdue(pdb_code_to_id, reduced_graph, patterns, graph_ids_set, graph_offsets)
+    print("UncompressedBytes", asizeof.asizeof(protein_graphs) / 1024 / 1024)
+    print("UncompressedBytesSer", len(pickle.dumps(protein_graphs)) / 1024 / 1024)
     pdb_graph_store_bitmap = compress_with_composition(protein_graphs)
+    print("CompressedBytes", asizeof.asizeof(pdb_graph_store_bitmap) / 1024 / 1024)
+    print("CompressedBytesSer", len(pickle.dumps(pdb_graph_store_bitmap)) / 1024 / 1024)
+    pdb_graph_store_bitmap.run_tree_compression()
+    print("CompressedAndOptimizedBytes", asizeof.asizeof(pdb_graph_store_bitmap) / 1024 / 1024)
+    print("CompressedAndOptimizedBytesSer", len(pickle.dumps(pdb_graph_store_bitmap)) / 1024 / 1024)
 
-    #print("BytesSubdue", asizeof.asizeof(pdb_graph_store_subdue))
-    print("BytesBitmap", asizeof.asizeof(pdb_graph_store_bitmap))
+    # TODO: assertion code (remove) {
+    
+    start_time = time.time()
+    for pdb_code, protein_graph in protein_graphs.items():
+        continue
+    elapsed_time = time.time() - start_time
+    print("RuntimeIterationUncompressed", elapsed_time)
 
-    # import time
+    start_time = time.time()
+    for pdb_code, protein_graph in protein_graphs.items():
+        computed_graph = pdb_graph_store_bitmap.extract_pdb_graph(pdb_code)
+        assert nx.utils.graphs_equal(computed_graph, protein_graph)
+    elapsed_time = time.time() - start_time
+    print("RuntimeIterationCompressed", elapsed_time)
 
-    # for pdb_code in protein_graphs:
-    #    start_time = time.time()
-    #    g = protein_graphs[pdb_code]
-    #    elapsed_time = time.time() - start_time
-    #    print(f"g {elapsed_time:f} seconds")
+    # }
 
-    #    start_time = time.time()
-    #    h = pdb_graph_store.extract_pdb_graph(pdb_code)
-    #    elapsed_time = time.time() - start_time
-    #    print(f"h {elapsed_time:f} seconds")
-
-    #    assert id(g) != id(h) and nx.utils.graphs_equal(g, h)
-
-    # print(reduced_graph)
-    # print(len(patterns), [str(p) for p in patterns])
-    # print(len(graph_ids_set), graph_ids_set)
-
-    # import sys
-
-    # def networkx_space_cost(g):
-    #    edge_mem = sum([sys.getsizeof(e) for e in g.edges])
-    #    node_mem = sum([sys.getsizeof(n) for n in g.nodes])
-    #    return (edge_mem + node_mem) / 1024 / 1024
-
-    # def dict_bitmap_space_cost(d):
-    #    return sys.getsizeof(d) / 1024 / 1024
-
-    # patterns_cost = sum([networkx_space_cost(p) for p in patterns])
-    # reduced_graph_cost = networkx_space_cost(reduced_graph)
-    # graph_ids_set_cost = dict_bitmap_space_cost(graph_ids_set)
-    # graph_offsets_cost = sys.getsizeof(graph_offsets) / 1024 / 1024
-    # compressed_storage = patterns_cost + reduced_graph_cost + graph_ids_set_cost + graph_offsets_cost
-    # print("CompressedStorage", compressed_storage)
-
-    # uncompressed_storage = 0
-    # for pdb_code in protein_graphs:
-    #    uncompressed_storage += (sys.getsizeof(pdb_code) / 1024 / 1024) + networkx_space_cost(protein_graphs[pdb_code])
-    # print("UncompressedStorage", uncompressed_storage)
-
-    # print("ReductionPercentage", (uncompressed_storage - compressed_storage) / uncompressed_storage)
-
-    # print("SizeSerializedCompressed", len(pickle.dumps(pdb_graph_store)))
-    # print("SizeSerializedUncompressed", len(pickle.dumps(protein_graphs)))
