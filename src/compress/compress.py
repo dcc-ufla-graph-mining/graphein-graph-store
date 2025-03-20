@@ -238,10 +238,12 @@ class PDBGraphStoreBitmap:
         self.pdb_to_view = pdb_to_view
 
     def extract_pdb_graph(self, pdb_code):
-        view = self.pdb_to_view[pdb_code]
+        view = self.pdb_to_view.get(pdb_code, None)
 
         def union_bitmaps(bms):
             union_bm = BitMap64()
+            if bms is None: return union_bm
+
             for bm in bms: union_bm = union_bm | bm
             return union_bm
 
@@ -261,7 +263,7 @@ class PDBGraphStoreBitmap:
                 for pdb_code2, bms2 in pdb_to_bitmaps.items():
                     if pdb_code1 >= pdb_code2: continue
                     bm_2 = bms2[0]
-                    jacc = bm_1.jaccard_index(bm_2)
+                    jacc = bm_1.intersection_cardinality(bm_2)
                     if best_jacc is None or jacc > best_jacc:
                         best_jacc = jacc
                         best_pair = (pdb_code1, pdb_code2)
@@ -296,7 +298,7 @@ class PDBGraphStoreBitmap:
 
             for pdb_code in self.pdb_to_view:
                 tree_node = root_tree_node
-                bms = [tree_node[1][0]]
+                bms = [tree_node[1][0]] if len(tree_node[1][0]) > 0 else []
                 bm_height = 1
                 key = key_in_keys(pdb_code, tree_node[1][1])
                 while key:
@@ -306,7 +308,8 @@ class PDBGraphStoreBitmap:
                         tree_node[1][0].run_optimize()
                         bms.append(tree_node[1][0])
                     key = key_in_keys(pdb_code, tree_node[1][1])
-                pdb_to_view_opt[pdb_code] = bms
+                if len(bms) > 0:
+                    pdb_to_view_opt[pdb_code] = bms
 
             return pdb_to_view_opt
 
@@ -318,7 +321,7 @@ class PDBGraphStoreBitmap:
         # TODO: assertion code (remove) {
         for pdb_code, view in self.pdb_to_view.items():
             union_bm1 = BitMap64()
-            for bm in isolated_node_bitmaps[pdb_code]:
+            for bm in isolated_node_bitmaps.get(pdb_code, BitMap64()):
                 union_bm1 = union_bm1 | bm
 
             assert union_bm1.symmetric_difference_cardinality(view[0][0]) == 0
@@ -331,8 +334,9 @@ class PDBGraphStoreBitmap:
         # }
 
         # replace existing views with optimized ones
-        self.pdb_to_view = {pdb_code: (isolated_node_bitmaps[pdb_code], edge_bitmaps[pdb_code]) for pdb_code in
-                            self.pdb_to_view}
+        self.pdb_to_view = {pdb_code: (isolated_node_bitmaps.get(pdb_code, None), edge_bitmaps.get(pdb_code, None)) for
+                            pdb_code in self.pdb_to_view}
+        self.pdb_to_view = {k: v for k, v in self.pdb_to_view.items() if (k, v) != (None, None)}
 
 
 if __name__ == "__main__":
@@ -349,9 +353,9 @@ if __name__ == "__main__":
     file_path = os.path.dirname(os.path.realpath(compress.__file__))
     print(file_path)
 
-    # params_to_change = {"granularity": "atom", "edge_construction_functions": [add_atomic_edges]}
-    params_to_change = {"granularity": "CA",
-                        "edge_construction_functions": [add_peptide_bonds, add_hydrogen_bond_interactions]}
+    params_to_change = {"granularity": "atom", "edge_construction_functions": [add_atomic_edges]}
+    #params_to_change = {"granularity": "CA",
+    #                    "edge_construction_functions": [add_peptide_bonds, add_hydrogen_bond_interactions]}
 
     config = ProteinGraphConfig(**params_to_change)
     print(config.model_dump())
@@ -391,7 +395,7 @@ if __name__ == "__main__":
     print("CompressedAndOptimizedBytesSer", len(pickle.dumps(pdb_graph_store_bitmap)) / 1024 / 1024)
 
     # TODO: assertion code (remove) {
-    
+
     start_time = time.time()
     for pdb_code, protein_graph in protein_graphs.items():
         continue
@@ -406,4 +410,3 @@ if __name__ == "__main__":
     print("RuntimeIterationCompressed", elapsed_time)
 
     # }
-
