@@ -14,74 +14,73 @@ from pyroaring import BitMap, BitMap64
 
 ############################################################################################
 #here happens the compression
+
+# e = edge, v = vertex, g = graph
 def compress_with_composition(protein_graphs):
-    edge_to_pdbs = {}
-    isolated_node_to_pdbs = {}
-    edge_attrs = {}
-    isolated_node_attrs = {}
+    edge_to_pdbs = {}   
+    node_to_pdbs = {}  
+    edge_attrs = {}   
+    node_attrs = {}    
 
     edge_attr_keys_list = list(list(next(iter(protein_graphs.values())).edges(data=True))[0][2].keys())
-    isolated_node_attr_keys_list = list(list(next(iter(protein_graphs.values())).nodes(data=True))[0][1].keys())
+    node_attr_keys_list = list(list(next(iter(protein_graphs.values())).nodes(data=True))[0][1].keys())
 
     edge_attr_keys = {}
-    isolated_node_attr_keys = {}
+    node_attr_keys = {}  
 
-    for key in edge_attr_keys_list:
+    for key in edge_attr_keys_list: 
         edge_attr_keys[key] = []
-    for key in isolated_node_attr_keys_list:
-        isolated_node_attr_keys[key] = []
+    for key in node_attr_keys_list: 
+        node_attr_keys[key] = []
 
     del edge_attr_keys_list
-    del isolated_node_attr_keys_list
+    del node_attr_keys_list
     
-    # print("EdgeAttrKeys", edge_attr_keys)
-    # print("IsolatedNodeAttrKeys", isolated_node_attr_keys)
-
     pdb_to_view = {}
 
     for pdb_code, g in protein_graphs.items():
-        pdb_to_view[pdb_code] = ([BitMap64()], [BitMap64()], [], [])  # isolated nodes, edges, isolated node attributes, edge attributes
+        pdb_to_view[pdb_code] = ([BitMap64()], [BitMap64()], [], [])  # nodes, edges, node attributes, edge attributes
         
-        for u in nx.isolates(g):
-            # Add PDB to the list of PDBs for this isolated node
-            pdbs = isolated_node_to_pdbs.get(u, [])
-            pdbs.append(pdb_code)
-            isolated_node_to_pdbs[u] = pdbs
-            
-            # Get node attributes
-            isolated_node_attrs[u] = []
+        for node in g.nodes():
+            if node not in node_to_pdbs:
+                node_to_pdbs[node] = []
+                node_attrs[node] = []
+                
+                for value in node_attr_keys:
+                    attr_value = g.nodes[node][value]
 
-            for i, value in enumerate(isolated_node_attr_keys):
-                attr_value = g.nodes[u][value]
+                    if isinstance(attr_value, pd.Series):
+                        attr_value = tuple([attr_value.tolist(), attr_value.name, attr_value.index])
+                    elif isinstance(attr_value, np.ndarray):
+                        attr_value = tuple([tuple(attr_value)])
 
-                if isinstance(attr_value, pd.Series):
-                    attr_value = tuple([attr_value.tolist(), attr_value.name, attr_value.index])  # Converte Series em tupla
-                elif isinstance(attr_value, np.ndarray):
-                    attr_value = [tuple(attr_value)] 
+                    if attr_value not in node_attr_keys[value]:
+                        node_attr_keys[value].append(attr_value)
 
-                if attr_value not in isolated_node_attr_keys[value]:
-                    isolated_node_attr_keys[value].append(attr_value)
-
-                isolated_node_attrs[u].append(isolated_node_attr_keys[value].index(attr_value))
-            #print("IsolatedNodeAttrs", isolated_node_attrs[u])
-
+                    node_attrs[node].append(node_attr_keys[value].index(attr_value))
+                
+            if pdb_code not in node_to_pdbs[node]:
+                node_to_pdbs[node].append(pdb_code)
+        
         for u, v, data in g.edges(data=True):
-            pdbs = edge_to_pdbs.get((u, v), [])
-            pdbs.append(pdb_code)
-            edge_to_pdbs[(u, v)] = pdbs
-
-            # Get edge attributes
-            edge_attrs[(u, v)] = []
-            for i, value in enumerate(edge_attr_keys):
-                attr_value = data[value]
-                if isinstance(attr_value, np.ndarray):
-                    attr_value = tuple(attr_value)
+            edge = (u, v)
+            
+            if edge not in edge_to_pdbs:
+                edge_to_pdbs[edge] = []
+                edge_attrs[edge] = []
+                
+                for value in edge_attr_keys:
+                    attr_value = data[value]
+                    if isinstance(attr_value, np.ndarray):
+                        attr_value = tuple(attr_value)
+                        
+                    if attr_value not in edge_attr_keys[value]:
+                        edge_attr_keys[value].append(attr_value)
                     
-                if attr_value not in edge_attr_keys[value]:
-                    edge_attr_keys[value].append(attr_value)
-                edge_attrs[(u, v)].append(edge_attr_keys[value].index(attr_value))
-            # print("EdgeAttrs", edge_attrs[(u, v)])
-
+                    edge_attrs[edge].append(edge_attr_keys[value].index(attr_value))
+            
+            if pdb_code not in edge_to_pdbs[edge]:
+                edge_to_pdbs[edge].append(pdb_code)
 
     edge_id = 0
     edge_to_id = {}
@@ -97,62 +96,61 @@ def compress_with_composition(protein_graphs):
     del edge_to_pdbs
 
     node_id = 0
-    isolated_node_to_id = {}
-    for u in isolated_node_to_pdbs:
-        isolated_node_to_id[u] = node_id
-        pdbs = isolated_node_to_pdbs[u]
+    node_to_id = {}  
+    for u in node_to_pdbs:
+        node_to_id[u] = node_id
+        pdbs = node_to_pdbs[u]
         for pdb_code in pdbs:
             pdb_to_view[pdb_code][0][0].add(node_id)
-            pdb_to_view[pdb_code][2].append(isolated_node_attrs[u])
+            pdb_to_view[pdb_code][2].append(node_attrs[u])
             
         node_id += 1
 
-    del isolated_node_to_pdbs
+    del node_to_pdbs
 
-    isolated_node_to_id = bidict(isolated_node_to_id)
+    node_to_id = bidict(node_to_id)  
     edge_to_id = bidict(edge_to_id)
-
-    #np == list of tuples and pd == tuple
-
 
     for pdb_code, view in pdb_to_view.items():
         original_graph = protein_graphs[pdb_code]
 
-        isolated_nodes = [isolated_node_to_id.inverse[node_id] for node_id in view[0][0]]
+        nodes = [node_to_id.inverse[node_id] for node_id in view[0][0]]  
         edges = [edge_to_id.inverse[edge_id] for edge_id in view[1][0]]
         extracted_graph = nx.Graph()
-        extracted_graph.update(edges=edges, nodes=isolated_nodes)
+        extracted_graph.update(edges=edges, nodes=nodes)
 
-        # Add isolated node attributes
-        for i, node in enumerate(isolated_nodes):
-            if node in isolated_node_attrs:
-                for i, key in enumerate(isolated_node_attr_keys):
-                    index = isolated_node_attrs[node][i]
-                    value = isolated_node_attr_keys[key][index]
+        for node in nodes:
+            if node in node_attrs:
+                for i, key in enumerate(node_attr_keys):
+                    index = node_attrs[node][i]
+                    value = node_attr_keys[key][index]
 
-                    if isinstance(value, list):
+                    if isinstance(value, tuple) and len(value) == 1:
                         value = np.array(value[0])
-
-                    elif isinstance(value, tuple):
+                    elif isinstance(value, tuple) and len(value) == 3:
                         value = pd.Series(value[0], name=value[1], index=value[2])
+                        
                     extracted_graph.nodes[node][key] = value
 
-
-        for i, (u, v) in enumerate(edges):
+        for u, v in edges:
             if (u, v) in edge_attrs:
                 for i, key in enumerate(edge_attr_keys):
                     index = edge_attrs[(u, v)][i]
-
                     value = edge_attr_keys[key][index]
+                    
                     if isinstance(value, tuple):
-                        value = pd.Series(value)
+                        value = np.array(value)
+                        
                     extracted_graph.edges[u, v][key] = value
 
         assert nx.utils.nodes_equal(extracted_graph.nodes, original_graph.nodes)
         assert nx.utils.edges_equal(extracted_graph.edges, original_graph.edges)
-    
 
-    return PDBGraphStoreBitmap(isolated_node_to_id, edge_to_id, pdb_to_view, edge_attr_keys, isolated_node_attr_keys, edge_attrs, isolated_node_attrs)
+    print("nodeSizeCompressed", (asizeof.asizeof(node_to_id) + asizeof.asizeof(node_attrs) + asizeof.asizeof(node_attr_keys)) / 1024 / 1024, "MB")
+    print("edgeSizeCompressed", (asizeof.asizeof(edge_to_id) + asizeof.asizeof(edge_attrs) + asizeof.asizeof(edge_attr_keys)) / 1024 / 1024, "MB")
+    print("pdbToViewSizeCompressed", asizeof.asizeof(pdb_to_view) / 1024 / 1024, "MB")
+
+    return PDBGraphStoreBitmap(node_to_id, edge_to_id, pdb_to_view, edge_attr_keys, node_attr_keys, edge_attrs, node_attrs)
 
 
 
@@ -172,18 +170,45 @@ class PDBGraphStoreBitmap:
 
     def extract_pdb_graph(self, pdb_code):
         view = self.pdb_to_view.get(pdb_code, None)
-
+        
         def union_bitmaps(bms):
             union_bm = BitMap64()
-            if bms is None: return union_bm
-
-            for bm in bms: union_bm = union_bm | bm
+            if bms is None: 
+                return union_bm
+            for bm in bms: 
+                union_bm = union_bm | bm
             return union_bm
-
+        
         isolated_nodes = [self.isolated_node_to_id.inverse[node_id] for node_id in union_bitmaps(view[0])]
         edges = [self.edge_to_id.inverse[edge_id] for edge_id in union_bitmaps(view[1])]
+        
         extracted_graph = nx.Graph()
         extracted_graph.update(edges=edges, nodes=isolated_nodes)
+        
+        for node in isolated_nodes:
+            if node in self.isolated_node_attrs:
+                for i, key in enumerate(self.isolated_node_attr_keys):
+                    index = self.isolated_node_attrs[node][i]
+                    value = self.isolated_node_attr_keys[key][index]
+                    
+                    if isinstance(value, tuple) and len(value) == 1:
+                        value = np.array(value[0])
+                    elif isinstance(value, tuple) and len(value) == 3:
+                        value = pd.Series(value[0], name=value[1], index=value[2])
+                        
+                    extracted_graph.nodes[node][key] = value
+        
+        for u, v in edges:
+            if (u, v) in self.edge_attrs:
+                for i, key in enumerate(self.edge_attr_keys):
+                    index = self.edge_attrs[(u, v)][i]
+                    value = self.edge_attr_keys[key][index]
+                    
+                    if isinstance(value, tuple):
+                        value = np.array(value)  
+                        
+                    extracted_graph.edges[u, v][key] = value
+        
         return extracted_graph
 
     def run_tree_compression(self):
@@ -299,88 +324,48 @@ if __name__ == "__main__":
         for line in f:
             pdb_codes.append(line.strip())
 
-    protein_graphs = {}
     protein_graphs_with_data = {}
 
     i = 0
     for pdb_code in pdb_codes:
         print(i, pdb_code)
         i += 1
-        try:
-            pdb_file = f"{file_path}/../../data/pdb_files{pdb_code}.pdb"
-            graph = construct_graph(config=config, path=pdb_file)
-            protein_graphs_with_data[pdb_code] = graph  # Store graph
 
-            graph_without_data = nx.Graph()
-            graph_without_data.add_nodes_from(graph.nodes)
-            graph_without_data.add_edges_from(graph.edges)
-            protein_graphs[pdb_code] = graph_without_data
-        except:
-            try:
-                pdb_file = download_pdb(pdb_code, out_dir=f"{file_path}/../../data/pdb_files")  # Download PDB file
-                graph = construct_graph(config=config, path=pdb_file)
-                protein_graphs_with_data[pdb_code] = graph  # Store graph
-
-                graph_without_data = nx.Graph()
-                graph_without_data.add_nodes_from(graph.nodes)
-                graph_without_data.add_edges_from(graph.edges)
-                protein_graphs[pdb_code] = graph_without_data
-
-            except Exception as e:
-                print(f"Error processing {pdb_code}: {e}")
+        if os.path.exists(f"{file_path}/../../data/pdb_files/{pdb_code}.pdb"):
+            pdb_file = os.path.abspath(f"{file_path}/../../data/pdb_files/{pdb_code}.pdb")
+        else:
+            pdb_file = download_pdb(pdb_code, f"{file_path}/../../data/pdb_files/")
+            if pdb_file is None:
+                print(f"Failed to download {pdb_code}")
                 continue
+        
+        graph = construct_graph(config=config, path=pdb_file)
+        graph.graph.clear()
+        print(graph)
+        protein_graphs_with_data[pdb_code] = graph  # Store graph
 
-        if i > 5:
-            break
-    
-
-    #################################################################################################################
-
-    #protein_graphs_with_data contains the graphs with data
-    #protein_graphs contains the graphs without data
-
-
-
-
-
-
-    
-
-
-
-
+    v_size = 0
+    e_size = 0
+    g_size = 0
 
 
     for k, v in protein_graphs_with_data.items():
         v.graph.clear()
-    print("UncompressedBytes", asizeof.asizeof(protein_graphs_with_data) / 1024 / 1024)
-    print("UncompressedBytesSer", len(pickle.dumps(protein_graphs_with_data)) / 1024 / 1024)
+        v_size += asizeof.asizeof(v._node) / 1024 / 1024
+        e_size += asizeof.asizeof(v._adj) / 1024 / 1024
+        g_size += asizeof.asizeof(v) / 1024 / 1024
 
-    #####################################################################################################################
-    #compress the graphs
+    print("VertexSize", v_size, "MB")
+    print("EdgeSize", e_size, "MB")
+    print("UncompressedBytes", g_size, "MB")
 
-    #print(print_graph(protein_graphs_with_data))
-    pdb_graph_store_bitmap = compress_with_composition(protein_graphs_with_data)
-    print("CompressedBytes", asizeof.asizeof(pdb_graph_store_bitmap) / 1024 / 1024, "MB")
+    ob = compress_with_composition(protein_graphs_with_data)
+    print("CompressedBytes", asizeof.asizeof(ob) / 1024 / 1024)
 
-    compressedser = pickle.dumps(pdb_graph_store_bitmap)
+    an1 = ob.extract_pdb_graph("1AN1")
 
-    print("CompressedBytesSer", len(compressedser) / 1024 / 1024, "MB")
-
-
-    original_sizeser = 0
-    original_size = 0
-
-    for k, v in protein_graphs_with_data.items():
-        original_size += asizeof.asizeof(v.graph)
-        original_sizeser += asizeof.asizeof(pickle.dumps(v.graph))
-
-    print("Original graph size", original_size / 1024 / 1024, "MB")
-
-    print("Original graph size serialized", original_sizeser / 1024 / 1024, "MB")
-
-    print("total serialized", asizeof.asizeof((pickle.dumps(pdb_graph_store_bitmap)) + original_sizeser) / 1024 /1024, "MB")
-
+    assert nx.utils.nodes_equal(an1._node, protein_graphs_with_data["1AN1"]._node)
+    assert nx.utils.edges_equal(an1._adj, protein_graphs_with_data["1AN1"]._adj)
 
 
     # print("CompressedBytesSer", len(pickle.dumps(pdb_graph_store_bitmap)) / 1024 / 1024)
