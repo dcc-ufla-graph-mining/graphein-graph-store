@@ -1,0 +1,13 @@
+services:
+  pyfractal:
+    build:
+      context: .
+      dockerfile: pyfractal.dockerfile
+    volumes:
+      - .:/app
+
+    dns:
+      - 8.8.8.8
+    ports:
+      - 8265:8265
+    shm_size: 4gb

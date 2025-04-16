@@ -1,0 +1,2 @@
+graphein[all]==1.7.7
+torch==2.5.1
