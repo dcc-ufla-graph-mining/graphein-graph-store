@@ -1,4 +1,3 @@
-import bisect
 import pickle
 import random
 import time
@@ -15,7 +14,6 @@ from pyroaring import BitMap, BitMap64
 #because of this, we can search for the index or for the key, both with o(1)
 #https://pypi.org/project/ordered-set/
 from ordered_set import OrderedSet
-
 
 ############################################################################################
 #here happens the compression
@@ -41,10 +39,14 @@ def compress_with_composition(protein_graphs):
     del edge_attr_keys_list
     del node_attr_keys_list
     
-    pdb_to_view = {}
+    # Split pdb_to_view into four separate dictionaries
+    pdb_to_nodes = {}
+    pdb_to_edges = {}
 
     for pdb_code, g in protein_graphs.items():
-        pdb_to_view[pdb_code] = ([BitMap64()], [BitMap64()], [], [])  # nodes, edges, node attributes, edge attributes
+        # Initialize separate dictionaries for each component
+        pdb_to_nodes[pdb_code] = [BitMap64()]
+        pdb_to_edges[pdb_code] = [BitMap64()]
         
         for node in g.nodes():
             if node not in node_to_pdbs:
@@ -93,8 +95,7 @@ def compress_with_composition(protein_graphs):
         edge_to_id[e] = edge_id
         pdbs = edge_to_pdbs[e]
         for pdb_code in pdbs:
-            pdb_to_view[pdb_code][1][0].add(edge_id)
-            pdb_to_view[pdb_code][3].append(edge_attrs[e])
+            pdb_to_edges[pdb_code][0].add(edge_id)
             
         edge_id += 1
 
@@ -106,8 +107,7 @@ def compress_with_composition(protein_graphs):
         node_to_id[u] = node_id
         pdbs = node_to_pdbs[u]
         for pdb_code in pdbs:
-            pdb_to_view[pdb_code][0][0].add(node_id)
-            pdb_to_view[pdb_code][2].append(node_attrs[u])
+            pdb_to_nodes[pdb_code][0].add(node_id)
             
         node_id += 1
 
@@ -116,11 +116,11 @@ def compress_with_composition(protein_graphs):
     node_to_id = bidict(node_to_id)  
     edge_to_id = bidict(edge_to_id)
 
-    for pdb_code, view in pdb_to_view.items():
+    for pdb_code in protein_graphs:
         original_graph = protein_graphs[pdb_code]
 
-        nodes = [node_to_id.inverse[node_id] for node_id in view[0][0]]  
-        edges = [edge_to_id.inverse[edge_id] for edge_id in view[1][0]]
+        nodes = [node_to_id.inverse[node_id] for node_id in pdb_to_nodes[pdb_code][0]]  
+        edges = [edge_to_id.inverse[edge_id] for edge_id in pdb_to_edges[pdb_code][0]]
         extracted_graph = nx.Graph()
         extracted_graph.update(edges=edges, nodes=nodes)
 
@@ -151,9 +151,8 @@ def compress_with_composition(protein_graphs):
         # assert nx.utils.nodes_equal(extracted_graph.nodes(data=True), original_graph.nodes(data=True))
         try:
             assert nx.utils.edges_equal(extracted_graph._adj, original_graph._adj)
-        except AssertionError as e:
+        except Exception as e:
             print("error in edges")
-            print(nx.difference(extracted_graph, original_graph).nodes(data=True))
             for (u, v, attr) in extracted_graph.edges.data():
                 print(u, v, attr)
                 for k, t in attr.items():
@@ -170,7 +169,7 @@ def compress_with_composition(protein_graphs):
 
         try:    
             assert nx.utils.nodes_equal(extracted_graph._node, original_graph._node)
-        except AssertionError as e:
+        except Exception as e:
             print("error in nodes")
             for node, attr in extracted_graph.nodes(data=True):
                 print(node, attr)
@@ -185,47 +184,53 @@ def compress_with_composition(protein_graphs):
                 break
             break
     
-    return PDBGraphStoreBitmap(node_to_id, edge_to_id, pdb_to_view, edge_attr_keys, node_attr_keys)
+    # Pass the four separate dictionaries to the constructor
+    return PDBGraphStoreBitmap(node_to_id, edge_to_id, 
+                            pdb_to_nodes, pdb_to_edges, 
+                            node_attrs, edge_attrs, 
+                            edge_attr_keys, node_attr_keys)
 
 
 class PDBGraphStoreBitmap:
 
-    def __init__(self, node_to_id, edge_to_id, pdb_to_view, edge_attr_keys, node_attr_keys):
-        self.node_to_id = node_to_id
-        self.edge_to_id = edge_to_id
-        self.pdb_to_view = pdb_to_view
-        self.node_attr_keys = node_attr_keys
-        self.edge_attr_keys = edge_attr_keys
+    #fazer o calculo de memoria discriminado para cada um dos attr abaixo, incluindo acada uma das posicoes da view separado
+    def __init__(self, node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_attrs, edge_attr_keys, node_attr_keys):
+        self.node_to_id = node_to_id #mapeamento de de node para id, e vice versa, global
+        self.edge_to_id = edge_to_id #mapeamento de de edge para id, e vice versa, global
+        self.pdb_to_nodes = pdb_to_nodes #bitmap indicando quais pdbs cada node pertence
+        self.pdb_to_edges = pdb_to_edges #bitmap indicando quais pdbs cada edge pertence
+        self.node_attrs = node_attrs #lista de indices para o attr de cada node
+        self.edge_attrs = edge_attrs #lista de indices para o attr de cada edge
+        self.node_attr_keys = node_attr_keys #dicionario de atributos indexados para cada node
+        self.edge_attr_keys = edge_attr_keys #dicionario de atributos indexados para cada edge
 
-    # return the value in MB
+    def node_to_id_size(self):
+        return asizeof.asizeof(self.node_to_id) / 1024 / 1024
+    def edge_to_id_size(self):
+        return asizeof.asizeof(self.edge_to_id) / 1024 / 1024
+    def pdb_to_nodes_size(self):
+        return asizeof.asizeof(self.pdb_to_nodes) / 1024 / 1024
+    def pdb_to_edges_size(self):
+        return asizeof.asizeof(self.pdb_to_edges) / 1024 / 1024
+    def node_attrs_size(self):
+        return asizeof.asizeof(self.node_attrs) / 1024 / 1024
+    def edge_attrs_size(self):
+        return asizeof.asizeof(self.edge_attrs) / 1024 / 1024
+    def node_attr_keys_size(self):
+        return asizeof.asizeof(self.node_attr_keys) / 1024 / 1024
+    def edge_attr_keys_size(self):
+        return asizeof.asizeof(self.edge_attr_keys) / 1024 / 1024
     def calculate_graph_complete_space_size(self):
-        return (asizeof.asizeof(self.node_to_id) + asizeof.asizeof(self.edge_to_id) + \
-               asizeof.asizeof(self.pdb_to_view) + asizeof.asizeof(self.edge_attr_keys) + \
-               asizeof.asizeof(self.node_attr_keys)) / 1024 / 1024
+        return self.node_to_id_size() + self.edge_to_id_size() + self.pdb_to_nodes_size() + self.pdb_to_edges_size() + self.node_attrs_size() + self.edge_attrs_size() + self.node_attr_keys_size() + self.edge_attr_keys_size()
+    def calculate_total_nodes_size(self):
+        return self.node_to_id_size() + self.pdb_to_nodes_size() + self.node_attrs_size() + self.node_attr_keys_size()
+    def calculate_total_edges_size(self):
+        return self.edge_to_id_size() + self.pdb_to_edges_size() + self.edge_attrs_size() + self.edge_attr_keys_size()
     
-    # return the value in MB
-    def calculate_graph_structure_space_size(self):
-        return (asizeof.asizeof(self.node_to_id) + asizeof.asizeof(self.edge_to_id) + \
-               asizeof.asizeof(self.pdb_to_view)) / 1024 / 1024
-
-    # return the value in MB
-    def calculate_edges_complete_space_size(self):
-        total_size = 0
-        for pdb_code, view in self.pdb_to_view.items():
-            total_size += asizeof.asizeof(view[1]) + asizeof.asizeof(view[3])
-        
-        return (total_size + asizeof.asizeof(self.edge_attr_keys) + asizeof.asizeof(self.edge_to_id)) / 1024 / 1024
-    
-    # return the value in MB
-    def calculate_nodes_complete_space_size(self):
-        total_size = 0
-        for pdb_code, view in self.pdb_to_view.items():
-            total_size += asizeof.asizeof(view[0]) + asizeof.asizeof(view[2])
-        
-        return (total_size + asizeof.asizeof(self.node_attr_keys) + asizeof.asizeof(self.node_to_id)) / 1024 / 1024
 
     def extract_pdb_graph(self, pdb_code):
-        view = self.pdb_to_view.get(pdb_code, None)
+        nodes_view = self.pdb_to_nodes.get(pdb_code, None)
+        edges_view = self.pdb_to_edges.get(pdb_code, None)
         
         def union_bitmaps(bms):
             union_bm = BitMap64()
@@ -236,19 +241,16 @@ class PDBGraphStoreBitmap:
             return union_bm
         
         try:
-            isolated_nodes = [self.node_to_id.inverse[node_id] for node_id in union_bitmaps(view[0])]
-            edges = [self.edge_to_id.inverse[edge_id] for edge_id in union_bitmaps(view[1])]
+            nodes = [self.node_to_id.inverse[node_id] for node_id in union_bitmaps(nodes_view)]
+            edges = [self.edge_to_id.inverse[edge_id] for edge_id in union_bitmaps(edges_view)]
             
             extracted_graph = nx.Graph()
-            extracted_graph.update(edges=edges, nodes=isolated_nodes)
+            extracted_graph.update(edges=edges, nodes=nodes)
 
-            node_attrs = self.pdb_to_view[pdb_code][2]
-            edge_attrs = self.pdb_to_view[pdb_code][3]
-            
-            for node in isolated_nodes:
-                if node in node_attrs:
+            for node in nodes:
+                if node in self.node_attrs:
                     for i, key in enumerate(self.node_attr_keys):
-                        index = node_attrs[node][i]
+                        index = self.node_attrs[node][i]
                         value = self.node_attr_keys[key][index]
                         
                         if isinstance(value, tuple) and len(value) == 1:
@@ -259,9 +261,9 @@ class PDBGraphStoreBitmap:
                         extracted_graph.nodes[node][key] = value
             
             for u, v in edges:
-                if (u, v) in edge_attrs:
+                if (u, v) in self.edge_attrs:
                     for i, key in enumerate(self.edge_attr_keys):
-                        index = edge_attrs[(u, v)][i]
+                        index = self.edge_attrs[(u, v)][i]
                         value = self.edge_attr_keys[key][index]
                         
                         if isinstance(value, tuple):
@@ -274,97 +276,93 @@ class PDBGraphStoreBitmap:
             extracted_graph.update(edges=[], nodes=[])
         return extracted_graph
 
-    def run_tree_compression(self):
-        # build pairs jaccard
-        def get_max_pair(pdb_to_bitmaps):
-            best_pair = None
-            best_jacc = None
-            for pdb_code1, bms1 in pdb_to_bitmaps.items():
-                bm_1 = bms1[0]
-                for pdb_code2, bms2 in pdb_to_bitmaps.items():
-                    if pdb_code1 >= pdb_code2: continue
-                    bm_2 = bms2[0]
-                    jacc = bm_1.intersection_cardinality(bm_2)
-                    if best_jacc is None or jacc > best_jacc:
-                        best_jacc = jacc
-                        best_pair = (pdb_code1, pdb_code2)
-            return best_pair
+    # def run_tree_compression(self):
+    #     # build pairs jaccard
+    #     def get_max_pair(pdb_to_bitmaps):
+    #         best_pair = None
+    #         best_jacc = None
+    #         for pdb_code1, bms1 in pdb_to_bitmaps.items():
+    #             bm_1 = bms1[0]
+    #             for pdb_code2, bms2 in pdb_to_bitmaps.items():
+    #                 if pdb_code1 >= pdb_code2: continue
+    #                 bm_2 = bms2[0]
+    #                 jacc = bm_1.intersection_cardinality(bm_2)
+    #                 if best_jacc is None or jacc > best_jacc:
+    #                     best_jacc = jacc
+    #                     best_pair = (pdb_code1, pdb_code2)
+    #         return best_pair
 
-        def get_optimized_bitmaps(reconstructions):
-            while len(reconstructions) >= 2:
-                pdb_code1, pdb_code2 = get_max_pair(reconstructions)
-                # print(pdb_code1, pdb_code2)
-                left = reconstructions[pdb_code1][0]
-                right = reconstructions[pdb_code2][0]
-                intersection = left & right
-                delta_1 = left - intersection
-                delta_2 = right - intersection
+    #     def get_optimized_bitmaps(reconstructions):
+    #         while len(reconstructions) >= 2:
+    #             pdb_code1, pdb_code2 = get_max_pair(reconstructions)
+    #             # print(pdb_code1, pdb_code2)
+    #             left = reconstructions[pdb_code1][0]
+    #             right = reconstructions[pdb_code2][0]
+    #             intersection = left & right
+    #             delta_1 = left - intersection
+    #             delta_2 = right - intersection
 
-                left_child = (delta_1, reconstructions[pdb_code1][1])
-                right_child = (delta_2, reconstructions[pdb_code2][1])
-                reconstructions[pdb_code1 + '_' + pdb_code2] = (
-                    intersection, {pdb_code1: left_child, pdb_code2: right_child})
+    #             left_child = (delta_1, reconstructions[pdb_code1][1])
+    #             right_child = (delta_2, reconstructions[pdb_code2][1])
+    #             reconstructions[pdb_code1 + '_' + pdb_code2] = (
+    #                 intersection, {pdb_code1: left_child, pdb_code2: right_child})
 
-                del reconstructions[pdb_code1]
-                del reconstructions[pdb_code2]
+    #             del reconstructions[pdb_code1]
+    #             del reconstructions[pdb_code2]
 
-            def key_in_keys(key, keys):
-                for k in keys:
-                    if key in k: return k
-                return None
+    #         def key_in_keys(key, keys):
+    #             for k in keys:
+    #                 if key in k: return k
+    #             return None
 
-            root_tree_node = list(reconstructions.items())[0]
+    #         root_tree_node = list(reconstructions.items())[0]
 
-            pdb_to_view_opt = {}
+    #         pdb_to_view_opt = {}
 
-            for pdb_code in self.pdb_to_view:
-                tree_node = root_tree_node
-                bms = [tree_node[1][0]] if len(tree_node[1][0]) > 0 else []
-                bm_height = 1
-                key = key_in_keys(pdb_code, tree_node[1][1])
-                while key:
-                    bm_height += 1
-                    tree_node = (key, tree_node[1][1][key])
-                    if len(tree_node[1][0]) > 0:
-                        tree_node[1][0].run_optimize()
-                        bms.append(tree_node[1][0])
-                    key = key_in_keys(pdb_code, tree_node[1][1])
-                if len(bms) > 0:
-                    pdb_to_view_opt[pdb_code] = bms
+    #         for pdb_code in self.pdb_to_view:
+    #             tree_node = root_tree_node
+    #             bms = [tree_node[1][0]] if len(tree_node[1][0]) > 0 else []
+    #             bm_height = 1
+    #             key = key_in_keys(pdb_code, tree_node[1][1])
+    #             while key:
+    #                 bm_height += 1
+    #                 tree_node = (key, tree_node[1][1][key])
+    #                 if len(tree_node[1][0]) > 0:
+    #                     tree_node[1][0].run_optimize()
+    #                     bms.append(tree_node[1][0])
+    #                 key = key_in_keys(pdb_code, tree_node[1][1])
+    #             if len(bms) > 0:
+    #                 pdb_to_view_opt[pdb_code] = bms
 
-            return pdb_to_view_opt
+    #         return pdb_to_view_opt
 
-        edge_bitmaps = get_optimized_bitmaps(
-            {pdb_code: (view[1][0], {}) for pdb_code, view in self.pdb_to_view.items()})
-        isolated_node_bitmaps = get_optimized_bitmaps(
-            {pdb_code: (view[0][0], {}) for pdb_code, view in self.pdb_to_view.items()})
+    #     edge_bitmaps = get_optimized_bitmaps(
+    #         {pdb_code: (view[1][0], {}) for pdb_code, view in self.pdb_to_view.items()})
+    #     isolated_node_bitmaps = get_optimized_bitmaps(
+    #         {pdb_code: (view[0][0], {}) for pdb_code, view in self.pdb_to_view.items()})
 
-        # TODO: assertion code (remove) {
-        for pdb_code, view in self.pdb_to_view.items():
-            union_bm1 = BitMap64()
-            for bm in isolated_node_bitmaps.get(pdb_code, BitMap64()):
-                union_bm1 = union_bm1 | bm
+    #     # TODO: assertion code (remove) {
+    #     for pdb_code, view in self.pdb_to_view.items():
+    #         union_bm1 = BitMap64()
+    #         for bm in isolated_node_bitmaps.get(pdb_code, BitMap64()):
+    #             union_bm1 = union_bm1 | bm
 
-            assert union_bm1.symmetric_difference_cardinality(view[0][0]) == 0
+    #         assert union_bm1.symmetric_difference_cardinality(view[0][0]) == 0
 
-            union_bm1 = BitMap64()
-            for bm in edge_bitmaps[pdb_code]:
-                union_bm1 = union_bm1 | bm
+    #         union_bm1 = BitMap64()
+    #         for bm in edge_bitmaps[pdb_code]:
+    #             union_bm1 = union_bm1 | bm
 
-            assert union_bm1.symmetric_difference_cardinality(view[1][0]) == 0
-        # }
+    #         assert union_bm1.symmetric_difference_cardinality(view[1][0]) == 0
+    #     # }
 
-        # replace existing views with optimized ones
-        self.pdb_to_view = {pdb_code: (isolated_node_bitmaps.get(pdb_code, None), edge_bitmaps.get(pdb_code, None)) for
-                            pdb_code in self.pdb_to_view}
-        self.pdb_to_view = {k: v for k, v in self.pdb_to_view.items() if (k, v) != (None, None)}
+    #     # replace existing views with optimized ones
+    #     self.pdb_to_view = {pdb_code: (isolated_node_bitmaps.get(pdb_code, None), edge_bitmaps.get(pdb_code, None)) for
+    #                         pdb_code in self.pdb_to_view}
+    #     self.pdb_to_view = {k: v for k, v in self.pdb_to_view.items() if (k, v) != (None, None)}
 
 
-def print_graph(protein_graphs):
-    return (graph.nodes(data=True))
-    
-
-if __name__ == "__main__":
+def main():
     import os
     import metadata
     from graphein.protein.config import ProteinGraphConfig
@@ -374,6 +372,7 @@ if __name__ == "__main__":
     import networkx as nx
     import time
 
+    print("main")
 
     file_path = os.path.dirname(os.path.realpath(metadata.__file__))
     print(file_path)
@@ -383,12 +382,21 @@ if __name__ == "__main__":
     config = ProteinGraphConfig(**params_to_change)
     # print(config.model_dump())
 
+    dataset = os.environ.get("DATASET")
+
     pdb_codes = []
-    with open(f'{file_path}/../../data/bcl_ppigremlin.txt', 'r') as f:
+    if os.environ.get("DATA_DIR") is not None:
+        data = os.environ.get("DATA_DIR")
+    else:
+        data = os.path.abspath(f"{file_path}/../../data/")
+    
+    pdb_dir = os.path.abspath(f"{data}/pdb_files/")
+    with open(f'{data}/{dataset}', 'r') as f:
         for line in f:
             pdb_codes.append(line.strip())
 
     protein_graphs_with_data = {}
+    protein_graphs_without_data = {}
 
     time_begin = time.time()
 
@@ -396,19 +404,30 @@ if __name__ == "__main__":
     for pdb_code in pdb_codes:
         print(i, pdb_code)
         i += 1
-
-        if os.path.exists(f"{file_path}/../../data/pdb_files/{pdb_code}.pdb"):
-            pdb_file = os.path.abspath(f"{file_path}/../../data/pdb_files/{pdb_code}.pdb")
+        
+        if os.path.exists(f"{pdb_dir}/{pdb_code}.pdb"):
+            pdb_file = os.path.abspath(f"{pdb_dir}/{pdb_code}.pdb")
         else:
-            pdb_file = download_pdb(pdb_code, f"{file_path}/../../data/pdb_files/")
+            pdb_file = download_pdb(pdb_code, f"{pdb_dir}/")
             if pdb_file is None:
                 print(f"Failed to download {pdb_code}")
                 continue
-        
+
         graph = construct_graph(config=config, path=pdb_file)
         graph.graph.clear()
         print(graph)
-        protein_graphs_with_data[pdb_code] = graph  # Store graph
+
+        protein_graphs_with_data[pdb_code] = graph.copy()  # Store graph
+
+        for node in graph.nodes():
+            graph.nodes[node].clear()
+        for u, v in graph.edges():
+            graph.edges[u, v].clear()
+
+        protein_graphs_without_data[pdb_code] = graph.copy()  # Store graph
+
+        del graph
+
 
     time_end = time.time()
 
@@ -418,10 +437,16 @@ if __name__ == "__main__":
     v_size = 0
     e_size = 0
 
+    v_serialized = 0
+    e_serialized = 0
+
     for k, v in protein_graphs_with_data.items():
         v.graph.clear()
         v_size += asizeof.asizeof(v._node) / 1024 / 1024
         e_size += asizeof.asizeof(v._adj) / 1024 / 1024
+
+        v_serialized += asizeof.asizeof(pickle.dumps(v._node)) / 1024 / 1024
+        e_serialized += asizeof.asizeof(pickle.dumps(v._adj)) / 1024 / 1024
 
     time_begin = time.time()
 
@@ -430,20 +455,166 @@ if __name__ == "__main__":
     time_end = time.time()
     print("Time to compress:", time_end - time_begin)
     
-    time_begin = time.time()
-    an1 = global_graph_obj.extract_pdb_graph("1BXL")
-    time_end = time.time()
+    an1 = global_graph_obj.extract_pdb_graph("1AN1")
 
-    print("Time to extract:", time_end - time_begin)
+    random.shuffle(pdb_codes)
 
-    assert nx.utils.nodes_equal(an1._node, protein_graphs_with_data["1BXL"]._node)
-    assert nx.utils.edges_equal(an1._adj, protein_graphs_with_data["1BXL"]._adj)
+    times_to_extract = []
 
+    for pdb_code in pdb_codes:
+        time_begin = time.time()
+        g = global_graph_obj.extract_pdb_graph(pdb_code)
+        time_end = time.time()
+        times_to_extract.append(time_end - time_begin)
+
+        assert nx.utils.nodes_equal(g._node, protein_graphs_with_data[pdb_code]._node)
+        assert nx.utils.edges_equal(g._adj, protein_graphs_with_data[pdb_code]._adj)
+
+    print("Time to extract:", sum(times_to_extract) / len(times_to_extract))
+
+    assert nx.utils.nodes_equal(an1._node, protein_graphs_with_data["1AN1"]._node)
+    assert nx.utils.edges_equal(an1._adj, protein_graphs_with_data["1AN1"]._adj)
+
+    print("\n\n")
     print("uncompressed complete graph size", asizeof.asizeof(protein_graphs_with_data) / 1024 / 1024)
+    print("uncompressed structure graph size", asizeof.asizeof(protein_graphs_without_data) / 1024 / 1024)
     print("uncompressed edge size", e_size)
     print("uncompressed node size", v_size)
-    print("compressed graph complete space size", global_graph_obj.calculate_graph_complete_space_size())
-    print("compressed graph structure space size", global_graph_obj.calculate_graph_structure_space_size())
-    print("compressed edge size", global_graph_obj.calculate_edges_complete_space_size())
-    print("compressed node size", global_graph_obj.calculate_nodes_complete_space_size())
-    print("global graph object size", asizeof.asizeof(global_graph_obj) / 1024 / 1024)
+    print("uncompressed complete graph serialized", asizeof.asizeof(pickle.dumps(protein_graphs_with_data)) / 1024 / 1024)
+    print("uncompressed edge serialized", e_serialized)
+    print("uncompressed node serialized", v_serialized)
+    print("\n\n")
+    print("compressed graph complete size", global_graph_obj.calculate_graph_complete_space_size())
+    print("compressed complete node size", global_graph_obj.calculate_total_nodes_size())
+    print("compressed complete edge size", global_graph_obj.calculate_total_edges_size())
+    print("compressed node attributes size", global_graph_obj.node_attrs_size())
+    print("compressed edge attributes size", global_graph_obj.edge_attrs_size())
+    print("compressed node attributes keys size", global_graph_obj.node_attr_keys_size())
+    print("compressed edge attributes keys size", global_graph_obj.edge_attr_keys_size())
+    print("compressed pdb to nodes size", global_graph_obj.pdb_to_nodes_size())
+    print("compressed pdb to edges size", global_graph_obj.pdb_to_edges_size())
+    print("compressed node to id size", global_graph_obj.node_to_id_size())
+    print("compressed edge to id size", global_graph_obj.edge_to_id_size())
+    print("\n\n")
+    print("compressed graph object size", asizeof.asizeof(global_graph_obj) / 1024 / 1024)
+    print("compressed graph complete size serialized", asizeof.asizeof(pickle.dumps(global_graph_obj)) / 1024 / 1024)
+
+def toy_example():
+    import matplotlib.pyplot as plt
+    print("toy")
+
+    graphs = {}
+
+    # Grafo 1 (4 nós, 3 arestas)
+    G1 = nx.Graph()
+    G1.add_nodes_from([
+        ("banana", {"attr1": "red", "attr2": "green", "attr3": "blue", "attr4": "red", "attr5": "green"}),
+        ("apple", {"attr1": "green", "attr2": "green", "attr3": "blue", "attr4": "blue", "attr5": "red"}),
+        ("papaya", {"attr1": "blue", "attr2": "blue", "attr3": "green", "attr4": "red", "attr5": "green"}),
+        ("strawberry", {"attr1": "red", "attr2": "blue", "attr3": "blue", "attr4": "green", "attr5": "blue"}),
+    ])
+    G1.add_edges_from([
+        ("banana", "apple", {"attr1": "yellow", "attr2": "cyan", "attr3": "yellow", "attr4": "cyan", "attr5": "yellow"}),
+        ("apple", "papaya", {"attr1": "cyan", "attr2": "cyan", "attr3": "yellow", "attr4": "yellow", "attr5": "cyan"}),
+        ("papaya", "strawberry", {"attr1": "yellow", "attr2": "yellow", "attr3": "cyan", "attr4": "cyan", "attr5": "yellow"}),
+    ])
+    graphs["g1"] = G1
+
+    # Grafo 2 (5 nós, 6 arestas)
+    G2 = nx.Graph()
+    G2.add_nodes_from([
+        ("papaya", {"attr1": "blue", "attr2": "blue", "attr3": "green", "attr4": "red", "attr5": "green"}),
+        ("apple", {"attr1": "green", "attr2": "green", "attr3": "blue", "attr4": "blue", "attr5": "red"}),
+        ("blueberry", {"attr1": "blue", "attr2": "blue", "attr3": "blue", "attr4": "green", "attr5": "green"}),
+        ("cherry", {"attr1": "red", "attr2": "green", "attr3": "red", "attr4": "blue", "attr5": "red"}),
+        ("mango", {"attr1": "green", "attr2": "red", "attr3": "blue", "attr4": "blue", "attr5": "green"}),
+    ])
+    G2.add_edges_from([
+        ("papaya", "apple", {"attr1": "cyan", "attr2": "cyan", "attr3": "yellow", "attr4": "yellow", "attr5": "cyan"}),
+        ("papaya", "blueberry", {"attr1": "yellow", "attr2": "yellow", "attr3": "cyan", "attr4": "cyan", "attr5": "yellow"}),
+        ("apple", "cherry", {"attr1": "yellow", "attr2": "cyan", "attr3": "cyan", "attr4": "yellow", "attr5": "cyan"}),
+        ("blueberry", "cherry", {"attr1": "cyan", "attr2": "yellow", "attr3": "cyan", "attr4": "yellow", "attr5": "yellow"}),
+        ("cherry", "mango", {"attr1": "yellow", "attr2": "cyan", "attr3": "yellow", "attr4": "cyan", "attr5": "yellow"}),
+        ("papaya", "mango", {"attr1": "cyan", "attr2": "cyan", "attr3": "yellow", "attr4": "cyan", "attr5": "cyan"}),
+    ])
+    graphs["g2"] = G2
+
+    # Grafo 3 (6 nós, 10 arestas)
+    G3 = nx.Graph()
+    G3.add_nodes_from([
+        ("peach", {"attr1": "blue", "attr2": "blue", "attr3": "red", "attr4": "red", "attr5": "green"}),
+        ("banana", {"attr1": "green", "attr2": "green", "attr3": "blue", "attr4": "blue", "attr5": "red"}),
+        ("blueberry", {"attr1": "blue", "attr2": "blue", "attr3": "blue", "attr4": "green", "attr5": "green"}),
+        ("cherry", {"attr1": "red", "attr2": "green", "attr3": "red", "attr4": "blue", "attr5": "red"}),
+        ("mango", {"attr1": "green", "attr2": "red", "attr3": "blue", "attr4": "blue", "attr5": "green"}),
+        ("avocado", {"attr1": "blue", "attr2": "green", "attr3": "blue", "attr4": "red", "attr5": "green"}),
+    ])
+
+    G3.add_edges_from([
+        ("banana", "peach", {"attr1": "yellow", "attr2": "cyan", "attr3": "yellow", "attr4": "yellow", "attr5": "cyan"}),
+        ("banana", "blueberry", {"attr1": "yellow", "attr2": "cyan", "attr3": "cyan", "attr4": "cyan", "attr5": "yellow"}),
+        ("mango", "avocado", {"attr1": "cyan", "attr2": "cyan", "attr3": "cyan", "attr4": "yellow", "attr5": "cyan"}),
+        ("blueberry", "mango", {"attr1": "cyan", "attr2": "yellow", "attr3": "cyan", "attr4": "yellow", "attr5": "cyan"}),
+        ("cherry", "mango", {"attr1": "yellow", "attr2": "cyan", "attr3": "yellow", "attr4": "cyan", "attr5": "yellow"}),
+        ("banana", "mango", {"attr1": "yellow", "attr2": "cyan", "attr3": "yellow", "attr4": "cyan", "attr5": "cyan"}),
+    ])
+
+    graphs["g3"] = G3
+
+
+    g = compress_with_composition(graphs)
+
+    g1 = g.extract_pdb_graph("g1")
+    g2 = g.extract_pdb_graph("g2")
+    g3 = g.extract_pdb_graph("g3")
+
+
+    for name, G in graphs.items():
+        plt.figure(figsize=(6, 4))
+        pos = nx.spring_layout(G, seed=42)  # Layout fixo para reprodutibilidade
+
+        # Nós
+        nx.draw_networkx_nodes(G, pos, node_color="lightblue", node_size=700)
+
+        # Arestas
+        nx.draw_networkx_edges(G, pos, edge_color="gray")
+
+        # Labels dos nós
+        nx.draw_networkx_labels(G, pos, font_size=10)
+
+        # Exibir título do grafo
+        plt.title(f"Grafo {name.upper()}")
+        plt.axis("off")
+        plt.tight_layout()
+        plt.show()
+
+
+
+
+if __name__ == "__main__":
+    import os
+    if os.environ["PROGRAM_NAME"] == "main":
+        main()
+    elif os.environ["PROGRAM_NAME"] == "toy":
+        toy_example()
+
+
+
+
+
+# all granularity opt:
+
+# [
+# ‘N’, ‘CA’, ‘C’, ‘O’, ‘CB’, ‘OG’, ‘CG’, ‘CD1’, ‘CD2’, ‘CE1’, ‘CE2’, ‘CZ’, ‘OD1’, 
+# ‘ND2’, ‘CG1’, ‘CG2’, ‘CD’, ‘CE’, ‘NZ’, ‘OD2’, ‘OE1’, ‘NE2’, ‘OE2’, ‘OH’, ‘NE’, 
+# ‘NH1’, ‘NH2’, ‘OG1’, ‘SD’, ‘ND1’, ‘SG’, ‘NE1’, ‘CE3’, ‘CZ2’, ‘CZ3’, ‘CH2’, ‘OXT’
+# 'atom', 'centroids'
+# ]
+
+# testar apenas pra ca e atom
+# medir o espaco de cada coisa serializada
+
+
+#passo 1: discriminar o view     -- v
+#passo 2: toy exemple            -- v
+#passo 3: rodar experimentos grandes

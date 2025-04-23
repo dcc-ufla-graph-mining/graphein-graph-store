@@ -1,3 +1,6 @@
 .ipynb_checkpoints/
 __pycache__/
 .idea
+data/pdb_files/
+fractal/
+spark/

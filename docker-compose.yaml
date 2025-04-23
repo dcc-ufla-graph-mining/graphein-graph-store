@@ -3,11 +3,10 @@ services:
     build:
       context: .
       dockerfile: pyfractal.dockerfile
+    environment:
+      - PROGRAM_NAME=main
+      - DATA_DIR=/app/data
+      - DATASET=protein_ligands.txt
     volumes:
       - .:/app
-
-    dns:
-      - 8.8.8.8
-    ports:
-      - 8265:8265
-    shm_size: 4gb
+    command: python src/compress/metadata.py >> /app/logs/metadata.log 2>&1
