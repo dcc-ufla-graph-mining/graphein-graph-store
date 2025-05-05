@@ -466,8 +466,6 @@ def main():
 
     time_end = time.time()
     print("Time to compress:", time_end - time_begin)
-    
-    an1 = global_graph_obj.extract_pdb_graph("1AN1")
 
     random.shuffle(pdb_codes)
 
@@ -483,9 +481,6 @@ def main():
         assert nx.utils.edges_equal(g._adj, protein_graphs_with_data[pdb_code]._adj)
 
     print("Time to extract:", sum(times_to_extract) / len(times_to_extract))
-
-    assert nx.utils.nodes_equal(an1._node, protein_graphs_with_data["1AN1"]._node)
-    assert nx.utils.edges_equal(an1._adj, protein_graphs_with_data["1AN1"]._adj)
 
     print("\n\n")
     print("uncompressed complete graph size", asizeof.asizeof(protein_graphs_with_data) / 1024 / 1024)
