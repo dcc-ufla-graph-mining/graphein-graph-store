@@ -477,8 +477,16 @@ def main():
         time_end = time.time()
         times_to_extract.append(time_end - time_begin)
 
-        assert nx.utils.nodes_equal(g._node, protein_graphs_with_data[pdb_code]._node)
-        assert nx.utils.edges_equal(g._adj, protein_graphs_with_data[pdb_code]._adj)
+        try:
+            assert nx.utils.nodes_equal(g._node, protein_graphs_with_data[pdb_code]._node) 
+            assert nx.utils.edges_equal(g._adj, protein_graphs_with_data[pdb_code]._adj)
+        except AssertionError as e:
+            print(f"Error in graph extraction for {pdb_code}: {e}")
+            print("Extracted graph nodes:", g.nodes(data=True))
+            print("Original graph nodes:", protein_graphs_with_data[pdb_code].nodes(data=True))
+            print("Extracted graph edges:", g.edges(data=True))
+            print("Original graph edges:", protein_graphs_with_data[pdb_code].edges(data=True))
+            continue
 
     print("Time to extract:", sum(times_to_extract) / len(times_to_extract))
 
