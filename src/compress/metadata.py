@@ -19,6 +19,8 @@ from ordered_set import OrderedSet
 #here happens the compression
 
 # e = edge, v = vertex, g = graph
+
+#contar o tempo so ate a parte de buildar o grafo grandao, excluindo o extract e o assert
 def compress_with_composition(protein_graphs):
     edge_to_pdbs = {}   
     node_to_pdbs = {}  
@@ -377,7 +379,7 @@ def main():
     file_path = os.path.dirname(os.path.realpath(metadata.__file__))
     print(file_path)
 
-    params_to_change = {"granularity": "atom", "edge_construction_functions": [add_atomic_edges]}
+    params_to_change = {"granularity": "N", "edge_construction_functions": [add_atomic_edges, add_hydrogen_bond_interactions, add_peptide_bonds]}
 
     config = ProteinGraphConfig(**params_to_change)
     # print(config.model_dump())
@@ -406,14 +408,28 @@ def main():
         i += 1
         
         if os.path.exists(f"{pdb_dir}/{pdb_code}.pdb"):
-            pdb_file = os.path.abspath(f"{pdb_dir}/{pdb_code}.pdb")
+            try:
+                pdb_file = os.path.abspath(f"{pdb_dir}/{pdb_code}.pdb")
+            except Exception as e:
+                print(f"Error reading {pdb_code}: {e}")
+                continue
         else:
-            pdb_file = download_pdb(pdb_code, f"{pdb_dir}/")
-            if pdb_file is None:
-                print(f"Failed to download {pdb_code}")
+            try:
+                pdb_file = download_pdb(pdb_code, f"{pdb_dir}/")
+                if pdb_file is None:
+                    print(f"Failed to download {pdb_code}")
+                    continue
+            except Exception as e:
+                print(f"Error downloading {pdb_code}: {e}")
                 continue
 
         graph = construct_graph(config=config, path=pdb_file)
+        
+        for att, value in graph.graph.items():
+            print(att, asizeof.asizeof(value) / 1024 / 1024)
+            print(type(value))
+
+
         graph.graph.clear()
         print(graph)
 
@@ -500,95 +516,7 @@ def main():
     print("compressed graph complete size serialized", asizeof.asizeof(pickle.dumps(global_graph_obj)) / 1024 / 1024)
 
 def toy_example():
-    import matplotlib.pyplot as plt
-    print("toy")
-
-    graphs = {}
-
-    # Grafo 1 (4 nós, 3 arestas)
-    G1 = nx.Graph()
-    G1.add_nodes_from([
-        ("banana", {"attr1": "red", "attr2": "green", "attr3": "blue", "attr4": "red", "attr5": "green"}),
-        ("apple", {"attr1": "green", "attr2": "green", "attr3": "blue", "attr4": "blue", "attr5": "red"}),
-        ("papaya", {"attr1": "blue", "attr2": "blue", "attr3": "green", "attr4": "red", "attr5": "green"}),
-        ("strawberry", {"attr1": "red", "attr2": "blue", "attr3": "blue", "attr4": "green", "attr5": "blue"}),
-    ])
-    G1.add_edges_from([
-        ("banana", "apple", {"attr1": "yellow", "attr2": "cyan", "attr3": "yellow", "attr4": "cyan", "attr5": "yellow"}),
-        ("apple", "papaya", {"attr1": "cyan", "attr2": "cyan", "attr3": "yellow", "attr4": "yellow", "attr5": "cyan"}),
-        ("papaya", "strawberry", {"attr1": "yellow", "attr2": "yellow", "attr3": "cyan", "attr4": "cyan", "attr5": "yellow"}),
-    ])
-    graphs["g1"] = G1
-
-    # Grafo 2 (5 nós, 6 arestas)
-    G2 = nx.Graph()
-    G2.add_nodes_from([
-        ("papaya", {"attr1": "blue", "attr2": "blue", "attr3": "green", "attr4": "red", "attr5": "green"}),
-        ("apple", {"attr1": "green", "attr2": "green", "attr3": "blue", "attr4": "blue", "attr5": "red"}),
-        ("blueberry", {"attr1": "blue", "attr2": "blue", "attr3": "blue", "attr4": "green", "attr5": "green"}),
-        ("cherry", {"attr1": "red", "attr2": "green", "attr3": "red", "attr4": "blue", "attr5": "red"}),
-        ("mango", {"attr1": "green", "attr2": "red", "attr3": "blue", "attr4": "blue", "attr5": "green"}),
-    ])
-    G2.add_edges_from([
-        ("papaya", "apple", {"attr1": "cyan", "attr2": "cyan", "attr3": "yellow", "attr4": "yellow", "attr5": "cyan"}),
-        ("papaya", "blueberry", {"attr1": "yellow", "attr2": "yellow", "attr3": "cyan", "attr4": "cyan", "attr5": "yellow"}),
-        ("apple", "cherry", {"attr1": "yellow", "attr2": "cyan", "attr3": "cyan", "attr4": "yellow", "attr5": "cyan"}),
-        ("blueberry", "cherry", {"attr1": "cyan", "attr2": "yellow", "attr3": "cyan", "attr4": "yellow", "attr5": "yellow"}),
-        ("cherry", "mango", {"attr1": "yellow", "attr2": "cyan", "attr3": "yellow", "attr4": "cyan", "attr5": "yellow"}),
-        ("papaya", "mango", {"attr1": "cyan", "attr2": "cyan", "attr3": "yellow", "attr4": "cyan", "attr5": "cyan"}),
-    ])
-    graphs["g2"] = G2
-
-    # Grafo 3 (6 nós, 10 arestas)
-    G3 = nx.Graph()
-    G3.add_nodes_from([
-        ("peach", {"attr1": "blue", "attr2": "blue", "attr3": "red", "attr4": "red", "attr5": "green"}),
-        ("banana", {"attr1": "green", "attr2": "green", "attr3": "blue", "attr4": "blue", "attr5": "red"}),
-        ("blueberry", {"attr1": "blue", "attr2": "blue", "attr3": "blue", "attr4": "green", "attr5": "green"}),
-        ("cherry", {"attr1": "red", "attr2": "green", "attr3": "red", "attr4": "blue", "attr5": "red"}),
-        ("mango", {"attr1": "green", "attr2": "red", "attr3": "blue", "attr4": "blue", "attr5": "green"}),
-        ("avocado", {"attr1": "blue", "attr2": "green", "attr3": "blue", "attr4": "red", "attr5": "green"}),
-    ])
-
-    G3.add_edges_from([
-        ("banana", "peach", {"attr1": "yellow", "attr2": "cyan", "attr3": "yellow", "attr4": "yellow", "attr5": "cyan"}),
-        ("banana", "blueberry", {"attr1": "yellow", "attr2": "cyan", "attr3": "cyan", "attr4": "cyan", "attr5": "yellow"}),
-        ("mango", "avocado", {"attr1": "cyan", "attr2": "cyan", "attr3": "cyan", "attr4": "yellow", "attr5": "cyan"}),
-        ("blueberry", "mango", {"attr1": "cyan", "attr2": "yellow", "attr3": "cyan", "attr4": "yellow", "attr5": "cyan"}),
-        ("cherry", "mango", {"attr1": "yellow", "attr2": "cyan", "attr3": "yellow", "attr4": "cyan", "attr5": "yellow"}),
-        ("banana", "mango", {"attr1": "yellow", "attr2": "cyan", "attr3": "yellow", "attr4": "cyan", "attr5": "cyan"}),
-    ])
-
-    graphs["g3"] = G3
-
-
-    g = compress_with_composition(graphs)
-
-    g1 = g.extract_pdb_graph("g1")
-    g2 = g.extract_pdb_graph("g2")
-    g3 = g.extract_pdb_graph("g3")
-
-
-    for name, G in graphs.items():
-        plt.figure(figsize=(6, 4))
-        pos = nx.spring_layout(G, seed=42)  # Layout fixo para reprodutibilidade
-
-        # Nós
-        nx.draw_networkx_nodes(G, pos, node_color="lightblue", node_size=700)
-
-        # Arestas
-        nx.draw_networkx_edges(G, pos, edge_color="gray")
-
-        # Labels dos nós
-        nx.draw_networkx_labels(G, pos, font_size=10)
-
-        # Exibir título do grafo
-        plt.title(f"Grafo {name.upper()}")
-        plt.axis("off")
-        plt.tight_layout()
-        plt.show()
-
-
+    pass
 
 
 if __name__ == "__main__":
@@ -616,5 +544,5 @@ if __name__ == "__main__":
 
 
 #passo 1: discriminar o view     -- v
-#passo 2: toy exemple            -- v
+#passo 2: toy exemple   //fazer no draw io tendo uma visao em formato de desenho do objeto final
 #passo 3: rodar experimentos grandes
