@@ -424,10 +424,6 @@ def main():
                 continue
 
         graph = construct_graph(config=config, path=pdb_file)
-        
-        for att, value in graph.graph.items():
-            print(att, asizeof.asizeof(value) / 1024 / 1024)
-            print(type(value))
 
 
         graph.graph.clear()
