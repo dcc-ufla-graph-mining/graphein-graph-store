@@ -446,6 +446,8 @@ def main():
 
         del graph
 
+    del pdb_codes_copy
+
 
     time_end = time.time()
 
