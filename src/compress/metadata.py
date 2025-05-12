@@ -39,9 +39,9 @@ if not os.path.exists(errors_path):
     os.makedirs(errors_path)
 if not os.path.exists(results_path):
     os.makedirs(results_path)
-#here happens the compression
 
-# e = edge, v = vertex, g = graph
+
+
 
 #contar o tempo so ate a parte de buildar o grafo grandao, excluindo o extract e o assert
 def compress_with_composition(protein_graphs):
@@ -219,6 +219,15 @@ def compress_with_composition(protein_graphs):
                             edge_attr_keys, node_attr_keys)
 
 
+
+def split_PDB_store(pdb_store, pdb_codes: list):
+    #TODO
+    pass
+
+def merge_PDB_stores(pdb_store1, pdb_store2):
+    #TODO
+    pass
+
 class PDBGraphStoreBitmap:
 
     #fazer o calculo de memoria discriminado para cada um dos attr abaixo, incluindo acada uma das posicoes da view separado
@@ -306,90 +315,13 @@ class PDBGraphStoreBitmap:
                 f.write(f"Error extracting graph for {pdb_code}: {e}\n")
         return extracted_graph
 
-    # def run_tree_compression(self):
-    #     # build pairs jaccard
-    #     def get_max_pair(pdb_to_bitmaps):
-    #         best_pair = None
-    #         best_jacc = None
-    #         for pdb_code1, bms1 in pdb_to_bitmaps.items():
-    #             bm_1 = bms1[0]
-    #             for pdb_code2, bms2 in pdb_to_bitmaps.items():
-    #                 if pdb_code1 >= pdb_code2: continue
-    #                 bm_2 = bms2[0]
-    #                 jacc = bm_1.intersection_cardinality(bm_2)
-    #                 if best_jacc is None or jacc > best_jacc:
-    #                     best_jacc = jacc
-    #                     best_pair = (pdb_code1, pdb_code2)
-    #         return best_pair
+    def insert_pdb(self, pdb_code, graph):
+        #TODO
+        pass
 
-    #     def get_optimized_bitmaps(reconstructions):
-    #         while len(reconstructions) >= 2:
-    #             pdb_code1, pdb_code2 = get_max_pair(reconstructions)
-    #             # print(pdb_code1, pdb_code2)
-    #             left = reconstructions[pdb_code1][0]
-    #             right = reconstructions[pdb_code2][0]
-    #             intersection = left & right
-    #             delta_1 = left - intersection
-    #             delta_2 = right - intersection
-
-    #             left_child = (delta_1, reconstructions[pdb_code1][1])
-    #             right_child = (delta_2, reconstructions[pdb_code2][1])
-    #             reconstructions[pdb_code1 + '_' + pdb_code2] = (
-    #                 intersection, {pdb_code1: left_child, pdb_code2: right_child})
-
-    #             del reconstructions[pdb_code1]
-    #             del reconstructions[pdb_code2]
-
-    #         def key_in_keys(key, keys):
-    #             for k in keys:
-    #                 if key in k: return k
-    #             return None
-
-    #         root_tree_node = list(reconstructions.items())[0]
-
-    #         pdb_to_view_opt = {}
-
-    #         for pdb_code in self.pdb_to_view:
-    #             tree_node = root_tree_node
-    #             bms = [tree_node[1][0]] if len(tree_node[1][0]) > 0 else []
-    #             bm_height = 1
-    #             key = key_in_keys(pdb_code, tree_node[1][1])
-    #             while key:
-    #                 bm_height += 1
-    #                 tree_node = (key, tree_node[1][1][key])
-    #                 if len(tree_node[1][0]) > 0:
-    #                     tree_node[1][0].run_optimize()
-    #                     bms.append(tree_node[1][0])
-    #                 key = key_in_keys(pdb_code, tree_node[1][1])
-    #             if len(bms) > 0:
-    #                 pdb_to_view_opt[pdb_code] = bms
-
-    #         return pdb_to_view_opt
-
-    #     edge_bitmaps = get_optimized_bitmaps(
-    #         {pdb_code: (view[1][0], {}) for pdb_code, view in self.pdb_to_view.items()})
-    #     isolated_node_bitmaps = get_optimized_bitmaps(
-    #         {pdb_code: (view[0][0], {}) for pdb_code, view in self.pdb_to_view.items()})
-
-    #     # TODO: assertion code (remove) {
-    #     for pdb_code, view in self.pdb_to_view.items():
-    #         union_bm1 = BitMap64()
-    #         for bm in isolated_node_bitmaps.get(pdb_code, BitMap64()):
-    #             union_bm1 = union_bm1 | bm
-
-    #         assert union_bm1.symmetric_difference_cardinality(view[0][0]) == 0
-
-    #         union_bm1 = BitMap64()
-    #         for bm in edge_bitmaps[pdb_code]:
-    #             union_bm1 = union_bm1 | bm
-
-    #         assert union_bm1.symmetric_difference_cardinality(view[1][0]) == 0
-    #     # }
-
-    #     # replace existing views with optimized ones
-    #     self.pdb_to_view = {pdb_code: (isolated_node_bitmaps.get(pdb_code, None), edge_bitmaps.get(pdb_code, None)) for
-    #                         pdb_code in self.pdb_to_view}
-    #     self.pdb_to_view = {k: v for k, v in self.pdb_to_view.items() if (k, v) != (None, None)}
+    def remove_pdb(self, pdb_code):
+        #TODO
+        pass
 
 
 def main():
@@ -613,7 +545,3 @@ if __name__ == "__main__":
 # testar apenas pra ca e atom
 # medir o espaco de cada coisa serializada
 
-
-#passo 1: discriminar o view     -- v
-#passo 2: toy exemple   //fazer no draw io tendo uma visao em formato de desenho do objeto final
-#passo 3: rodar experimentos grandes
