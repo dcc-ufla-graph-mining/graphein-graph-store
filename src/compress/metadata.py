@@ -403,7 +403,10 @@ def main():
     time_begin = time.time()
 
     i = 0
-    for pdb_code in pdb_codes:
+
+    pdb_codes_copy = pdb_codes.copy()
+
+    for pdb_code in pdb_codes_copy:
         print(i, pdb_code)
         i += 1
         
@@ -412,15 +415,18 @@ def main():
                 pdb_file = os.path.abspath(f"{pdb_dir}/{pdb_code}.pdb")
             except Exception as e:
                 print(f"Error reading {pdb_code}: {e}")
+                pdb_codes.remove(pdb_code)
                 continue
         else:
             try:
                 pdb_file = download_pdb(pdb_code, f"{pdb_dir}/")
                 if pdb_file is None:
                     print(f"Failed to download {pdb_code}")
+                    pdb_codes.remove(pdb_code)
                     continue
             except Exception as e:
                 print(f"Error downloading {pdb_code}: {e}")
+                pdb_codes.remove(pdb_code)
                 continue
 
         graph = construct_graph(config=config, path=pdb_file)

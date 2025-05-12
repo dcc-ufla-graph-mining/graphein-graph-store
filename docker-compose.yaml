@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: pyfractal.dockerfile
     environment:
-      - PROGRAM_NAME=toy
+      - PROGRAM_NAME=main
       - DATA_DIR=/app/data
       - DATASET=soybean_ppigremlin.txt
     volumes:
