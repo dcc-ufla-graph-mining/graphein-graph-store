@@ -1,0 +1,1063 @@
+/app/src/compress
+/app/src/compress
+main
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 351, in main
+    with open(f'{data}/{dataset}', 'r') as f:
+IsADirectoryError: [Errno 21] Is a directory: '/app/data/'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/bcl_ppigremlin.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_BME.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_EDO.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_HEM.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_NAG.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_PLP.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_PO4.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_SO4.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals_CA.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals_CO.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/bcl_ppigremlin.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_BME.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_EDO.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_HEM.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_NAG.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_PLP.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_PO4.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_SO4.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals_CA.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals_CO.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals_FE.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals_MG.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals_MN.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals_NI.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals_ZN.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nicleic.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nicleic_dna.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nicleic_rna.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides_ADP.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides_ATP.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides_FAD.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides_FMN.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides_GDP.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides_GTP.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides_NAD.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides_UDP.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/protein_ligands.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/soybean_ppigremlin.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/bcl_ppigremlin.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_BME.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_EDO.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_HEM.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_NAG.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_PLP.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_PO4.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/ligand_SO4.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals_CA.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals_CO.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals_FE.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals_MG.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals_MN.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals_NI.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/metals_ZN.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nicleic.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nicleic_dna.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nicleic_rna.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides_ADP.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides_ATP.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides_FAD.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides_FMN.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides_GDP.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides_GTP.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides_NAD.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/nucleotides_UDP.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/protein_ligands.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 528, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 337, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/app/errors/data/soybean_ppigremlin.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 541, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 340, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+IsADirectoryError: [Errno 21] Is a directory: '/app/errors/data/bcl_ppigremlin.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 541, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 340, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+IsADirectoryError: [Errno 21] Is a directory: '/app/errors/data/ligand.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 541, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 340, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+IsADirectoryError: [Errno 21] Is a directory: '/app/errors/data/ligand_BME.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 541, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 340, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+IsADirectoryError: [Errno 21] Is a directory: '/app/errors/data/ligand_EDO.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 541, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 340, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+IsADirectoryError: [Errno 21] Is a directory: '/app/errors/data/ligand_HEM.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 541, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 340, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+IsADirectoryError: [Errno 21] Is a directory: '/app/errors/dataset_name_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 541, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 340, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+IsADirectoryError: [Errno 21] Is a directory: '/app/errors/dataset_name_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 541, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 340, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+IsADirectoryError: [Errno 21] Is a directory: '/app/errors/dataset_name_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 541, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 340, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+IsADirectoryError: [Errno 21] Is a directory: '/app/errors/dataset_name_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 541, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 340, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+IsADirectoryError: [Errno 21] Is a directory: '/app/errors/dataset_name_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 541, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 340, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+IsADirectoryError: [Errno 21] Is a directory: '/app/errors/dataset_name_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 541, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 340, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+IsADirectoryError: [Errno 21] Is a directory: '/app/errors/dataset_name_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 541, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 340, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+IsADirectoryError: [Errno 21] Is a directory: '/app/errors/bcl_ppigremlin.txt_errors.log'
+/app/src/compress
+/app/src/compress
+Traceback (most recent call last):
+  File "/app/src/compress/metadata.py", line 541, in <module>
+    main()
+  File "/app/src/compress/metadata.py", line 340, in main
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+IsADirectoryError: [Errno 21] Is a directory: '/app/errors/ligand.txt_errors.log'
+/app/src/compress
+/app/src/compress
+main
+0 1BXL
+
+Graph with 197 nodes and 196 edges
+1 1G5J
+
+Graph with 200 nodes and 200 edges
+2 1TY4
+
+Graph with 362 nodes and 355 edges
+3 1ZY3
+
+Graph with 190 nodes and 191 edges
+4 2A5Y
+
+Graph with 1047 nodes and 1074 edges
+5 2BZW
+
+Graph with 172 nodes and 178 edges
+6 2JM6
+
+Graph with 189 nodes and 197 edges
+7 2K7W
+
+Graph with 212 nodes and 217 edges
+8 2KBW
+
+Graph with 191 nodes and 192 edges
+9 2LP8
+
+Graph with 201 nodes and 201 edges
+10 2LR1
+
+Graph with 213 nodes and 213 edges
+11 2M04
+
+Graph with 199 nodes and 202 edges
+12 2M5B
+
+Graph with 188 nodes and 187 edges
+13 2MEJ
+
+Graph with 339 nodes and 358 edges
+14 2NL9
+
+Graph with 163 nodes and 163 edges
+15 2NLA
+
+Graph with 171 nodes and 174 edges
+16 2P1L
+
+Graph with 660 nodes and 684 edges
+17 2PON
+
+Graph with 179 nodes and 183 edges
+18 2PQK
+
+Graph with 168 nodes and 172 edges
+19 2ROC
+
+Graph with 189 nodes and 200 edges
+20 2ROD
+
+Graph with 189 nodes and 193 edges
+21 2VM6
+
+Graph with 169 nodes and 171 edges
+22 2VOF
+
+Graph with 332 nodes and 326 edges
+23 2VOG
+
+Graph with 167 nodes and 168 edges
+24 2VOH
+
+Graph with 179 nodes and 184 edges
+25 2VOI
+
+Graph with 174 nodes and 176 edges
+26 2XA0
+
+Graph with 326 nodes and 333 edges
+27 2YJ1
+
+Graph with 321 nodes and 315 edges
+28 2YQ6
+
+Graph with 161 nodes and 159 edges
+29 2YQ7
+
+Graph with 163 nodes and 163 edges
+30 3BL2
+
+Graph with 300 nodes and 320 edges
+31 3D7V
+
+Graph with 167 nodes and 171 edges
+32 3DVU
+
+Graph with 309 nodes and 327 edges
+33 3FDL
+
+Graph with 168 nodes and 166 edges
+34 3FDM
+
+Graph with 464 nodes and 455 edges
+35 3I1H
+
+Graph with 157 nodes and 156 edges
+36 3IO8
+
+Graph with 330 nodes and 338 edges
+37 3IO9
+
+Graph with 165 nodes and 168 edges
+38 3KJ0
+
+Graph with 181 nodes and 184 edges
+39 3KJ1
+
+Graph with 174 nodes and 179 edges
+40 3KJ2
+
+Graph with 173 nodes and 177 edges
+41 3KZ0
+
+Graph with 334 nodes and 337 edges
+42 3MK8
+
+Graph with 158 nodes and 158 edges
+43 3MQP
+
+Graph with 175 nodes and 177 edges
+44 3PK1
+
+Graph with 331 nodes and 337 edges
+45 3PL7
+
+Graph with 308 nodes and 315 edges
+46 3QBR
+
+Graph with 371 nodes and 380 edges
+47 3R85
+
+Graph with 633 nodes and 648 edges
+48 4A1U
+
+Graph with 163 nodes and 157 edges
+49 4A1W
+
+Graph with 614 nodes and 612 edges
+50 4B4S
+
+Graph with 172 nodes and 172 edges
+51 4BD2
+
+Graph with 177 nodes and 179 edges
+52 4BD6
+
+Graph with 167 nodes and 168 edges
+53 4BPI
+
+Graph with 155 nodes and 153 edges
+54 4BPJ
+
+Graph with 157 nodes and 154 edges
+55 4BPK
+
+Graph with 303 nodes and 299 edges
+56 4CIM
+
+Graph with 333 nodes and 342 edges
+57 4CIN
+
+Graph with 316 nodes and 319 edges
+58 4G35
+
+Graph with 147 nodes and 146 edges
+59 4HNJ
+
+Graph with 294 nodes and 298 edges
+60 4K5A
+
+Graph with 325 nodes and 331 edges
+61 4K5B
+
+Graph with 601 nodes and 609 edges
+62 4MI8
+
+Graph with 313 nodes and 329 edges
+63 4QVE
+
+Graph with 164 nodes and 168 edges
+64 4QVF
+
+Graph with 162 nodes and 165 edges
+65 4S0P
+
+Graph with 348 nodes and 354 edges
+66 4YJ4
+
+Graph with 164 nodes and 170 edges
+67 4YK9
+
+Graph with 320 nodes and 328 edges
+68 4Z9V
+
+Graph with 418 nodes and 423 edges
+69 4ZEQ
+
+Graph with 175 nodes and 176 edges
+70 4ZIE
+
+Graph with 169 nodes and 169 edges
+71 4ZIF
+
+Graph with 162 nodes and 163 edges
+72 4ZIG
+
+Graph with 172 nodes and 174 edges
+73 4ZIH
+
+Graph with 161 nodes and 162 edges
+74 4ZII
+
+Graph with 176 nodes and 178 edges
+75 5AGW
+
+Graph with 306 nodes and 298 edges
+76 5AGX
+
+Graph with 313 nodes and 305 edges
+77 5B1Z
+
+Graph with 322 nodes and 327 edges
+78 5C3F
+
+Graph with 170 nodes and 173 edges
+79 5C3G
+
+Graph with 152 nodes and 149 edges
+80 5FCG
+
+Graph with 176 nodes and 177 edges
+81 5FMJ
+
+Graph with 177 nodes and 177 edges
+82 5FMK
+
+Graph with 171 nodes and 172 edges
+83 5JSB
+
+Graph with 1602 nodes and 1621 edges
+84 5JSN
+
+Graph with 528 nodes and 542 edges
+85 5TWA
+
+Graph with 369 nodes and 370 edges
+86 5TZP
+
+Graph with 160 nodes and 166 edges
+87 5TZQ
+
+Graph with 306 nodes and 317 edges
+88 5UA4
+
+Graph with 167 nodes and 170 edges
+89 5UA5
+
+Graph with 163 nodes and 170 edges
+90 5UUK
+
+Graph with 174 nodes and 174 edges
+91 5UUL
+
+Graph with 175 nodes and 176 edges
+92 5UUM
+
+Graph with 358 nodes and 360 edges
+93 5UUP
+
+Graph with 174 nodes and 175 edges
+94 5VAU
+
+Graph with 645 nodes and 657 edges
+95 5VAX
+
+Graph with 647 nodes and 659 edges
+96 5VAY
+
+Graph with 654 nodes and 665 edges
+97 5VWV
+
+Graph with 195 nodes and 196 edges
+98 5VWW
+
+Graph with 333 nodes and 336 edges
+99 5VWX
+
+Graph with 340 nodes and 339 edges
+100 5VWY
+
+Graph with 177 nodes and 174 edges
+101 5VWZ
+
+Graph with 380 nodes and 381 edges
+102 5VX0
+
+Graph with 377 nodes and 378 edges
+103 5VX2
+
+Graph with 347 nodes and 354 edges
+104 5VX3
+
+Graph with 657 nodes and 666 edges
+105 5W5X
+
+Graph with 590 nodes and 604 edges
+106 5W5Z
+
+Graph with 530 nodes and 538 edges
+107 5W89
+
+Graph with 158 nodes and 158 edges
+108 5W8F
+
+Graph with 165 nodes and 167 edges
+109 5WHH
+
+Graph with 157 nodes and 157 edges
+110 5WOS
+
+Graph with 159 nodes and 163 edges
+111 6DCN
+
+Graph with 330 nodes and 337 edges
+112 6DCO
+
+Graph with 333 nodes and 342 edges
+113 6E3I
+
+Graph with 173 nodes and 174 edges
+114 6E3J
+
+Graph with 173 nodes and 174 edges
+115 6IJQ
+

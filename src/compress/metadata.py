@@ -28,6 +28,7 @@ if os.environ.get("DATA_DIR") is not None:
     data = os.environ.get("DATA_DIR")
 else:
     data = os.path.abspath(f"{file_path}/../../data/")
+
 errors_path = os.path.abspath(f"{file_path}/../../errors/")
 results_path = os.path.abspath(f"{file_path}/../../results/")
     
@@ -39,6 +40,8 @@ if not os.path.exists(errors_path):
     os.makedirs(errors_path)
 if not os.path.exists(results_path):
     os.makedirs(results_path)
+
+dataset_name = dataset.split(".")[0]
 
 
 
@@ -196,6 +199,8 @@ def compress_with_composition(protein_graphs):
             assert nx.utils.nodes_equal(extracted_graph._node, original_graph._node)
         except Exception as e:
             print("error in nodes")
+            with open(f"{errors_path}/{dataset_name}_errors.log", "a") as f:
+                f.write(f"Error in graph extraction for {pdb_code}: {e}\n")
             for node, attr in extracted_graph.nodes(data=True):
                 print(node, attr)
                 for k, t in attr.items():
@@ -208,9 +213,6 @@ def compress_with_composition(protein_graphs):
                     print(type(t))
                 break
             break
-
-            with open(f"{errors_path}/{dataset}_errors.log", "a") as f:
-                f.write(f"Error in graph extraction for {pdb_code}: {e}\n")
     
     # Pass the four separate dictionaries to the constructor
     return PDBGraphStoreBitmap(node_to_id, edge_to_id, 
@@ -311,7 +313,7 @@ class PDBGraphStoreBitmap:
             print(f"Error extracting graph for {pdb_code}: {e}")
             extracted_graph = nx.Graph()
             extracted_graph.update(edges=[], nodes=[])
-            with open(f"{errors_path}/{dataset}_errors.log", "a") as f:
+            with open(f"{errors_path}/{dataset_name}_errors.log", "a") as f:
                 f.write(f"Error extracting graph for {pdb_code}: {e}\n")
         return extracted_graph
 
@@ -334,10 +336,11 @@ def main():
     import networkx as nx
     import time
 
-    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
-        f.write(f"Errors log for {dataset} \n")
-    with open(f"{results_path}/{dataset}_results.txt", "w") as f:
-        f.write(f"Results log for {dataset}\n")
+    with open(f"{errors_path}/{dataset_name}_errors.log", "w") as f:
+        f.write(f"Errors log for {dataset_name} \n")
+
+    with open(f"{results_path}/{dataset_name}_results.txt", "w") as f:
+        f.write(f"Results log for {dataset_name}\n")
 
     print("main")
 
@@ -348,7 +351,7 @@ def main():
     config = ProteinGraphConfig(**params_to_change)
     # print(config.model_dump())
     
-    with open(f'{data}/{dataset}', 'r') as f:
+    with open(f'{data}/{dataset_name}', 'r') as f:
         for line in f:
             pdb_codes.append(line.strip())
 
@@ -371,7 +374,9 @@ def main():
             except Exception as e:
                 print(f"Error reading {pdb_code}: {e}")
                 pdb_codes.remove(pdb_code)
-                with open(f"{errors_path}/{dataset}_errors.log", "a") as f:
+                
+
+                with open(f"{errors_path}/{dataset_name}_errors.log", "a") as f:
                     f.write(f"Error reading {pdb_code}: {e}\n")
                 continue
         else:
@@ -380,14 +385,14 @@ def main():
                 if pdb_file is None:
                     print(f"Failed to download {pdb_code}")
                     pdb_codes.remove(pdb_code)
-                    with open(f"{errors_path}/{dataset}_errors.log", "a") as f:
+                    with open(f"{errors_path}/{dataset_name}_errors.log", "a") as f:
                         f.write(f"Failed to download {pdb_code}\n")
                     continue
             except Exception as e:
                 print(f"Error downloading {pdb_code}: {e}")
                 pdb_codes.remove(pdb_code)
 
-                with open(f"{errors_path}/{dataset}_errors.log", "a") as f:
+                with open(f"{errors_path}/{dataset_name}_errors.log", "a") as f:
                     f.write(f"Error downloading {pdb_code}: {e}\n")
                 continue
 
@@ -458,7 +463,8 @@ def main():
             print("Original graph nodes:", protein_graphs_with_data[pdb_code].nodes(data=True))
             print("Extracted graph edges:", g.edges(data=True))
             print("Original graph edges:", protein_graphs_with_data[pdb_code].edges(data=True))
-            with open(f"{errors_path}/{dataset}_errors.log", "a") as f:
+
+            with open(f"{errors_path}/{dataset_name}_errors.log", "a") as f:
                 f.write(f"Error in graph extraction for {pdb_code}: {e}\n")
 
             continue
@@ -491,7 +497,7 @@ def main():
     print("compressed graph object size", asizeof.asizeof(global_graph_obj) / 1024 / 1024)
     print("compressed graph complete size serialized", asizeof.asizeof(pickle.dumps(global_graph_obj)) / 1024 / 1024)
 
-    with open(f"{results_path}/{dataset}_results.txt", "w") as f:
+    with open(f"{results_path}/{dataset_name}_results.txt", "w") as f:
         f.write(f"Time to construct graphs: {construct_time}\n")
         f.write(f"Time to compress: {compress_time}\n")
         f.write(f"Time to extract: {extract_time}\n")
