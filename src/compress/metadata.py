@@ -14,8 +14,24 @@ from pyroaring import BitMap, BitMap64
 #because of this, we can search for the index or for the key, both with o(1)
 #https://pypi.org/project/ordered-set/
 from ordered_set import OrderedSet
+import metadata
+import os
 
 ############################################################################################
+
+dataset = os.environ.get("DATASET")
+file_path = os.path.dirname(os.path.realpath(metadata.__file__))
+print(file_path)
+
+
+if os.environ.get("DATA_DIR") is not None:
+    data = os.environ.get("DATA_DIR")
+else:
+    data = os.path.abspath(f"{file_path}/../../data/")
+errors_path = os.path.abspath(f"{file_path}/../../errors/")
+results_path = os.path.abspath(f"{file_path}/../../results/")
+    
+pdb_dir = os.path.abspath(f"{data}/pdb_files/")
 #here happens the compression
 
 # e = edge, v = vertex, g = graph
@@ -185,6 +201,9 @@ def compress_with_composition(protein_graphs):
                     print(type(t))
                 break
             break
+
+            with open(f"{errors_path}/{dataset}_errors.log", "a") as f:
+                f.write(f"Error in graph extraction for {pdb_code}: {e}\n")
     
     # Pass the four separate dictionaries to the constructor
     return PDBGraphStoreBitmap(node_to_id, edge_to_id, 
@@ -276,6 +295,8 @@ class PDBGraphStoreBitmap:
             print(f"Error extracting graph for {pdb_code}: {e}")
             extracted_graph = nx.Graph()
             extracted_graph.update(edges=[], nodes=[])
+            with open(f"{errors_path}/{dataset}_errors.log", "a") as f:
+                f.write(f"Error extracting graph for {pdb_code}: {e}\n")
         return extracted_graph
 
     # def run_tree_compression(self):
@@ -376,23 +397,13 @@ def main():
 
     print("main")
 
-    file_path = os.path.dirname(os.path.realpath(metadata.__file__))
-    print(file_path)
+    pdb_codes = []
 
     params_to_change = {"granularity": "N", "edge_construction_functions": [add_atomic_edges, add_hydrogen_bond_interactions, add_peptide_bonds]}
 
     config = ProteinGraphConfig(**params_to_change)
     # print(config.model_dump())
-
-    dataset = os.environ.get("DATASET")
-
-    pdb_codes = []
-    if os.environ.get("DATA_DIR") is not None:
-        data = os.environ.get("DATA_DIR")
-    else:
-        data = os.path.abspath(f"{file_path}/../../data/")
     
-    pdb_dir = os.path.abspath(f"{data}/pdb_files/")
     with open(f'{data}/{dataset}', 'r') as f:
         for line in f:
             pdb_codes.append(line.strip())
@@ -416,6 +427,8 @@ def main():
             except Exception as e:
                 print(f"Error reading {pdb_code}: {e}")
                 pdb_codes.remove(pdb_code)
+                with open(f"{errors_path}/{dataset}_errors.log", "a") as f:
+                    f.write(f"Error reading {pdb_code}: {e}\n")
                 continue
         else:
             try:
@@ -423,10 +436,15 @@ def main():
                 if pdb_file is None:
                     print(f"Failed to download {pdb_code}")
                     pdb_codes.remove(pdb_code)
+                    with open(f"{errors_path}/{dataset}_errors.log", "a") as f:
+                        f.write(f"Failed to download {pdb_code}\n")
                     continue
             except Exception as e:
                 print(f"Error downloading {pdb_code}: {e}")
                 pdb_codes.remove(pdb_code)
+
+                with open(f"{errors_path}/{dataset}_errors.log", "a") as f:
+                    f.write(f"Error downloading {pdb_code}: {e}\n")
                 continue
 
         graph = construct_graph(config=config, path=pdb_file)
@@ -451,7 +469,8 @@ def main():
 
     time_end = time.time()
 
-    print("Time to construct graphs:", time_end - time_begin)
+    construct_time = time_end - time_begin
+    print("Time to construct graphs:", construct_time)
     print("Number of graphs:", len(protein_graphs_with_data))
 
     v_size = 0
@@ -473,7 +492,8 @@ def main():
     global_graph_obj = compress_with_composition(protein_graphs_with_data)
 
     time_end = time.time()
-    print("Time to compress:", time_end - time_begin)
+    compress_time = time_end - time_begin
+    print("Time to compress:", compress_time)
 
     random.shuffle(pdb_codes)
 
@@ -494,9 +514,14 @@ def main():
             print("Original graph nodes:", protein_graphs_with_data[pdb_code].nodes(data=True))
             print("Extracted graph edges:", g.edges(data=True))
             print("Original graph edges:", protein_graphs_with_data[pdb_code].edges(data=True))
+            with open(f"{errors_path}/{dataset}_errors.log", "a") as f:
+                f.write(f"Error in graph extraction for {pdb_code}: {e}\n")
+
             continue
 
-    print("Time to extract:", sum(times_to_extract) / len(times_to_extract))
+    extract_time = sum(times_to_extract)/len(times_to_extract)
+    print("Time to extract:", extract_time)
+    
 
     print("\n\n")
     print("uncompressed complete graph size", asizeof.asizeof(protein_graphs_with_data) / 1024 / 1024)
@@ -521,6 +546,33 @@ def main():
     print("\n\n")
     print("compressed graph object size", asizeof.asizeof(global_graph_obj) / 1024 / 1024)
     print("compressed graph complete size serialized", asizeof.asizeof(pickle.dumps(global_graph_obj)) / 1024 / 1024)
+
+    with open(f"{results_path}/{dataset}_results.txt", "w") as f:
+        f.write(f"Time to construct graphs: {construct_time}\n")
+        f.write(f"Time to compress: {compress_time}\n")
+        f.write(f"Time to extract: {extract_time}\n")
+        f.write(f"uncompressed complete graph size: {asizeof.asizeof(protein_graphs_with_data) / 1024 / 1024}\n")
+        f.write(f"uncompressed structure graph size: {asizeof.asizeof(protein_graphs_without_data) / 1024 / 1024}\n")
+        f.write(f"uncompressed edge size: {e_size}\n")
+        f.write(f"uncompressed node size: {v_size}\n")
+        f.write(f"uncompressed complete graph serialized: {asizeof.asizeof(pickle.dumps(protein_graphs_with_data)) / 1024 / 1024}\n")
+        f.write(f"uncompressed edge serialized: {e_serialized}\n")
+        f.write(f"uncompressed node serialized: {v_serialized}\n")
+        f.write("\n\n")
+        f.write(f"compressed graph complete size: {global_graph_obj.calculate_graph_complete_space_size()}\n")
+        f.write(f"compressed complete node size: {global_graph_obj.calculate_total_nodes_size()}\n")
+        f.write(f"compressed complete edge size: {global_graph_obj.calculate_total_edges_size()}\n")
+        f.write(f"compressed node attributes size: {global_graph_obj.node_attrs_size()}\n")
+        f.write(f"compressed edge attributes size: {global_graph_obj.edge_attrs_size()}\n")
+        f.write(f"compressed node attributes keys size: {global_graph_obj.node_attr_keys_size()}\n")
+        f.write(f"compressed edge attributes keys size: {global_graph_obj.edge_attr_keys_size()}\n")
+        f.write(f"compressed pdb to nodes size: {global_graph_obj.pdb_to_nodes_size()}\n")
+        f.write(f"compressed pdb to edges size: {global_graph_obj.pdb_to_edges_size()}\n")
+        f.write(f"compressed node to id size: {global_graph_obj.node_to_id_size()}\n")
+        f.write(f"compressed edge to id size: {global_graph_obj.edge_to_id_size()}\n")
+        f.write("\n\n")
+        f.write(f"compressed graph object size: {asizeof.asizeof(global_graph_obj) / 1024 / 1024}\n")
+        f.write(f"compressed graph complete size serialized: {asizeof.asizeof(pickle.dumps(global_graph_obj)) / 1024/ 1024}")
 
 def toy_example():
     pass
