@@ -32,6 +32,13 @@ errors_path = os.path.abspath(f"{file_path}/../../errors/")
 results_path = os.path.abspath(f"{file_path}/../../results/")
     
 pdb_dir = os.path.abspath(f"{data}/pdb_files/")
+
+if not os.path.exists(pdb_dir):
+    os.makedirs(pdb_dir)
+if not os.path.exists(errors_path):
+    os.makedirs(errors_path)
+if not os.path.exists(results_path):
+    os.makedirs(results_path)
 #here happens the compression
 
 # e = edge, v = vertex, g = graph
@@ -394,6 +401,11 @@ def main():
     from graphein.protein.utils import download_pdb
     import networkx as nx
     import time
+
+    with open(f"{errors_path}/{dataset}_errors.log", "w") as f:
+        f.write(f"Errors log for {dataset} \n")
+    with open(f"{results_path}/{dataset}_results.txt", "w") as f:
+        f.write(f"Results log for {dataset}\n")
 
     print("main")
 
