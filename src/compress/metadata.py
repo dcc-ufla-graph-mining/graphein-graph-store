@@ -351,7 +351,7 @@ def main():
     config = ProteinGraphConfig(**params_to_change)
     # print(config.model_dump())
     
-    with open(f'{data}/{dataset_name}', 'r') as f:
+    with open(f'{data}/{dataset}', 'r') as f:
         for line in f:
             pdb_codes.append(line.strip())
 
