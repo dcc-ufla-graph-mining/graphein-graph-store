@@ -4,3 +4,4 @@ __pycache__/
 data/pdb_files/
 fractal/
 spark/
+type=docker/
