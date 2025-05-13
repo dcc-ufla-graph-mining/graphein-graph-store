@@ -364,6 +364,9 @@ def main():
 
     pdb_codes_copy = pdb_codes.copy()
 
+    number_of_nodes = []
+    number_of_edges = []
+
     for pdb_code in pdb_codes_copy:
         print(i, pdb_code)
         i += 1
@@ -411,7 +414,17 @@ def main():
 
         protein_graphs_without_data[pdb_code] = graph.copy()  # Store graph
 
+        number_of_nodes.append(len(graph.nodes()))
+        number_of_edges.append(len(graph.edges()))
+
         del graph
+
+    with open(f"{results_path}/{dataset_name}_results.txt", "a") as f:
+        f.write(f"Average number of nodes: {np.mean(number_of_nodes)}\n")
+        f.write(f"Average number of edges: {np.mean(number_of_edges)}\n")
+    
+    del number_of_nodes
+    del number_of_edges
 
     del pdb_codes_copy
 

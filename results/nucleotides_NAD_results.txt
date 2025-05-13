@@ -1,0 +1,27 @@
+Time to construct graphs: 24.70459747314453
+Time to compress: 11.020351648330688
+Time to extract: 0.059572645228543726
+uncompressed complete graph size: 190.1653289794922
+uncompressed structure graph size: 66.84309387207031
+uncompressed edge size: 109.02656555175781
+uncompressed node size: 98.19590759277344
+uncompressed complete graph serialized: 22.854095458984375
+uncompressed edge serialized: 8.538124084472656
+uncompressed node serialized: 14.282257080078125
+
+
+compressed graph complete size: 118.95056915283203
+compressed complete node size: 41.594818115234375
+compressed complete edge size: 77.35575103759766
+compressed node attributes size: 14.358917236328125
+compressed edge attributes size: 34.49163818359375
+compressed node attributes keys size: 16.827560424804688
+compressed edge attributes keys size: 13.650680541992188
+compressed pdb to nodes size: 0.27739715576171875
+compressed pdb to edges size: 0.2846527099609375
+compressed node to id size: 10.130943298339844
+compressed edge to id size: 28.92877960205078
+
+
+compressed graph object size: 91.13541412353516
+compressed graph complete size serialized: 13.695480346679688
