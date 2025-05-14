@@ -419,7 +419,7 @@ def main():
 
         del graph
 
-    with open(f"{results_path}/{dataset_name}_results.txt", "a") as f:
+    with open(f"{results_path}/{dataset_name}_results.txt", "w") as f:
         f.write(f"Average number of nodes: {np.mean(number_of_nodes)}\n")
         f.write(f"Average number of edges: {np.mean(number_of_edges)}\n")
     
@@ -510,7 +510,7 @@ def main():
     print("compressed graph object size", asizeof.asizeof(global_graph_obj) / 1024 / 1024)
     print("compressed graph complete size serialized", asizeof.asizeof(pickle.dumps(global_graph_obj)) / 1024 / 1024)
 
-    with open(f"{results_path}/{dataset_name}_results.txt", "w") as f:
+    with open(f"{results_path}/{dataset_name}_results.txt", "a") as f:
         f.write(f"Time to construct graphs: {construct_time}\n")
         f.write(f"Time to compress: {compress_time}\n")
         f.write(f"Time to extract: {extract_time}\n")
