@@ -1,6 +1,6 @@
-Time to construct graphs: 35.29996967315674
-Time to compress: 15.268166303634644
-Time to extract: 0.06819677423863184
+Time to construct graphs: 35.159929037094116
+Time to compress: 15.257359743118286
+Time to extract: 0.0694783627986908
 uncompressed complete graph size: 252.5512466430664
 uncompressed structure graph size: 87.59322357177734
 uncompressed edge size: 144.72982788085938
