@@ -2,27 +2,25 @@ import pickle
 import random
 import time
 import pandas as pd
-
+import os
+import metadata
+from graphein.protein.config import ProteinGraphConfig
+from graphein.protein.edges.distance import add_hydrogen_bond_interactions, add_peptide_bonds
+from graphein.protein.graphs import construct_graph
+from graphein.protein.utils import download_pdb
+from graphein.protein import add_atomic_edges
 import networkx as nx
 import numpy as np
 from bidict import bidict
-from graphein.protein import add_atomic_edges
 from pympler import asizeof
 from pyroaring import BitMap, BitMap64
-#the ordered_set lib has an data type named OrderedSet
-#which is a set that keeps the order of the elements
-#because of this, we can search for the index or for the key, both with o(1)
-#https://pypi.org/project/ordered-set/
 from ordered_set import OrderedSet
-import metadata
-import os
 
 ############################################################################################
 
 dataset = os.environ.get("DATASET")
 file_path = os.path.dirname(os.path.realpath(metadata.__file__))
 print(file_path)
-
 
 if os.environ.get("DATA_DIR") is not None:
     data = os.environ.get("DATA_DIR")
@@ -42,8 +40,6 @@ if not os.path.exists(results_path):
     os.makedirs(results_path)
 
 dataset_name = dataset.split(".")[0]
-
-
 
 
 #contar o tempo so ate a parte de buildar o grafo grandao, excluindo o extract e o assert
@@ -327,14 +323,7 @@ class PDBGraphStoreBitmap:
 
 
 def main():
-    import os
-    import metadata
-    from graphein.protein.config import ProteinGraphConfig
-    from graphein.protein.edges.distance import add_hydrogen_bond_interactions, add_peptide_bonds
-    from graphein.protein.graphs import construct_graph
-    from graphein.protein.utils import download_pdb
-    import networkx as nx
-    import time
+    
 
     with open(f"{errors_path}/{dataset_name}_errors.log", "w") as f:
         f.write(f"Errors log for {dataset_name} \n")
