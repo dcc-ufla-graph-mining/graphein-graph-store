@@ -1,2 +1,2 @@
 Errors log for soybean_ppigremlin 
-Error downloading 13d: 13d download failed. Not found in /app/data/pdb_files
+Error downloading 13d: <urlopen error [Errno -3] Temporary failure in name resolution>

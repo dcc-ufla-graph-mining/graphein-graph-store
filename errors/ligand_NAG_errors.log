@@ -1,5 +1,5 @@
 Errors log for ligand_NAG 
-Error downloading 5fuu: 5fuu download failed. Not found in /app/data/pdb_files
-Error downloading 5szs: 5szs download failed. Not found in /app/data/pdb_files
-Error downloading 5fuu: 5fuu download failed. Not found in /app/data/pdb_files
-Error downloading 5szs: 5szs download failed. Not found in /app/data/pdb_files
+Error downloading 5fuu: <urlopen error [Errno -3] Temporary failure in name resolution>
+Error downloading 5szs: <urlopen error [Errno -3] Temporary failure in name resolution>
+Error downloading 5fuu: <urlopen error [Errno -3] Temporary failure in name resolution>
+Error downloading 5szs: <urlopen error [Errno -3] Temporary failure in name resolution>
