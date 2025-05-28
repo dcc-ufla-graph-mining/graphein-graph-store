@@ -43,75 +43,104 @@ dataset_name = dataset.split(".")[0]
 
 
 #contar o tempo so ate a parte de buildar o grafo grandao, excluindo o extract e o assert
-def compress_with_composition(protein_graphs):
+def _initialize_data_structures():
+    """Inicializa as estruturas necessárias"""
     edge_to_pdbs = {}   
     node_to_pdbs = {}  
     edge_attrs = {}   
-    node_attrs = {}    
+    node_attrs = {}
+    pdb_to_nodes = {}
+    pdb_to_edges = {}
+    
+    return edge_to_pdbs, node_to_pdbs, edge_attrs, node_attrs, pdb_to_nodes, pdb_to_edges
 
-    edge_attr_keys_list = list(list(next(iter(protein_graphs.values())).edges(data=True))[0][2].keys())
-    node_attr_keys_list = list(list(next(iter(protein_graphs.values())).nodes(data=True))[0][1].keys())
+
+def _extract_attribute_keys(protein_graphs):
+    """Extrai as chaves dos atributos de nodes e edges dos grafos"""
+    sample_graph = next(iter(protein_graphs.values()))
+    
+    edge_attr_keys_list = list(list(sample_graph.edges(data=True))[0][2].keys())
+    node_attr_keys_list = list(list(sample_graph.nodes(data=True))[0][1].keys())
 
     edge_attr_keys = {}
-    node_attr_keys = {}  
+    node_attr_keys = {}
 
     for key in edge_attr_keys_list: 
         edge_attr_keys[key] = OrderedSet()
     for key in node_attr_keys_list: 
         node_attr_keys[key] = OrderedSet()
 
-    del edge_attr_keys_list
-    del node_attr_keys_list
-    
-    # Split pdb_to_view into four separate dictionaries
-    pdb_to_nodes = {}
-    pdb_to_edges = {}
+    return edge_attr_keys, node_attr_keys
 
+
+def _process_node_attributes(node, graph, node_attr_keys):
+    """Processa os atributos de um nó específico"""
+    attr_indexes = []
+    
+    for value in node_attr_keys:
+        attr_value = graph.nodes[node][value]
+
+        if isinstance(attr_value, pd.Series):
+            attr_value = tuple([tuple(attr_value.tolist()), attr_value.name, tuple(attr_value.index)])
+        elif isinstance(attr_value, np.ndarray):
+            attr_value = tuple([tuple(attr_value)])
+
+        attr_indexes.append(node_attr_keys[value].add(attr_value))
+
+    return attr_indexes
+
+
+def _process_edge_attributes(edge_data, edge_attr_keys):
+    """Processa os atributos de uma aresta específica"""
+    attr_indexes = []
+    
+    for value in edge_attr_keys:
+        attr_value = edge_data[value]
+        if isinstance(attr_value, np.ndarray):
+            attr_value = tuple(attr_value)
+        elif isinstance(attr_value, (list, set)):
+            attr_value = tuple(attr_value)
+            
+        attr_indexes.append(edge_attr_keys[value].add(attr_value))
+    
+    return attr_indexes
+
+
+def _process_nodes(protein_graphs, node_to_pdbs, node_attrs, node_attr_keys, pdb_to_nodes):
+    """Processa todos os nós dos grafos"""
     for pdb_code, g in protein_graphs.items():
-        # Initialize separate dictionaries for each component
         pdb_to_nodes[pdb_code] = [BitMap64()]
-        pdb_to_edges[pdb_code] = [BitMap64()]
         
         for node in g.nodes():
             if node not in node_to_pdbs:
                 node_to_pdbs[node] = []
-
-                attr_indexes = []
-                
-                for value in node_attr_keys:
-                    attr_value = g.nodes[node][value]
-
-                    if isinstance(attr_value, pd.Series):
-                        attr_value = tuple([tuple(attr_value.tolist()), attr_value.name, tuple(attr_value.index)])
-                    elif isinstance(attr_value, np.ndarray):
-                        attr_value = tuple([tuple(attr_value)])
-
-                    attr_indexes.append(node_attr_keys[value].add(attr_value))
-
-                    node_attrs[node] = attr_indexes
+                attr_indexes = _process_node_attributes(node, g, node_attr_keys)
+                node_attrs[node] = attr_indexes
                 
             if pdb_code not in node_to_pdbs[node]:
                 node_to_pdbs[node].append(pdb_code)
+
+
+def _process_edges(protein_graphs, edge_to_pdbs, edge_attrs, edge_attr_keys, pdb_to_edges):
+    """Processa todas as arestas dos grafos"""
+    for pdb_code, g in protein_graphs.items():
+        if pdb_code not in pdb_to_edges:
+            pdb_to_edges[pdb_code] = [BitMap64()]
         
         for u, v, data in g.edges(data=True):
             edge = (u, v)
             
             if edge not in edge_to_pdbs:
                 edge_to_pdbs[edge] = []
-                attr_indexes = []
-                
-                for value in edge_attr_keys:
-                    attr_value = data[value]
-                    if isinstance(attr_value, np.ndarray):
-                        attr_value = tuple(attr_value)
-                    elif isinstance(attr_value, (list, set)):
-                        attr_value = tuple(attr_value)
-                        
-                    attr_indexes.append(edge_attr_keys[value].add(attr_value))
-                    edge_attrs[edge] = attr_indexes
+                attr_indexes = _process_edge_attributes(data, edge_attr_keys)
+                edge_attrs[edge] = attr_indexes
             
             if pdb_code not in edge_to_pdbs[edge]:
                 edge_to_pdbs[edge].append(pdb_code)
+
+
+def _create_id_mappings(edge_to_pdbs, node_to_pdbs, pdb_to_edges, pdb_to_nodes):
+    """Cria mapeamentos entre arestas/nós e seus IDs únicos"""
 
     edge_id = 0
     edge_to_id = {}
@@ -120,10 +149,7 @@ def compress_with_composition(protein_graphs):
         pdbs = edge_to_pdbs[e]
         for pdb_code in pdbs:
             pdb_to_edges[pdb_code][0].add(edge_id)
-            
         edge_id += 1
-
-    del edge_to_pdbs
 
     node_id = 0
     node_to_id = {}  
@@ -132,85 +158,135 @@ def compress_with_composition(protein_graphs):
         pdbs = node_to_pdbs[u]
         for pdb_code in pdbs:
             pdb_to_nodes[pdb_code][0].add(node_id)
-            
         node_id += 1
-
-    del node_to_pdbs
 
     node_to_id = bidict(node_to_id)  
     edge_to_id = bidict(edge_to_id)
+    
+    return node_to_id, edge_to_id
 
+
+def _reconstruct_node_attributes(extracted_graph, nodes, node_attrs, node_attr_keys):
+    """Reconstrói os atributos dos nós no grafo extraído."""
+    for node in nodes:
+        if node in node_attrs:
+            for i, key in enumerate(node_attr_keys):
+                index = node_attrs[node][i]
+                value = node_attr_keys[key][index]
+
+                if isinstance(value, tuple) and len(value) == 1:
+                    value = np.array(value[0])
+                elif isinstance(value, tuple) and len(value) == 3:
+                    value = pd.Series(value[0], name=value[1], index=value[2])
+                    
+                extracted_graph.nodes[node][key] = value
+
+
+def _reconstruct_edge_attributes(extracted_graph, edges, edge_attrs, edge_attr_keys):
+    """Reconstrói os atributos das arestas no grafo extraído."""
+    for u, v in edges:
+        if (u, v) in edge_attrs:
+            for i, key in enumerate(edge_attr_keys):
+                index = edge_attrs[(u, v)][i]
+                value = edge_attr_keys[key][index]
+                
+                if isinstance(value, tuple):
+                    value = set(value)
+                    
+                extracted_graph.edges[u, v][key] = value
+
+
+def _validate_graph_reconstruction(extracted_graph, original_graph, pdb_code):
+    """Valida se o grafo foi reconstruído corretamente."""
+    try:
+        assert nx.utils.edges_equal(extracted_graph._adj, original_graph._adj)
+    except Exception as e:
+        print("error in edges")
+        for (u, v, attr) in extracted_graph.edges.data():
+            print(u, v, attr)
+            for k, t in attr.items():
+                print(type(t))
+            break
+
+        for (u, v, attr) in original_graph.edges.data():  
+            print(u, v, attr) 
+            for k, t in attr.items():
+                print(type(t))
+            break
+        return False
+
+    try:    
+        assert nx.utils.nodes_equal(extracted_graph._node, original_graph._node)
+    except Exception as e:
+        print("error in nodes")
+        with open(f"{errors_path}/{dataset_name}_errors.log", "a") as f:
+            f.write(f"Error in graph extraction for {pdb_code}: {e}\n")
+        for node, attr in extracted_graph.nodes(data=True):
+            print(node, attr)
+            for k, t in attr.items():
+                print(type(t))
+            break
+
+        for node, attr in original_graph.nodes(data=True):
+            print(node, attr)
+            for k, t in attr.items():
+                print(type(t))
+            break
+        return False
+    
+    return True
+
+
+def _reconstruct_and_validate_graphs(protein_graphs, node_to_id, edge_to_id, 
+                                   pdb_to_nodes, pdb_to_edges, 
+                                   node_attrs, edge_attrs, 
+                                   node_attr_keys, edge_attr_keys):
+    """Reconstrói e valida todos os grafos"""
     for pdb_code in protein_graphs:
         original_graph = protein_graphs[pdb_code]
 
         nodes = [node_to_id.inverse[node_id] for node_id in pdb_to_nodes[pdb_code][0]]  
         edges = [edge_to_id.inverse[edge_id] for edge_id in pdb_to_edges[pdb_code][0]]
+        
         extracted_graph = nx.Graph()
         extracted_graph.update(edges=edges, nodes=nodes)
 
-        for node in nodes:
-            if node in node_attrs:
-                for i, key in enumerate(node_attr_keys):
-                    index = node_attrs[node][i]
-                    value = node_attr_keys[key][index]
+        _reconstruct_node_attributes(extracted_graph, nodes, node_attrs, node_attr_keys)
+        _reconstruct_edge_attributes(extracted_graph, edges, edge_attrs, edge_attr_keys)
 
-                    if isinstance(value, tuple) and len(value) == 1:
-                        value = np.array(value[0])
-                    elif isinstance(value, tuple) and len(value) == 3:
-                        value = pd.Series(value[0], name=value[1], index=value[2])
-                        
-                    extracted_graph.nodes[node][key] = value
-
-        for u, v in edges:
-            if (u, v) in edge_attrs:
-                for i, key in enumerate(edge_attr_keys):
-                    index = edge_attrs[(u, v)][i]
-                    value = edge_attr_keys[key][index]
-                    
-                    if isinstance(value, tuple):
-                        value = set(value)
-                        
-                    extracted_graph.edges[u, v][key] = value
-
-        # assert nx.utils.nodes_equal(extracted_graph.nodes(data=True), original_graph.nodes(data=True))
-        try:
-            assert nx.utils.edges_equal(extracted_graph._adj, original_graph._adj)
-        except Exception as e:
-            print("error in edges")
-            for (u, v, attr) in extracted_graph.edges.data():
-                print(u, v, attr)
-                for k, t in attr.items():
-                    print(type(t))
-                
-                break
-
-            for (u, v, attr) in original_graph.edges.data():  
-                print(u, v, attr) 
-                for k, t in attr.items():
-                    print(type(t))
-                break
+        if not _validate_graph_reconstruction(extracted_graph, original_graph, pdb_code):
             break
 
-        try:    
-            assert nx.utils.nodes_equal(extracted_graph._node, original_graph._node)
-        except Exception as e:
-            print("error in nodes")
-            with open(f"{errors_path}/{dataset_name}_errors.log", "a") as f:
-                f.write(f"Error in graph extraction for {pdb_code}: {e}\n")
-            for node, attr in extracted_graph.nodes(data=True):
-                print(node, attr)
-                for k, t in attr.items():
-                    print(type(t))
-                break
 
-            for node, attr in original_graph.nodes(data=True):
-                print(node, attr)
-                for k, t in attr.items():
-                    print(type(t))
-                break
-            break
+def compress_with_composition(protein_graphs):
+    """
+    Comprime grafos de proteínas usando composição de bitmaps.
     
-    # Pass the four separate dictionaries to the constructor
+    Args:
+        protein_graphs: Dicionário de grafos de proteínas indexados por código PDB
+        
+    Returns:
+        PDBGraphStoreBitmap: Estrutura comprimida contendo os grafos
+    """
+
+    edge_to_pdbs, node_to_pdbs, edge_attrs, node_attrs, pdb_to_nodes, pdb_to_edges = _initialize_data_structures()
+    
+    edge_attr_keys, node_attr_keys = _extract_attribute_keys(protein_graphs)
+    
+    _process_nodes(protein_graphs, node_to_pdbs, node_attrs, node_attr_keys, pdb_to_nodes)
+    _process_edges(protein_graphs, edge_to_pdbs, edge_attrs, edge_attr_keys, pdb_to_edges)
+    
+    node_to_id, edge_to_id = _create_id_mappings(edge_to_pdbs, node_to_pdbs, pdb_to_edges, pdb_to_nodes)
+    
+    del edge_to_pdbs
+    del node_to_pdbs
+    
+    _reconstruct_and_validate_graphs(protein_graphs, node_to_id, edge_to_id, 
+                                   pdb_to_nodes, pdb_to_edges, 
+                                   node_attrs, edge_attrs, 
+                                   node_attr_keys, edge_attr_keys)
+    
+
     return PDBGraphStoreBitmap(node_to_id, edge_to_id, 
                             pdb_to_nodes, pdb_to_edges, 
                             node_attrs, edge_attrs, 
@@ -229,7 +305,7 @@ def merge_PDB_stores(pdb_store1, pdb_store2):
 class PDBGraphStoreBitmap:
 
     #fazer o calculo de memoria discriminado para cada um dos attr abaixo, incluindo acada uma das posicoes da view separado
-    def __init__(self, node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_attrs, edge_attr_keys, node_attr_keys):
+    def __init__(self, node_to_id={}, edge_to_id={}, pdb_to_nodes={}, pdb_to_edges={}, node_attrs={}, edge_attrs={}, edge_attr_keys={}, node_attr_keys={}):
         self.node_to_id = node_to_id #mapeamento de de node para id, e vice versa, global
         self.edge_to_id = edge_to_id #mapeamento de de edge para id, e vice versa, global
         self.pdb_to_nodes = pdb_to_nodes #bitmap indicando quais pdbs cada node pertence
@@ -238,30 +314,6 @@ class PDBGraphStoreBitmap:
         self.edge_attrs = edge_attrs #lista de indices para o attr de cada edge
         self.node_attr_keys = node_attr_keys #dicionario de atributos indexados para cada node
         self.edge_attr_keys = edge_attr_keys #dicionario de atributos indexados para cada edge
-
-    def node_to_id_size(self):
-        return asizeof.asizeof(self.node_to_id) / 1024 / 1024
-    def edge_to_id_size(self):
-        return asizeof.asizeof(self.edge_to_id) / 1024 / 1024
-    def pdb_to_nodes_size(self):
-        return asizeof.asizeof(self.pdb_to_nodes) / 1024 / 1024
-    def pdb_to_edges_size(self):
-        return asizeof.asizeof(self.pdb_to_edges) / 1024 / 1024
-    def node_attrs_size(self):
-        return asizeof.asizeof(self.node_attrs) / 1024 / 1024
-    def edge_attrs_size(self):
-        return asizeof.asizeof(self.edge_attrs) / 1024 / 1024
-    def node_attr_keys_size(self):
-        return asizeof.asizeof(self.node_attr_keys) / 1024 / 1024
-    def edge_attr_keys_size(self):
-        return asizeof.asizeof(self.edge_attr_keys) / 1024 / 1024
-    def calculate_graph_complete_space_size(self):
-        return self.node_to_id_size() + self.edge_to_id_size() + self.pdb_to_nodes_size() + self.pdb_to_edges_size() + self.node_attrs_size() + self.edge_attrs_size() + self.node_attr_keys_size() + self.edge_attr_keys_size()
-    def calculate_total_nodes_size(self):
-        return self.node_to_id_size() + self.pdb_to_nodes_size() + self.node_attrs_size() + self.node_attr_keys_size()
-    def calculate_total_edges_size(self):
-        return self.edge_to_id_size() + self.pdb_to_edges_size() + self.edge_attrs_size() + self.edge_attr_keys_size()
-    
 
     def extract_pdb_graph(self, pdb_code):
         nodes_view = self.pdb_to_nodes.get(pdb_code, None)
@@ -322,9 +374,31 @@ class PDBGraphStoreBitmap:
         pass
 
 
-def main():
-    
+    def node_to_id_size(self):
+        return asizeof.asizeof(self.node_to_id) / 1024 / 1024
+    def edge_to_id_size(self):
+        return asizeof.asizeof(self.edge_to_id) / 1024 / 1024
+    def pdb_to_nodes_size(self):
+        return asizeof.asizeof(self.pdb_to_nodes) / 1024 / 1024
+    def pdb_to_edges_size(self):
+        return asizeof.asizeof(self.pdb_to_edges) / 1024 / 1024
+    def node_attrs_size(self):
+        return asizeof.asizeof(self.node_attrs) / 1024 / 1024
+    def edge_attrs_size(self):
+        return asizeof.asizeof(self.edge_attrs) / 1024 / 1024
+    def node_attr_keys_size(self):
+        return asizeof.asizeof(self.node_attr_keys) / 1024 / 1024
+    def edge_attr_keys_size(self):
+        return asizeof.asizeof(self.edge_attr_keys) / 1024 / 1024
+    def calculate_graph_complete_space_size(self):
+        return self.node_to_id_size() + self.edge_to_id_size() + self.pdb_to_nodes_size() + self.pdb_to_edges_size() + self.node_attrs_size() + self.edge_attrs_size() + self.node_attr_keys_size() + self.edge_attr_keys_size()
+    def calculate_total_nodes_size(self):
+        return self.node_to_id_size() + self.pdb_to_nodes_size() + self.node_attrs_size() + self.node_attr_keys_size()
+    def calculate_total_edges_size(self):
+        return self.edge_to_id_size() + self.pdb_to_edges_size() + self.edge_attrs_size() + self.edge_attr_keys_size()
 
+
+def main():
     with open(f"{errors_path}/{dataset_name}_errors.log", "w") as f:
         f.write(f"Errors log for {dataset_name} \n")
 
