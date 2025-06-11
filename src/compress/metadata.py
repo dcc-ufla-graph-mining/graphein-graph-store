@@ -50,7 +50,7 @@ from graphein.protein.edges.intramolecular import (
     # van_der_waals, nao funciona eu ainda nao investiguei porque # kind = vdw
 )
 
-edge_funcs = [
+all_edge_funcs = [
     add_atomic_edges, 
     add_bond_order, 
     add_ring_status, 
@@ -209,7 +209,7 @@ def _process_edge_attributes(edge_data, edge_attr_keys):
     attr_indexes.append(kind_indexes)
     attr_indexes.append(distance_indexes)
 
-    print(f"attrs: {attr_indexes}")
+    # print(f"attrs: {attr_indexes}")
     return attr_indexes
 
 
@@ -223,7 +223,7 @@ def _check_if_edge_attr_matches(edge, data, edge_attrs, edge_attr_keys):
     # print("diff", diff)
 
     if len(diff) != 0:
-        print("Updating edge attributes for edge:", edge)
+        # print("Updating edge attributes for edge:", edge)
         [edge_attrs[edge][0].add(i) for i in diff]
 
 
@@ -327,11 +327,8 @@ def _reconstruct_edge_attributes(extracted_graph, edges, edge_attrs, edge_attr_k
                         extracted_graph.edges[(u, v)]["kind"].add(kind_name)
 
             if "kind" not in extracted_graph.edges[(u, v)].keys():
-                print(extracted_graph.edges[(u, v)].keys(), "kind not in keys")
                 extracted_graph.remove_edge(u, v)
-                print(f"Removed edge ({u}, {v}) due to missing 'kind' attribute.")
             else:
-                print(f"Edge ({u}, {v}) has kind: {extracted_graph.edges[(u, v)]['kind']}")
                 extracted_graph.edges[(u, v)]["distance"] = edge_attr_keys["distance"][distance]
 
     return extracted_graph
@@ -385,23 +382,27 @@ def _reconstruct_and_validate_graphs(protein_graphs, node_to_id, edge_to_id,
     """Reconstrói e valida todos os grafos"""
     for pdb_code in protein_graphs:
         pdb_graphs = protein_graphs[pdb_code]
+        for graph in pdb_graphs:
+            original_graph = graph.copy()
+            print(original_graph.graph["config"].model_dump())
 
-        original_graph = pdb_graphs[0].copy()
-        print(original_graph.graph["config"].model_dump())
+            nodes = [node_to_id.inverse[node_id] for node_id in pdb_to_nodes[pdb_code][0]]  
+            edges = [edge_to_id.inverse[edge_id] for edge_id in pdb_to_edges[pdb_code][0]]
+                
+            extracted_graph = nx.Graph()
+            extracted_graph.graph["pdb_code"] = pdb_code
+            extracted_graph.update(edges=edges, nodes=nodes)
 
-        nodes = [node_to_id.inverse[node_id] for node_id in pdb_to_nodes[pdb_code][0]]  
-        edges = [edge_to_id.inverse[edge_id] for edge_id in pdb_to_edges[pdb_code][0]]
-            
-        extracted_graph = nx.Graph()
-        extracted_graph.graph["pdb_code"] = pdb_code
-        extracted_graph.update(edges=edges, nodes=nodes)
+            _reconstruct_node_attributes(extracted_graph, nodes, node_attrs, node_attr_keys)
+            extracted_graph = _reconstruct_edge_attributes(extracted_graph, edges, edge_attrs, edge_attr_keys, original_graph.graph["config"].edge_construction_functions)
 
-        _reconstruct_node_attributes(extracted_graph, nodes, node_attrs, node_attr_keys)
-        extracted_graph = _reconstruct_edge_attributes(extracted_graph, edges, edge_attrs, edge_attr_keys, original_graph.graph["config"].edge_construction_functions)
+            print("number of edges in original graph: ", len(original_graph.edges()))
+            print("number of nodes in original graph: ", len(original_graph.nodes()))
+            print("number of edges in extracted graph: ", len(extracted_graph.edges()))
+            print("number of nodes in extracted graph: ", len(extracted_graph.nodes()))
 
-
-        if not _validate_graph_reconstruction(extracted_graph, original_graph, pdb_code):
-            break
+            if not _validate_graph_reconstruction(extracted_graph, original_graph, pdb_code):
+                break
 
 def _process_pdb_codes_config(protein_graphs, pdb_codes_config):
     """Processa as configurações dos códigos PDB"""
@@ -419,7 +420,7 @@ def _process_pdb_codes_config(protein_graphs, pdb_codes_config):
             pdb_codes_config[pdb_code]["edge_construction_functions"] = []
         for graph in g:
             for fun in graph.graph["config"].edge_construction_functions:
-                if fun in edge_funcs:
+                if fun in all_edge_funcs:
                     add_edge_construction_function(fun.__name__)
 
 
@@ -450,7 +451,7 @@ def compress_with_composition(protein_graphs):
 
     _process_pdb_codes_config(protein_graphs, pdb_codes_config)
 
-    print(pdb_codes_config["1f7z"].items())
+    print(pdb_codes_config["1F7Z"].items())
 
     for k, v in pdb_codes_config.items():
         print(k)
@@ -491,8 +492,7 @@ class PDBGraphStoreBitmap:
             node_attrs={}, 
             edge_attrs={}, 
             edge_attr_keys={}, 
-            node_attr_keys={}, 
-            pdb_codes_config={}
+            node_attr_keys={}
             ):
         
         self.node_to_id = node_to_id #mapeamento de de node para id, e vice versa, global
@@ -504,9 +504,37 @@ class PDBGraphStoreBitmap:
         self.node_attr_keys = node_attr_keys #dicionario de atributos indexados para cada node
         self.edge_attr_keys = edge_attr_keys #dicionario de atributos indexados para cada edge
 
-        self.pdb_codes_config = pdb_codes_config
+    
+    def _reconstruct_edge_attributes(self, extracted_graph, edges, edge_funcs):
+        print(edge_funcs)
+        for u, v in edges:
 
-    def extract_pdb_graph(self, pdb_code):
+            if (u, v) in self.edge_attrs:
+                kinds = self.edge_attrs[(u, v)][0]
+                distance = self.edge_attrs[(u, v)][1]
+
+                kind_names = [self.edge_attr_keys["kind"][k] for k in kinds]
+                
+                for kind_name in kind_names:
+                    if kind_name in edge_func_attributes:
+                        if edge_func_attributes[kind_name] in edge_funcs:
+                            if not "kind" in extracted_graph.edges[(u, v)].keys():
+                                extracted_graph.edges[(u, v)]["kind"] = set()
+
+                            extracted_graph.edges[(u, v)]["kind"].add(kind_name)
+
+                if "kind" not in extracted_graph.edges[(u, v)].keys():
+                    # print(f"Removing edge ({u}, {v}) from extracted graph because it has no kind attribute")
+                    extracted_graph.remove_edge(u, v)
+                else:
+                    extracted_graph.edges[(u, v)]["distance"] = self.edge_attr_keys["distance"][distance]
+            else:
+                # print(f"Removing edge ({u}, {v}) from extracted graph because it has no attributes")
+                extracted_graph.remove_edge(u, v)
+
+        return extracted_graph
+
+    def extract_pdb_graph(self, pdb_code, edge_construction_functions=[add_atomic_edges, add_peptide_bonds]):
         nodes_view = self.pdb_to_nodes.get(pdb_code, None)
         edges_view = self.pdb_to_edges.get(pdb_code, None)
         
@@ -537,23 +565,23 @@ class PDBGraphStoreBitmap:
                             value = pd.Series(value[0], name=value[1], index=value[2])
                             
                         extracted_graph.nodes[node][key] = value
+
+            extracted_graph = self._reconstruct_edge_attributes(extracted_graph, edges, edge_construction_functions)
+
+            extracted_graph.graph["pdb_code"] = pdb_code
+            extracted_graph.graph["config"] = ProteinGraphConfig(
+                granularity="N",
+                edge_construction_functions=edge_construction_functions
+            )
             
-            for u, v in edges:
-                if (u, v) in self.edge_attrs:
-                    for i, key in enumerate(self.edge_attr_keys):
-                        index = self.edge_attrs[(u, v)][i]
-                        value = self.edge_attr_keys[key][index]
-                        
-                        if isinstance(value, tuple):
-                            value = np.array(value)  
-                            
-                        extracted_graph.edges[u, v][key] = value
         except Exception as e:
             print(f"Error extracting graph for {pdb_code}: {e}")
+            print("asd;lkfajsdl;")
             extracted_graph = nx.Graph()
             extracted_graph.update(edges=[], nodes=[])
             with open(f"{errors_path}/{dataset_name}_errors.log", "a") as f:
                 f.write(f"Error extracting graph for {pdb_code}: {e}\n")
+
         return extracted_graph
 
     def insert_pdb(self, pdb_code, graph):
@@ -564,23 +592,30 @@ class PDBGraphStoreBitmap:
         #TODO
         pass
 
-
     def node_to_id_size(self):
         return asizeof.asizeof(self.node_to_id) / 1024 / 1024
+    
     def edge_to_id_size(self):
         return asizeof.asizeof(self.edge_to_id) / 1024 / 1024
+    
     def pdb_to_nodes_size(self):
         return asizeof.asizeof(self.pdb_to_nodes) / 1024 / 1024
+    
     def pdb_to_edges_size(self):
         return asizeof.asizeof(self.pdb_to_edges) / 1024 / 1024
+    
     def node_attrs_size(self):
         return asizeof.asizeof(self.node_attrs) / 1024 / 1024
+    
     def edge_attrs_size(self):
         return asizeof.asizeof(self.edge_attrs) / 1024 / 1024
+    
     def node_attr_keys_size(self):
         return asizeof.asizeof(self.node_attr_keys) / 1024 / 1024
+    
     def edge_attr_keys_size(self):
         return asizeof.asizeof(self.edge_attr_keys) / 1024 / 1024
+    
     def calculate_graph_complete_space_size(self):
         return self.node_to_id_size() + self.edge_to_id_size() + self.pdb_to_nodes_size() + self.pdb_to_edges_size() + self.node_attrs_size() + self.edge_attrs_size() + self.node_attr_keys_size() + self.edge_attr_keys_size()
     def calculate_total_nodes_size(self):
@@ -609,8 +644,9 @@ def main():
     config_list = []
 
     for i in range(15):
-        size = random.randint(1, len(edge_funcs))
-        edge_construction_functions = random.sample(edge_funcs, size)
+        size = random.randint(1, len(all_edge_funcs))
+        edge_construction_functions = random.sample(all_edge_funcs, size)
+        # edge_construction_functions = [add_atomic_edges, add_t_stacking, add_bond_order, add_delaunay_triangulation, add_hydrogen_bond_interactions]
 
         print(edge_construction_functions)
 
@@ -621,7 +657,7 @@ def main():
 
     with open(f'{data}/{dataset}', 'r') as f:
         for line in f:
-            pdb_codes.append(line.strip())
+            pdb_codes.append(line.strip().upper())
 
     protein_graphs_with_data = {}
     protein_graphs_without_data = {}
@@ -638,7 +674,6 @@ def main():
     config = iter(config_list)
 
     for pdb_code in pdb_codes_copy:
-        pdb_code = pdb_code.lower()
         i += 1
         
         if os.path.exists(f"{pdb_dir}/{pdb_code}.pdb"):
@@ -746,21 +781,39 @@ def main():
 
     times_to_extract = []
 
+    pdb_codes = set(pdb_codes)  
     for pdb_code in pdb_codes:
+
+        for graph in protein_graphs_with_data[pdb_code]:
+            extracted_graph = global_graph_obj.extract_pdb_graph(pdb_code, graph.graph["config"].edge_construction_functions)
+            print("\n\n")
+            print("Number of edges in original graph: ", len(graph.edges()))
+            print("Number of nodes in original graph: ", len(graph.nodes()))
+            print("Number of edges in extracted graph: ", len(extracted_graph.edges()))
+            print("Number of nodes in extracted graph: ", len(extracted_graph.nodes()))
+            print("\n\n")
+            print("original graph config:", graph.graph["config"].model_dump())
+            print("extracted graph config:", extracted_graph.graph["config"].model_dump())
+            print("\n\n")
+            print(pdb_codes, protein_graphs_with_data[pdb_code])
+
+            del extracted_graph
+
+
         time_begin = time.time()
-        g = global_graph_obj.extract_pdb_graph(pdb_code)
+        g = global_graph_obj.extract_pdb_graph(pdb_code, protein_graphs_with_data[pdb_code][0].graph["config"].edge_construction_functions)
         time_end = time.time()
         times_to_extract.append(time_end - time_begin)
 
         try:
-            assert nx.utils.nodes_equal(g._node, protein_graphs_with_data[pdb_code]._node) 
-            assert nx.utils.edges_equal(g._adj, protein_graphs_with_data[pdb_code]._adj)
+            assert nx.utils.nodes_equal(g._node, protein_graphs_with_data[pdb_code][0]._node) 
+            assert nx.utils.edges_equal(g._adj, protein_graphs_with_data[pdb_code][0]._adj)
         except AssertionError as e:
             print(f"Error in graph extraction for {pdb_code}: {e}")
-            print("Extracted graph nodes:", g.nodes(data=True))
-            print("Original graph nodes:", protein_graphs_with_data[pdb_code].nodes(data=True))
-            print("Extracted graph edges:", g.edges(data=True))
-            print("Original graph edges:", protein_graphs_with_data[pdb_code].edges(data=True))
+            print("Extracted graph nodes:", list(g.nodes(data=True))[0:10])
+            print("Original graph nodes:", list(protein_graphs_with_data[pdb_code][0].nodes(data=True))[0:10])
+            print("Extracted graph edges:", list(g.edges(data=True))[0:10])
+            print("Original graph edges:", list(protein_graphs_with_data[pdb_code][0].edges(data=True))[0:10])
 
             with open(f"{errors_path}/{dataset_name}_errors.log", "a") as f:
                 f.write(f"Error in graph extraction for {pdb_code}: {e}\n")
@@ -771,6 +824,14 @@ def main():
     print("Time to extract:", extract_time)
     
 
+    print("\n\n")
+    print("Number of edges in original graph: ", len(protein_graphs_with_data[pdb_code][0].edges()))
+    print("Number of nodes in original graph: ", len(protein_graphs_with_data[pdb_code][0].nodes()))
+    print("Number of edges in extracted graph: ", len(g.edges()))
+    print("Number of nodes in extracted graph: ", len(g.nodes()))
+    print("\n\n")
+    print("original graph config:", protein_graphs_with_data[pdb_code][0].graph["config"].model_dump())
+    print("extracted graph config:", g.graph["config"].model_dump())
     print("\n\n")
     print("uncompressed complete graph size", asizeof.asizeof(protein_graphs_with_data) / 1024 / 1024)
     print("uncompressed structure graph size", asizeof.asizeof(protein_graphs_without_data) / 1024 / 1024)
