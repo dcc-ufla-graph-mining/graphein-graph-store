@@ -39,16 +39,6 @@ from graphein.protein.edges.distance import (
     add_vdw_clashes, #kind = vdw_clash 
 )
 
-from graphein.protein.edges.intramolecular import (
-    hydrogen_bond, # kind = hb
-    hydrophobic, # kind = hp
-    peptide_bonds, # kind = peptide_bond
-    # pi_cation, nao funciona eu ainda nao investiguei porque # kind = pc
-    # pi_stacking, nao funciona eu ainda nao investiguei porque # kind = ps
-    # salt_bridge, nao funciona eu ainda nao investiguei porque #kind = sb
-    # t_stacking, nao funciona eu ainda nao investiguei porque # kind = ts
-    # van_der_waals, nao funciona eu ainda nao investiguei porque # kind = vdw
-)
 
 all_edge_funcs = [
     add_atomic_edges, 
@@ -69,18 +59,18 @@ all_edge_funcs = [
     add_k_nn_edges, 
     add_peptide_bonds, 
     add_pi_stacking_interactions, 
-    add_t_stacking,
-    # hydrogen_bond,
-    # hydrophobic,
-    # peptide_bonds,
+    add_t_stacking
 ]
 
-edge_func_attributes = {
+edge_mutable_func_attributes = {
     "covalent": add_atomic_edges,
     "SINGLE": add_bond_order,
     "DOUBLE": add_bond_order,
     "TRIPLE": add_bond_order,
     "RING": add_ring_status,
+}
+
+edge_imutable_func_attributes = {
     "aromatic": add_aromatic_interactions,
     "aromatic_sulphur": add_aromatic_sulphur_interactions,
     "bb_carbonyl_carbonyl": add_backbone_carbonyl_carbonyl_interactions,
@@ -109,7 +99,7 @@ from ordered_set import OrderedSet
 
 ############################################################################################
 
-kind_attr = OrderedSet(set(edge_func_attributes.keys()))
+kind_attr = OrderedSet(set(edge_imutable_func_attributes.keys()))
 
 print(kind_attr)
 
@@ -163,8 +153,10 @@ def _extract_attribute_keys():
     edge_attr_keys["kind"] = kind_attr
     edge_attr_keys["distance"] = OrderedSet()
 
-    for key in node_attr_keys_list: 
-        node_attr_keys[key] = OrderedSet()
+    # for key in node_attr_keys_list: 
+    #     node_attr_keys[key] = OrderedSet()
+
+    node_attr_keys["chain_id"] = OrderedSet()
 
     return edge_attr_keys, node_attr_keys
 
@@ -202,14 +194,14 @@ def _process_edge_attributes(edge_data, edge_attr_keys):
     kind_indexes = set()
 
     for kind in attr_kind_value:
-        kind_indexes.add(edge_attr_keys["kind"].index(kind))
+        if kind not in edge_mutable_func_attributes:
+            kind_indexes.add(edge_attr_keys["kind"].index(kind))
         
     distance_indexes = edge_attr_keys["distance"].add(attr_distance_value)
 
     attr_indexes.append(kind_indexes)
     attr_indexes.append(distance_indexes)
 
-    # print(f"attrs: {attr_indexes}")
     return attr_indexes
 
 
@@ -217,14 +209,12 @@ def _process_edge_attributes(edge_data, edge_attr_keys):
 def _check_if_edge_attr_matches(edge, data, edge_attrs, edge_attr_keys):
     """Verifica e atualiza os atributos de uma aresta específica"""
     
-    diff = set([edge_attr_keys["kind"].index(k) for k in data["kind"]]) - set(edge_attrs[edge][0])
-    # print("data",[edge_attr_keys["kind"].index(k) for k in data["kind"]])
-    # print("edge_attrs", edge_attrs[edge][0])
-    # print("diff", diff)
+    real_data = set(filter(lambda x: x not in edge_mutable_func_attributes, data["kind"]))
 
+    diff = set([edge_attr_keys["kind"].index(k) for k in real_data]) - set(edge_attrs[edge][0])
     if len(diff) != 0:
-        # print("Updating edge attributes for edge:", edge)
-        [edge_attrs[edge][0].add(i) for i in diff]
+        for i in diff:
+            edge_attrs[edge][0].add(i)
 
 
 def _process_nodes(protein_graphs, node_to_pdbs, node_attrs, node_attr_keys, pdb_to_nodes):
@@ -311,27 +301,25 @@ def _reconstruct_node_attributes(extracted_graph, nodes, node_attrs, node_attr_k
 def _reconstruct_edge_attributes(extracted_graph, edges, edge_attrs, edge_attr_keys, edge_funcs):
     """Reconstrói os atributos das arestas no grafo extraído."""
     for u, v in edges:
+        edge = u, v
+        kinds = edge_attrs[edge][0]
+        distance = edge_attrs[edge][1]
+        kind_names = [edge_attr_keys["kind"][k] for k in kinds]
+        kind_names = list(filter(lambda x: edge_imutable_func_attributes[x] in edge_funcs, kind_names))
 
-        if (u, v) in edge_attrs:
-            kinds = edge_attrs[(u, v)][0]
-            distance = edge_attrs[(u, v)][1]
-
-            kind_names = [edge_attr_keys["kind"][k] for k in kinds]
+        if len(kind_names) > 0:
+            try:
+                extracted_graph.edges[edge]
+            except KeyError:
+                extracted_graph.add_edge(*edge)
             
-            for kind_name in kind_names:
-                if kind_name in edge_func_attributes:
-                    if edge_func_attributes[kind_name] in edge_funcs:
-                        if not "kind" in extracted_graph.edges[(u, v)].keys():
-                            extracted_graph.edges[(u, v)]["kind"] = set()
+            try:
+                extracted_graph.edges[edge]["kind"]
+            except KeyError:
+                extracted_graph.edges[edge]["kind"] = set()
 
-                        extracted_graph.edges[(u, v)]["kind"].add(kind_name)
-
-            if "kind" not in extracted_graph.edges[(u, v)].keys():
-                extracted_graph.remove_edge(u, v)
-            else:
-                extracted_graph.edges[(u, v)]["distance"] = edge_attr_keys["distance"][distance]
-
-    return extracted_graph
+            for kind in kind_names:
+                extracted_graph.edges[edge]["kind"].add(kind)
 
 
 def _validate_graph_reconstruction(extracted_graph, original_graph, pdb_code):
@@ -380,6 +368,9 @@ def _reconstruct_and_validate_graphs(protein_graphs, node_to_id, edge_to_id,
                                    node_attrs, edge_attrs, 
                                    node_attr_keys, edge_attr_keys, funcs):
     """Reconstrói e valida todos os grafos"""
+
+    is_different = False
+
     for pdb_code in protein_graphs:
         pdb_graphs = protein_graphs[pdb_code]
         for graph in pdb_graphs:
@@ -388,21 +379,121 @@ def _reconstruct_and_validate_graphs(protein_graphs, node_to_id, edge_to_id,
 
             nodes = [node_to_id.inverse[node_id] for node_id in pdb_to_nodes[pdb_code][0]]  
             edges = [edge_to_id.inverse[edge_id] for edge_id in pdb_to_edges[pdb_code][0]]
+
                 
             extracted_graph = nx.Graph()
             extracted_graph.graph["pdb_code"] = pdb_code
-            extracted_graph.update(edges=edges, nodes=nodes)
+            extracted_graph.update(nodes=nodes)
 
             _reconstruct_node_attributes(extracted_graph, nodes, node_attrs, node_attr_keys)
-            extracted_graph = _reconstruct_edge_attributes(extracted_graph, edges, edge_attrs, edge_attr_keys, original_graph.graph["config"].edge_construction_functions)
+            _reconstruct_edge_attributes(extracted_graph, edges, edge_attrs, edge_attr_keys, original_graph.graph["config"].edge_construction_functions)
 
-            print("number of edges in original graph: ", len(original_graph.edges()))
+            print("original graph edge funcs: ", original_graph.graph["config"].edge_construction_functions)
+            
             print("number of nodes in original graph: ", len(original_graph.nodes()))
-            print("number of edges in extracted graph: ", len(extracted_graph.edges()))
+            
             print("number of nodes in extracted graph: ", len(extracted_graph.nodes()))
 
-            if not _validate_graph_reconstruction(extracted_graph, original_graph, pdb_code):
-                break
+            # print("original graph", original_graph.edges(data=True))
+            # print("extracted graph", extracted_graph.edges(data=True))
+
+            if (len(extracted_graph.edges()) != len(original_graph.edges())):
+                is_different = True
+                print("number of edges in extracted graph: ", len(extracted_graph.edges()))
+                print("number of edges in original graph: ", len(original_graph.edges()))
+
+                with open(f"extracted.txt", "w") as f:
+                    
+                    f.write("\n\n")
+                    f.write("sample\n")
+                    sample = random.sample(list(original_graph.edges), 10)
+
+                    for e in sample:
+                        f.write(str(extracted_graph.edges[e]))
+                        f.write("\n")
+                        f.write(str(original_graph.edges[e]))
+                        f.write("\n")
+
+
+                    f.write("\n\n")
+                    f.write("differences between original and extracted graph:\n")
+                    original_to_extracted = set(original_graph.edges) - set(extracted_graph.edges)
+                    f.write(str(original_to_extracted))
+                    f.write("\n\n")
+                    for e in original_to_extracted:
+                        f.write(f"edge {e} in original graph: ")
+                        f.write(str(original_graph.edges[e]))
+                        f.write("\n")
+                    f.write("\n\n")
+                    f.write("differences between extracted and original graph:\n")
+
+                    extracted_to_original = set(extracted_graph.edges) - set(original_graph.edges)
+                    for e in extracted_to_original:
+                        f.write(str(e))
+                        f.write(str(extracted_graph.edges[e]))
+                        f.write("\n")
+                    f.write("\n\n")
+                    for e in extracted_to_original:
+                        f.write(f"edge {e} in extracted graph: ")
+                        f.write(str(extracted_graph.edges[e]))
+                        f.write("\n")
+                        for g in pdb_graphs:
+                            
+                            try:
+                                text = f"edge {e} in graph {str(g.graph['config'].model_dump())}: \n {g.edges[e]}"
+                                f.write(text)
+                            except KeyError:
+                                continue
+                            f.write("\n")
+
+                    f.write(str(original_graph.graph["config"].model_dump()))
+
+                    f.write("\n\n")
+                    for e in extracted_to_original:
+                        f.write(str(edge_attrs[e][0]))
+                        f.write("\n")
+                    
+                    for u, v in extracted_to_original:
+                        f.write(f"node {u} in extracted graph: ")
+                        f.write(str(extracted_graph.nodes[u]))
+                        f.write("\n")
+                        f.write(f"node {u} in original graph: ")
+                        f.write(str(original_graph.nodes[u]))
+                        f.write("\n\n")
+                        f.write("all edges from this node in extracted graph:\n")
+                        for e in extracted_graph.edges(u, data=True):
+                            f.write(str(e))
+                            f.write("\n")
+                        f.write("\n\n")
+                        f.write("all edges from this node in original graph:\n")
+                        for e in original_graph.edges(u, data=True):
+                            f.write(str(e))
+                            f.write("\n")
+
+                        f.write("\n\n")
+
+                        f.write(f"node {v} in extracted graph: ")
+                        f.write(str(extracted_graph.nodes[v]))
+                        f.write("\n\n")
+                        f.write("all edges from this node in extracted graph:\n")
+                        for e in extracted_graph.edges(v, data=True):
+                            f.write(str(e))
+                            f.write("\n")
+                        f.write("\n\n")
+                        f.write(f"node {v} in original graph: ")
+                        f.write(str(original_graph.nodes[v]))
+                        f.write("\n\n")
+                        f.write("all edges from this node in original graph:\n")
+                        for e in extracted_graph.edges(v, data=True):
+                            f.write(str(e))
+                            f.write("\n")
+                        f.write("\n\n")
+
+
+
+
+            # if not _validate_graph_reconstruction(extracted_graph, original_graph, pdb_code):
+            #     break
 
 def _process_pdb_codes_config(protein_graphs, pdb_codes_config):
     """Processa as configurações dos códigos PDB"""
@@ -451,7 +542,7 @@ def compress_with_composition(protein_graphs):
 
     _process_pdb_codes_config(protein_graphs, pdb_codes_config)
 
-    print(pdb_codes_config["1F7Z"].items())
+    # print(pdb_codes_config["1F7Z"].items())
 
     for k, v in pdb_codes_config.items():
         print(k)
@@ -459,6 +550,18 @@ def compress_with_composition(protein_graphs):
     
     del edge_to_pdbs
     del node_to_pdbs
+
+    # print("node_to_id: ", node_to_id)
+    # print("edge_to_id: ", edge_to_id)
+
+    # print("pdb_to_nodes: ", pdb_to_nodes)
+    # print("pdb_to_edges: ", pdb_to_edges)
+
+    # print("node_attrs: ", node_attrs)
+    # print("edge_attrs: ", edge_attrs)
+
+    # print("node_attr_keys: ", node_attr_keys)
+    # print("edge_attr_keys: ", edge_attr_keys)
 
     funcs = [add_atomic_edges, add_bond_order, add_ring_status]
     
@@ -506,7 +609,6 @@ class PDBGraphStoreBitmap:
 
     
     def _reconstruct_edge_attributes(self, extracted_graph, edges, edge_funcs):
-        print(edge_funcs)
         for u, v in edges:
 
             if (u, v) in self.edge_attrs:
@@ -516,8 +618,8 @@ class PDBGraphStoreBitmap:
                 kind_names = [self.edge_attr_keys["kind"][k] for k in kinds]
                 
                 for kind_name in kind_names:
-                    if kind_name in edge_func_attributes:
-                        if edge_func_attributes[kind_name] in edge_funcs:
+                    if kind_name in edge_imutable_func_attributes:
+                        if edge_imutable_func_attributes[kind_name] in edge_funcs:
                             if not "kind" in extracted_graph.edges[(u, v)].keys():
                                 extracted_graph.edges[(u, v)]["kind"] = set()
 
@@ -575,8 +677,7 @@ class PDBGraphStoreBitmap:
             )
             
         except Exception as e:
-            print(f"Error extracting graph for {pdb_code}: {e}")
-            print("asd;lkfajsdl;")
+            # print(f"Error extracting graph for {pdb_code}: {e}")
             extracted_graph = nx.Graph()
             extracted_graph.update(edges=[], nodes=[])
             with open(f"{errors_path}/{dataset_name}_errors.log", "a") as f:
@@ -634,16 +735,16 @@ def main():
     print("main")
 
     pdb_codes = []
-
-    # params_to_change = {"granularity": "N", "edge_construction_functions": [add_atomic_edges, add_hydrogen_bond_interactions, add_peptide_bonds]}
-
-    # config = ProteinGraphConfig(**params_to_change)
-    # # print(config.model_dump())
     
     params_to_change_list = []
     config_list = []
 
-    for i in range(15):
+
+    with open(f'{data}/{dataset}', 'r') as f:
+        for line in f:
+            pdb_codes.append(line.strip().upper())
+
+    for i in range(len(pdb_codes)):
         size = random.randint(1, len(all_edge_funcs))
         edge_construction_functions = random.sample(all_edge_funcs, size)
         # edge_construction_functions = [add_atomic_edges, add_t_stacking, add_bond_order, add_delaunay_triangulation, add_hydrogen_bond_interactions]
@@ -655,9 +756,38 @@ def main():
         
         config_list.append(ProteinGraphConfig(**params_to_change_list[i]))
 
-    with open(f'{data}/{dataset}', 'r') as f:
-        for line in f:
-            pdb_codes.append(line.strip().upper())
+    # for i in range(len(pdb_codes)):
+    #     match i:
+    #         case 0:
+    #             edge_construction_functions = [add_k_nn_edges, add_hydrogen_bond_interactions]
+    #         case 1:
+    #             edge_construction_functions = [add_t_stacking, add_ionic_interactions, add_atomic_edges,
+    #                                             add_hydrogen_bond_interactions, add_pi_stacking_interactions,
+    #                                             add_backbone_carbonyl_carbonyl_interactions, 
+    #                                             add_hydrophobic_interactions, add_distance_to_edges]
+    #         case 2:
+    #             edge_construction_functions = [add_aromatic_interactions, add_k_nn_edges, add_t_stacking,
+    #                                             add_aromatic_sulphur_interactions, add_cation_pi_interactions,
+    #                                             add_peptide_bonds, add_bond_order, add_hydrogen_bond_interactions,
+    #                                             add_ring_status, add_atomic_edges, add_fully_connected_edges, add_hydrophobic_interactions,
+    #                                             add_pi_stacking_interactions, add_disulfide_interactions, add_backbone_carbonyl_carbonyl_interactions,
+    #                                             add_ionic_interactions, add_delaunay_triangulation, add_distance_to_edges]
+    #         case 3:
+    #             edge_construction_functions = [add_aromatic_interactions, add_aromatic_sulphur_interactions]
+    #         case 4:
+    #             edge_construction_functions = [add_peptide_bonds, add_hydrogen_bond_interactions, add_ring_status, add_cation_pi_interactions, 
+    #                                             add_aromatic_interactions, add_hydrophobic_interactions, add_aromatic_sulphur_interactions, 
+    #                                             add_delaunay_triangulation, add_t_stacking, add_pi_stacking_interactions, add_bond_order, add_ionic_interactions]
+    #         case 5:
+    #             edge_construction_functions = [add_cation_pi_interactions, add_hydrogen_bond_interactions, add_ionic_interactions, add_ring_status,
+    #                                             add_disulfide_interactions, add_atomic_edges, add_t_stacking, add_delaunay_triangulation,
+    #                                             add_backbone_carbonyl_carbonyl_interactions, add_aromatic_interactions, add_distance_to_edges, add_k_nn_edges, 
+    #                                             add_bond_order, add_fully_connected_edges, add_aromatic_sulphur_interactions]
+        
+    #     params_to_change_list.append({"granularity": "N", 
+    #                                   "edge_construction_functions": edge_construction_functions})
+        
+    #     config_list.append(ProteinGraphConfig(**params_to_change_list[i]))
 
     protein_graphs_with_data = {}
     protein_graphs_without_data = {}
@@ -887,12 +1017,71 @@ def toy_example():
     pass
 
 
+
+
+def test_compress():
+    g1 = nx.Graph()
+    g2 = nx.Graph()
+    g3 = nx.Graph()
+    g4 = nx.Graph()
+    g1.add_node(1, chain_id="value1")
+    g1.add_node(2, chain_id="value2")
+    g1.add_edge(1, 2, kind=set(["covalent", "RING"]), distance=1.0)
+    g2.add_node(3, chain_id="value2")
+    g2.add_node(4, chain_id="value2")
+    g2.add_edge(3, 4, kind=set(["TRIPLE", "aromatic"]), distance=2.0)
+    g3.add_node(5, chain_id="value2")
+    g3.add_node(6, chain_id="value1")
+    g3.add_edge(5, 6, kind=set(["aromatic", "RING"]), distance=3.0)
+    g4.add_node(7, chain_id="value1")
+    g4.add_node(8, chain_id="value1")
+    g4.add_edge(7, 8, kind=set(["TRIPLE", "hbond"]), distance=4.0)
+
+    config1 = ProteinGraphConfig(
+        granularity="N",
+        edge_construction_functions=[add_atomic_edges, add_ring_status]
+    )
+
+    config2 = ProteinGraphConfig(
+        granularity="N",
+        edge_construction_functions=[add_aromatic_interactions, add_bond_order]
+    )
+
+    config3 = ProteinGraphConfig(
+        granularity="N",
+        edge_construction_functions=[add_ring_status, add_aromatic_interactions]
+    )
+
+    config4 = ProteinGraphConfig(
+        granularity="N",
+        edge_construction_functions=[add_bond_order, add_hydrogen_bond_interactions]
+    )
+
+    g1.graph["config"] = config1
+    g2.graph["config"] = config2
+    g3.graph["config"] = config3
+    g4.graph["config"] = config4
+
+    protein_graphs = {
+        "1ABC": [g1, g2],
+        "2DEF": [g3, g4]
+    }
+
+    print(g1.edges(data=True))
+
+    compress_with_composition(protein_graphs)
+
+
 if __name__ == "__main__":
     import os
     if os.environ["PROGRAM_NAME"] == "main":
         main()
     elif os.environ["PROGRAM_NAME"] == "toy":
         toy_example()
+
+
+
+
 
 
 

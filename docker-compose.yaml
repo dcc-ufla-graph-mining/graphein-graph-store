@@ -6,7 +6,8 @@ services:
     environment:
       - PROGRAM_NAME=main
       - DATA_DIR=/app/data
-      #- DATASET=soybean_ppigremlin.txt
+      - DATASET=teste_edge_params.txt
     volumes:
       - .:/app
-    command: sh run_metadata_with_different_datasets.sh
+    # command: sh run_metadata_with_different_datasets.sh
+    command: python src/compress/metadata.py
