@@ -560,12 +560,10 @@ def compress_with_composition(protein_graphs):
     # print("node_attr_keys: ", node_attr_keys)
     # print("edge_attr_keys: ", edge_attr_keys)
 
-    funcs = [add_atomic_edges, add_bond_order, add_ring_status]
-    
     _reconstruct_and_validate_graphs(protein_graphs, node_to_id, edge_to_id, 
                                    pdb_to_nodes, pdb_to_edges, 
                                    node_attrs, edge_attrs, 
-                                   node_attr_keys, edge_attr_keys, funcs)
+                                   node_attr_keys, edge_attr_keys)
     
 
     return PDBGraphStoreBitmap(node_to_id, edge_to_id, 
@@ -743,8 +741,6 @@ def main():
 
     for i in range(len(pdb_codes)):
         edge_construction_functions = [add_aromatic_interactions, add_aromatic_sulphur_interactions, add_backbone_carbonyl_carbonyl_interactions, add_cation_pi_interactions]
-
-        print(edge_construction_functions)
 
         params_to_change_list.append({"granularity": "atom", 
                                     "edge_construction_functions": edge_construction_functions})

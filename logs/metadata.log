@@ -1,0 +1,486 @@
+/home/ray/anaconda3/lib/python3.10/site-packages/google/rpc/__init__.py:18: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+OrderedSet(['salt_bridge', 'aromatic', 'aromatic_sulphur', 'delaunay', 'disulfide', 'bb_carbonyl_carbonyl', 'peptide_bond', 'distance_window', 'knn', 'hydrophobic', 'cation_pi', 'ionic', 'hbond', 'fully_connected', 'distance'])
+/app/src/compress
+OrderedSet(['salt_bridge', 'aromatic', 'aromatic_sulphur', 'delaunay', 'disulfide', 'bb_carbonyl_carbonyl', 'peptide_bond', 'distance_window', 'knn', 'hydrophobic', 'cation_pi', 'ionic', 'hbond', 'fully_connected', 'distance'])
+/app/src/compress
+main
+Downloading 1BXL from PDB
+
+727
+None
+Graph with 3079 nodes and 727 edges
+Downloading 1G5J from PDB
+
+788
+None
+Graph with 3164 nodes and 788 edges
+Downloading 1TY4 from PDB
+
+1482
+None
+Graph with 2877 nodes and 1482 edges
+Downloading 1ZY3 from PDB
+
+360
+None
+Graph with 2887 nodes and 360 edges
+Downloading 2A5Y from PDB
+
+2446
+None
+Graph with 8406 nodes and 2446 edges
+Downloading 2BZW from PDB
+
+851
+None
+Graph with 1389 nodes and 851 edges
+Downloading 2JM6 from PDB
+
+409
+None
+Graph with 3030 nodes and 409 edges
+Downloading 2K7W from PDB
+
+450
+None
+Graph with 2028 nodes and 450 edges
+Downloading 2KBW from PDB
+
+278
+None
+Graph with 3044 nodes and 278 edges
+Downloading 2LP8 from PDB
+
+689
+None
+Graph with 3147 nodes and 689 edges
+Downloading 2LR1 from PDB
+
+389
+None
+Graph with 3376 nodes and 389 edges
+Downloading 2M04 from PDB
+
+441
+None
+Graph with 3125 nodes and 441 edges
+Downloading 2M5B from PDB
+
+488
+None
+Graph with 2721 nodes and 488 edges
+Downloading 2MEJ from PDB
+
+602
+None
+Graph with 3335 nodes and 602 edges
+Downloading 2NL9 from PDB
+
+549
+None
+Graph with 1333 nodes and 549 edges
+Downloading 2NLA from PDB
+
+392
+None
+Graph with 1375 nodes and 392 edges
+Time to construct graphs: 7.299896955490112
+Number of graphs: 16
+1BXL
+{'edge_construction_functions': ['add_aromatic_interactions', 'add_aromatic_sulphur_interactions', 'add_backbone_carbonyl_carbonyl_interactions', 'add_cation_pi_interactions']}
+1G5J
+{'edge_construction_functions': ['add_aromatic_interactions', 'add_aromatic_sulphur_interactions', 'add_backbone_carbonyl_carbonyl_interactions', 'add_cation_pi_interactions']}
+1TY4
+{'edge_construction_functions': ['add_aromatic_interactions', 'add_aromatic_sulphur_interactions', 'add_backbone_carbonyl_carbonyl_interactions', 'add_cation_pi_interactions']}
+1ZY3
+{'edge_construction_functions': ['add_aromatic_interactions', 'add_aromatic_sulphur_interactions', 'add_backbone_carbonyl_carbonyl_interactions', 'add_cation_pi_interactions']}
+2A5Y
+{'edge_construction_functions': ['add_aromatic_interactions', 'add_aromatic_sulphur_interactions', 'add_backbone_carbonyl_carbonyl_interactions', 'add_cation_pi_interactions']}
+2BZW
+{'edge_construction_functions': ['add_aromatic_interactions', 'add_aromatic_sulphur_interactions', 'add_backbone_carbonyl_carbonyl_interactions', 'add_cation_pi_interactions']}
+2JM6
+{'edge_construction_functions': ['add_aromatic_interactions', 'add_aromatic_sulphur_interactions', 'add_backbone_carbonyl_carbonyl_interactions', 'add_cation_pi_interactions']}
+2K7W
+{'edge_construction_functions': ['add_aromatic_interactions', 'add_aromatic_sulphur_interactions', 'add_backbone_carbonyl_carbonyl_interactions', 'add_cation_pi_interactions']}
+2KBW
+{'edge_construction_functions': ['add_aromatic_interactions', 'add_aromatic_sulphur_interactions', 'add_backbone_carbonyl_carbonyl_interactions', 'add_cation_pi_interactions']}
+2LP8
+{'edge_construction_functions': ['add_aromatic_interactions', 'add_aromatic_sulphur_interactions', 'add_backbone_carbonyl_carbonyl_interactions', 'add_cation_pi_interactions']}
+2LR1
+{'edge_construction_functions': ['add_aromatic_interactions', 'add_aromatic_sulphur_interactions', 'add_backbone_carbonyl_carbonyl_interactions', 'add_cation_pi_interactions']}
+2M04
+{'edge_construction_functions': ['add_aromatic_interactions', 'add_aromatic_sulphur_interactions', 'add_backbone_carbonyl_carbonyl_interactions', 'add_cation_pi_interactions']}
+2M5B
+{'edge_construction_functions': ['add_aromatic_interactions', 'add_aromatic_sulphur_interactions', 'add_backbone_carbonyl_carbonyl_interactions', 'add_cation_pi_interactions']}
+2MEJ
+{'edge_construction_functions': ['add_aromatic_interactions', 'add_aromatic_sulphur_interactions', 'add_backbone_carbonyl_carbonyl_interactions', 'add_cation_pi_interactions']}
+2NL9
+{'edge_construction_functions': ['add_aromatic_interactions', 'add_aromatic_sulphur_interactions', 'add_backbone_carbonyl_carbonyl_interactions', 'add_cation_pi_interactions']}
+2NLA
+{'edge_construction_functions': ['add_aromatic_interactions', 'add_aromatic_sulphur_interactions', 'add_backbone_carbonyl_carbonyl_interactions', 'add_cation_pi_interactions']}
+{'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+original graph edge funcs:  [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>]
+number of nodes in original graph:  3079
+number of nodes in extracted graph:  3079
+{'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+original graph edge funcs:  [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>]
+number of nodes in original graph:  3164
+number of nodes in extracted graph:  3164
+{'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+original graph edge funcs:  [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>]
+number of nodes in original graph:  2877
+number of nodes in extracted graph:  2877
+{'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+original graph edge funcs:  [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>]
+number of nodes in original graph:  2887
+number of nodes in extracted graph:  2887
+{'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+original graph edge funcs:  [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>]
+number of nodes in original graph:  8406
+number of nodes in extracted graph:  8406
+{'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+original graph edge funcs:  [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>]
+number of nodes in original graph:  1389
+number of nodes in extracted graph:  1389
+{'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+original graph edge funcs:  [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>]
+number of nodes in original graph:  3030
+number of nodes in extracted graph:  3030
+{'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+original graph edge funcs:  [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>]
+number of nodes in original graph:  2028
+number of nodes in extracted graph:  2028
+{'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+original graph edge funcs:  [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>]
+number of nodes in original graph:  3044
+number of nodes in extracted graph:  3044
+{'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+original graph edge funcs:  [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>]
+number of nodes in original graph:  3147
+number of nodes in extracted graph:  3147
+{'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+original graph edge funcs:  [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>]
+number of nodes in original graph:  3376
+number of nodes in extracted graph:  3376
+{'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+original graph edge funcs:  [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>]
+number of nodes in original graph:  3125
+number of nodes in extracted graph:  3125
+{'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+original graph edge funcs:  [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>]
+number of nodes in original graph:  2721
+number of nodes in extracted graph:  2721
+{'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+original graph edge funcs:  [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>]
+number of nodes in original graph:  3335
+number of nodes in extracted graph:  3335
+{'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+original graph edge funcs:  [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>]
+number of nodes in original graph:  1333
+number of nodes in extracted graph:  1333
+{'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+original graph edge funcs:  [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>]
+number of nodes in original graph:  1375
+number of nodes in extracted graph:  1375
+Time to compress: 4.0425825119018555
+
+
+
+Number of edges in original graph:  727
+Number of nodes in original graph:  3079
+Number of edges in extracted graph:  727
+Number of nodes in extracted graph:  3079
+
+
+
+original graph config: {'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+extracted graph config: {'granularity': 'N', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+
+
+
+{'1BXL', '2NLA', '2M04', '1ZY3', '2KBW', '2A5Y', '2M5B', '2BZW', '2JM6', '2LP8', '2K7W', '1G5J', '2LR1', '2MEJ', '2NL9', '1TY4'} [<networkx.classes.graph.Graph object at 0x7f8fa95c7d90>]
+
+
+
+Number of edges in original graph:  392
+Number of nodes in original graph:  1375
+Number of edges in extracted graph:  392
+Number of nodes in extracted graph:  1375
+
+
+
+original graph config: {'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+extracted graph config: {'granularity': 'N', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+
+
+
+{'1BXL', '2NLA', '2M04', '1ZY3', '2KBW', '2A5Y', '2M5B', '2BZW', '2JM6', '2LP8', '2K7W', '1G5J', '2LR1', '2MEJ', '2NL9', '1TY4'} [<networkx.classes.graph.Graph object at 0x7f8fa8bbd6f0>]
+
+
+
+Number of edges in original graph:  441
+Number of nodes in original graph:  3125
+Number of edges in extracted graph:  441
+Number of nodes in extracted graph:  3125
+
+
+
+original graph config: {'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+extracted graph config: {'granularity': 'N', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+
+
+
+{'1BXL', '2NLA', '2M04', '1ZY3', '2KBW', '2A5Y', '2M5B', '2BZW', '2JM6', '2LP8', '2K7W', '1G5J', '2LR1', '2MEJ', '2NL9', '1TY4'} [<networkx.classes.graph.Graph object at 0x7f8fa95c7310>]
+
+
+
+Number of edges in original graph:  360
+Number of nodes in original graph:  2887
+Number of edges in extracted graph:  360
+Number of nodes in extracted graph:  2887
+
+
+
+original graph config: {'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+extracted graph config: {'granularity': 'N', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+
+
+
+{'1BXL', '2NLA', '2M04', '1ZY3', '2KBW', '2A5Y', '2M5B', '2BZW', '2JM6', '2LP8', '2K7W', '1G5J', '2LR1', '2MEJ', '2NL9', '1TY4'} [<networkx.classes.graph.Graph object at 0x7f8fa95c7250>]
+
+
+
+Number of edges in original graph:  278
+Number of nodes in original graph:  3044
+Number of edges in extracted graph:  278
+Number of nodes in extracted graph:  3044
+
+
+
+original graph config: {'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+extracted graph config: {'granularity': 'N', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+
+
+
+{'1BXL', '2NLA', '2M04', '1ZY3', '2KBW', '2A5Y', '2M5B', '2BZW', '2JM6', '2LP8', '2K7W', '1G5J', '2LR1', '2MEJ', '2NL9', '1TY4'} [<networkx.classes.graph.Graph object at 0x7f8fa8834220>]
+
+
+
+Number of edges in original graph:  2446
+Number of nodes in original graph:  8406
+Number of edges in extracted graph:  2446
+Number of nodes in extracted graph:  8406
+
+
+
+original graph config: {'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+extracted graph config: {'granularity': 'N', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+
+
+
+{'1BXL', '2NLA', '2M04', '1ZY3', '2KBW', '2A5Y', '2M5B', '2BZW', '2JM6', '2LP8', '2K7W', '1G5J', '2LR1', '2MEJ', '2NL9', '1TY4'} [<networkx.classes.graph.Graph object at 0x7f8fa95c70a0>]
+
+
+
+Number of edges in original graph:  488
+Number of nodes in original graph:  2721
+Number of edges in extracted graph:  488
+Number of nodes in extracted graph:  2721
+
+
+
+original graph config: {'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+extracted graph config: {'granularity': 'N', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+
+
+
+{'1BXL', '2NLA', '2M04', '1ZY3', '2KBW', '2A5Y', '2M5B', '2BZW', '2JM6', '2LP8', '2K7W', '1G5J', '2LR1', '2MEJ', '2NL9', '1TY4'} [<networkx.classes.graph.Graph object at 0x7f8fa95c7100>]
+
+
+
+Number of edges in original graph:  851
+Number of nodes in original graph:  1389
+Number of edges in extracted graph:  851
+Number of nodes in extracted graph:  1389
+
+
+
+original graph config: {'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+extracted graph config: {'granularity': 'N', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+
+
+
+{'1BXL', '2NLA', '2M04', '1ZY3', '2KBW', '2A5Y', '2M5B', '2BZW', '2JM6', '2LP8', '2K7W', '1G5J', '2LR1', '2MEJ', '2NL9', '1TY4'} [<networkx.classes.graph.Graph object at 0x7f8fa8bbd7e0>]
+
+
+
+Number of edges in original graph:  409
+Number of nodes in original graph:  3030
+Number of edges in extracted graph:  409
+Number of nodes in extracted graph:  3030
+
+
+
+original graph config: {'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+extracted graph config: {'granularity': 'N', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+
+
+
+{'1BXL', '2NLA', '2M04', '1ZY3', '2KBW', '2A5Y', '2M5B', '2BZW', '2JM6', '2LP8', '2K7W', '1G5J', '2LR1', '2MEJ', '2NL9', '1TY4'} [<networkx.classes.graph.Graph object at 0x7f8fa8bbf1c0>]
+
+
+
+Number of edges in original graph:  689
+Number of nodes in original graph:  3147
+Number of edges in extracted graph:  689
+Number of nodes in extracted graph:  3147
+
+
+
+original graph config: {'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+extracted graph config: {'granularity': 'N', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+
+
+
+{'1BXL', '2NLA', '2M04', '1ZY3', '2KBW', '2A5Y', '2M5B', '2BZW', '2JM6', '2LP8', '2K7W', '1G5J', '2LR1', '2MEJ', '2NL9', '1TY4'} [<networkx.classes.graph.Graph object at 0x7f8fa88348e0>]
+
+
+
+Number of edges in original graph:  450
+Number of nodes in original graph:  2028
+Number of edges in extracted graph:  450
+Number of nodes in extracted graph:  2028
+
+
+
+original graph config: {'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+extracted graph config: {'granularity': 'N', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+
+
+
+{'1BXL', '2NLA', '2M04', '1ZY3', '2KBW', '2A5Y', '2M5B', '2BZW', '2JM6', '2LP8', '2K7W', '1G5J', '2LR1', '2MEJ', '2NL9', '1TY4'} [<networkx.classes.graph.Graph object at 0x7f8fa8bbed40>]
+
+
+
+Number of edges in original graph:  788
+Number of nodes in original graph:  3164
+Number of edges in extracted graph:  788
+Number of nodes in extracted graph:  3164
+
+
+
+original graph config: {'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+extracted graph config: {'granularity': 'N', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+
+
+
+{'1BXL', '2NLA', '2M04', '1ZY3', '2KBW', '2A5Y', '2M5B', '2BZW', '2JM6', '2LP8', '2K7W', '1G5J', '2LR1', '2MEJ', '2NL9', '1TY4'} [<networkx.classes.graph.Graph object at 0x7f8fa95c74c0>]
+
+
+
+Number of edges in original graph:  389
+Number of nodes in original graph:  3376
+Number of edges in extracted graph:  389
+Number of nodes in extracted graph:  3376
+
+
+
+original graph config: {'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+extracted graph config: {'granularity': 'N', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+
+
+
+{'1BXL', '2NLA', '2M04', '1ZY3', '2KBW', '2A5Y', '2M5B', '2BZW', '2JM6', '2LP8', '2K7W', '1G5J', '2LR1', '2MEJ', '2NL9', '1TY4'} [<networkx.classes.graph.Graph object at 0x7f8faaf89ed0>]
+
+
+
+Number of edges in original graph:  602
+Number of nodes in original graph:  3335
+Number of edges in extracted graph:  602
+Number of nodes in extracted graph:  3335
+
+
+
+original graph config: {'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+extracted graph config: {'granularity': 'N', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+
+
+
+{'1BXL', '2NLA', '2M04', '1ZY3', '2KBW', '2A5Y', '2M5B', '2BZW', '2JM6', '2LP8', '2K7W', '1G5J', '2LR1', '2MEJ', '2NL9', '1TY4'} [<networkx.classes.graph.Graph object at 0x7f8fa95c7a60>]
+
+
+
+Number of edges in original graph:  549
+Number of nodes in original graph:  1333
+Number of edges in extracted graph:  549
+Number of nodes in extracted graph:  1333
+
+
+
+original graph config: {'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+extracted graph config: {'granularity': 'N', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+
+
+
+{'1BXL', '2NLA', '2M04', '1ZY3', '2KBW', '2A5Y', '2M5B', '2BZW', '2JM6', '2LP8', '2K7W', '1G5J', '2LR1', '2MEJ', '2NL9', '1TY4'} [<networkx.classes.graph.Graph object at 0x7f8fa8bbfa30>]
+
+
+
+Number of edges in original graph:  1482
+Number of nodes in original graph:  2877
+Number of edges in extracted graph:  1482
+Number of nodes in extracted graph:  2877
+
+
+
+original graph config: {'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+extracted graph config: {'granularity': 'N', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+
+
+
+{'1BXL', '2NLA', '2M04', '1ZY3', '2KBW', '2A5Y', '2M5B', '2BZW', '2JM6', '2LP8', '2K7W', '1G5J', '2LR1', '2MEJ', '2NL9', '1TY4'} [<networkx.classes.graph.Graph object at 0x7f8fa95c7a90>]
+Time to extract: 0.01916554570198059
+
+
+
+Number of edges in original graph:  1482
+Number of nodes in original graph:  2877
+Number of edges in extracted graph:  1482
+Number of nodes in extracted graph:  2877
+
+
+
+original graph config: {'granularity': 'atom', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+extracted graph config: {'granularity': 'N', 'keep_hets': [], 'insertions': True, 'alt_locs': 'max_occupancy', 'pdb_dir': None, 'verbose': False, 'exclude_waters': True, 'deprotonate': False, 'protein_df_processing_functions': None, 'edge_construction_functions': [<function add_aromatic_interactions at 0x7f9068cb0dc0>, <function add_aromatic_sulphur_interactions at 0x7f9068cb0e50>, <function add_backbone_carbonyl_carbonyl_interactions at 0x7f9068cb11b0>, <function add_cation_pi_interactions at 0x7f9068cb0ee0>], 'node_metadata_functions': [<function meiler_embedding at 0x7f9068cb3a30>], 'edge_metadata_functions': None, 'graph_metadata_functions': None, 'get_contacts_config': None, 'dssp_config': None}
+
+
+
+uncompressed complete graph size 44.807838439941406
+uncompressed structure graph size 15.169685363769531
+uncompressed edge size 14.693283081054688
+uncompressed node size 33.957481384277344
+uncompressed complete graph serialized 5.979339599609375
+uncompressed edge serialized 1.3181228637695312
+uncompressed node serialized 5.067161560058594
+
+
+
+compressed graph complete size 18.930023193359375
+compressed complete node size 12.007369995117188
+compressed complete edge size 6.9226531982421875
+compressed node attributes size 6.256629943847656
+compressed edge attributes size 4.206016540527344
+compressed node attributes keys size 0.00116729736328125
+compressed edge attributes keys size 0.9296646118164062
+compressed pdb to nodes size 0.08686065673828125
+compressed pdb to edges size 0.0245361328125
+compressed node to id size 5.662712097167969
+compressed edge to id size 1.7624359130859375
+
+
+
+compressed graph object size 15.272209167480469
+compressed graph complete size serialized 1.5558624267578125
+/home/ray/anaconda3/lib/python3.10/site-packages/google/rpc/__init__.py:18: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
