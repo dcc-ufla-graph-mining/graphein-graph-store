@@ -366,10 +366,8 @@ def _validate_graph_reconstruction(extracted_graph, original_graph, pdb_code):
 def _reconstruct_and_validate_graphs(protein_graphs, node_to_id, edge_to_id, 
                                    pdb_to_nodes, pdb_to_edges, 
                                    node_attrs, edge_attrs, 
-                                   node_attr_keys, edge_attr_keys, funcs):
+                                   node_attr_keys, edge_attr_keys):
     """Reconstrói e valida todos os grafos"""
-
-    is_different = False
 
     for pdb_code in protein_graphs:
         pdb_graphs = protein_graphs[pdb_code]
@@ -489,11 +487,10 @@ def _reconstruct_and_validate_graphs(protein_graphs, node_to_id, edge_to_id,
                             f.write("\n")
                         f.write("\n\n")
 
+            if not _validate_graph_reconstruction(extracted_graph, original_graph, pdb_code):
+                break
 
 
-
-            # if not _validate_graph_reconstruction(extracted_graph, original_graph, pdb_code):
-            #     break
 
 def _process_pdb_codes_config(protein_graphs, pdb_codes_config):
     """Processa as configurações dos códigos PDB"""
@@ -756,38 +753,6 @@ def main():
         
         config_list.append(ProteinGraphConfig(**params_to_change_list[i]))
 
-    # for i in range(len(pdb_codes)):
-    #     match i:
-    #         case 0:
-    #             edge_construction_functions = [add_k_nn_edges, add_hydrogen_bond_interactions]
-    #         case 1:
-    #             edge_construction_functions = [add_t_stacking, add_ionic_interactions, add_atomic_edges,
-    #                                             add_hydrogen_bond_interactions, add_pi_stacking_interactions,
-    #                                             add_backbone_carbonyl_carbonyl_interactions, 
-    #                                             add_hydrophobic_interactions, add_distance_to_edges]
-    #         case 2:
-    #             edge_construction_functions = [add_aromatic_interactions, add_k_nn_edges, add_t_stacking,
-    #                                             add_aromatic_sulphur_interactions, add_cation_pi_interactions,
-    #                                             add_peptide_bonds, add_bond_order, add_hydrogen_bond_interactions,
-    #                                             add_ring_status, add_atomic_edges, add_fully_connected_edges, add_hydrophobic_interactions,
-    #                                             add_pi_stacking_interactions, add_disulfide_interactions, add_backbone_carbonyl_carbonyl_interactions,
-    #                                             add_ionic_interactions, add_delaunay_triangulation, add_distance_to_edges]
-    #         case 3:
-    #             edge_construction_functions = [add_aromatic_interactions, add_aromatic_sulphur_interactions]
-    #         case 4:
-    #             edge_construction_functions = [add_peptide_bonds, add_hydrogen_bond_interactions, add_ring_status, add_cation_pi_interactions, 
-    #                                             add_aromatic_interactions, add_hydrophobic_interactions, add_aromatic_sulphur_interactions, 
-    #                                             add_delaunay_triangulation, add_t_stacking, add_pi_stacking_interactions, add_bond_order, add_ionic_interactions]
-    #         case 5:
-    #             edge_construction_functions = [add_cation_pi_interactions, add_hydrogen_bond_interactions, add_ionic_interactions, add_ring_status,
-    #                                             add_disulfide_interactions, add_atomic_edges, add_t_stacking, add_delaunay_triangulation,
-    #                                             add_backbone_carbonyl_carbonyl_interactions, add_aromatic_interactions, add_distance_to_edges, add_k_nn_edges, 
-    #                                             add_bond_order, add_fully_connected_edges, add_aromatic_sulphur_interactions]
-        
-    #     params_to_change_list.append({"granularity": "N", 
-    #                                   "edge_construction_functions": edge_construction_functions})
-        
-    #     config_list.append(ProteinGraphConfig(**params_to_change_list[i]))
 
     protein_graphs_with_data = {}
     protein_graphs_without_data = {}
