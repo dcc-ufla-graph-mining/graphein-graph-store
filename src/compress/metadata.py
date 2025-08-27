@@ -59,7 +59,7 @@ all_edge_funcs = [
     add_k_nn_edges, 
     add_peptide_bonds, 
     # add_pi_stacking_interactions, 
-    add_t_stacking
+    # add_t_stacking
 ]
 
 edge_mutable_func_attributes = {
@@ -86,7 +86,7 @@ edge_imutable_func_attributes = {
     "knn": add_k_nn_edges,
     "peptide_bond": add_peptide_bonds,
     # "pi_stacking": add_pi_stacking_interactions,
-    "t_stacking": add_t_stacking,
+    # "t_stacking": add_t_stacking,
     "salt_bridge": add_salt_bridges, 
 }
 
