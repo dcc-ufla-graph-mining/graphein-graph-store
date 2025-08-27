@@ -742,8 +742,7 @@ def main():
             pdb_codes.append(line.strip().upper())
 
     for i in range(len(pdb_codes)):
-        edge_construction_functions = all_edge_funcs
-        # edge_construction_functions = [add_atomic_edges, add_t_stacking, add_bond_order, add_delaunay_triangulation, add_hydrogen_bond_interactions]
+        edge_construction_functions = [add_aromatic_interactions, add_aromatic_sulphur_interactions, add_backbone_carbonyl_carbonyl_interactions, add_cation_pi_interactions]
 
         print(edge_construction_functions)
 
