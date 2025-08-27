@@ -6,8 +6,8 @@ services:
     environment:
       - PROGRAM_NAME=main
       - DATA_DIR=/app/data
-      - DATASET=teste_edge_params.txt
+      - DATASET=nicleic_rna.txt
     volumes:
       - .:/app
-    command: sh run_metadata_with_different_datasets.sh
-    # command: python src/compress/metadata.py
+    # command: sh run_metadata_with_different_datasets.sh
+    command: /usr/bin/time -v python src/compress/metadata.py

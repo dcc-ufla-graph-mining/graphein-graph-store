@@ -22,6 +22,9 @@ for filename in os.listdir(input_folder):
             lines = f.readlines()
 
         row_data = {"filename": filename.split("_results")[0]}
+        headers_set.add("Amt of pdbs")
+        with open(f"data/{filename.split('_results')[0]}.txt", "r") as f:
+            row_data["Amt of pdbs"] = len(f.readlines())
         
         for line in lines:
             match = pattern.match(line.strip())
@@ -30,6 +33,9 @@ for filename in os.listdir(input_folder):
                 value = float(match.group(2))
                 row_data[key] = value
                 headers_set.add(key)
+        
+        
+        
 
         data_rows.append(row_data)
 
