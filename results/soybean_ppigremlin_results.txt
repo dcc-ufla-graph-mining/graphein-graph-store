@@ -1,2 +1,0 @@
-Average number of nodes: 339.6989247311828
-Average number of edges: 47243.41935483871

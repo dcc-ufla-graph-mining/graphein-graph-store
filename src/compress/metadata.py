@@ -41,9 +41,9 @@ from graphein.protein.edges.distance import (
 
 
 all_edge_funcs = [
-    add_atomic_edges, 
-    add_bond_order, 
-    add_ring_status, 
+    # add_atomic_edges, 
+    # add_bond_order, 
+    # add_ring_status, 
     add_aromatic_interactions, 
     add_aromatic_sulphur_interactions, 
     add_backbone_carbonyl_carbonyl_interactions, 
@@ -742,13 +742,12 @@ def main():
             pdb_codes.append(line.strip().upper())
 
     for i in range(len(pdb_codes)):
-        size = random.randint(1, len(all_edge_funcs))
-        edge_construction_functions = random.sample(all_edge_funcs, size)
+        edge_construction_functions = all_edge_funcs
         # edge_construction_functions = [add_atomic_edges, add_t_stacking, add_bond_order, add_delaunay_triangulation, add_hydrogen_bond_interactions]
 
         print(edge_construction_functions)
 
-        params_to_change_list.append({"granularity": "N", 
+        params_to_change_list.append({"granularity": "atom", 
                                     "edge_construction_functions": edge_construction_functions})
         
         config_list.append(ProteinGraphConfig(**params_to_change_list[i]))
