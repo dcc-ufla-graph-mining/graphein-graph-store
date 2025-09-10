@@ -76,7 +76,7 @@ edge_imutable_func_attributes = {
     "bb_carbonyl_carbonyl": add_backbone_carbonyl_carbonyl_interactions,
     "cation_pi": add_cation_pi_interactions,
     "distance": add_distance_to_edges,
-    "distance_window": add_distance_window,
+    # "distance_window": add_distance_window,
     "delaunay": add_delaunay_triangulation,
     "disulfide": add_disulfide_interactions,
     "fully_connected": add_fully_connected_edges,
