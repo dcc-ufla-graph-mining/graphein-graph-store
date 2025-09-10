@@ -740,7 +740,7 @@ def main():
             pdb_codes.append(line.strip().upper())
 
     for i in range(len(pdb_codes)):
-        edge_construction_functions = [v for k, v in edge_imutable_func_attributes.items()]
+        edge_construction_functions = [add_aromatic_interactions, add_aromatic_sulphur_interactions, add_backbone_carbonyl_carbonyl_interactions]
 
         params_to_change_list.append({"granularity": "CA", 
                                     "edge_construction_functions": edge_construction_functions})
