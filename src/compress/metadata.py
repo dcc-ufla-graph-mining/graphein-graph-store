@@ -740,9 +740,9 @@ def main():
             pdb_codes.append(line.strip().upper())
 
     for i in range(len(pdb_codes)):
-        edge_construction_functions = [add_aromatic_interactions, add_aromatic_sulphur_interactions, add_backbone_carbonyl_carbonyl_interactions, add_cation_pi_interactions]
+        edge_construction_functions = edge_imutable_func_attributes
 
-        params_to_change_list.append({"granularity": "atom", 
+        params_to_change_list.append({"granularity": "CA", 
                                     "edge_construction_functions": edge_construction_functions})
         
         config_list.append(ProteinGraphConfig(**params_to_change_list[i]))
