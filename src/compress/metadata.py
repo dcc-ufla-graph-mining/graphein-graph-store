@@ -87,7 +87,7 @@ edge_imutable_func_attributes = {
     "peptide_bond": add_peptide_bonds,
     # "pi_stacking": add_pi_stacking_interactions,
     # "t_stacking": add_t_stacking,
-    "salt_bridge": add_salt_bridges, 
+    # "salt_bridge": add_salt_bridges, 
 }
 
 import networkx as nx
