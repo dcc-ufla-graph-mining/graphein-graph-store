@@ -130,7 +130,7 @@ dataset_name = dataset.split(".")[0]
 #contar o tempo so ate a parte de buildar o grafo grandao, excluindo o extract e o assert
 def _initialize_data_structures():
     """Inicializa as estruturas necessárias"""
-    edge_to_pdbs = {}   
+    edge_to_pdbs = {}
     node_to_pdbs = {}  
     edge_attrs = {}  
     node_attrs = {}

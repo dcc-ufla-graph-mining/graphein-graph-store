@@ -2,12 +2,12 @@ services:
   pyfractal:
     build:
       context: .
-      dockerfile: pyfractal.dockerfile
+      dockerfile: compress.dockerfile
     environment:
       - PROGRAM_NAME=main
       - DATA_DIR=/app/data
-      # - DATASET=nicleic_rna.txt
+      - DATASET=bcl_ppigremlin.txt
     volumes:
       - .:/app
-    command: sh run_metadata_with_different_datasets.sh
-    # command: python src/compress/metadata.py
+    # command: sh run_metadata_with_different_datasets.sh
+    command: python src/compress/main.py
