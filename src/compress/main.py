@@ -55,9 +55,6 @@ def write_error(dataset, msg, error_path):
     with open(f"{error_path}/{dataset}_errors.log", "a") as file:
         file.write(msg)
 
-def initialize_data_structures():
-    pass
-
 def read_dataset(general_data_path, dataset_txt_name):
     pdb_codes = list()
     with open(f"{general_data_path}/{dataset_txt_name}", "r") as file:
