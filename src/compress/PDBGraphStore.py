@@ -17,7 +17,8 @@ class PDBGraphStore:
             node_attrs={},
             edge_attrs={},
             node_attr_keys={},
-            edge_attr_keys={}
+            edge_attr_keys={},
+            pdb_list=[]
             ):
         self.node_to_id = node_to_id #mapeamento de de node para id, e vice versa, global
         self.edge_to_id = edge_to_id #mapeamento de de edge para id, e vice versa, global
@@ -27,6 +28,7 @@ class PDBGraphStore:
         self.edge_attrs = edge_attrs #lista de indices para o attr de cada edge
         self.node_attr_keys = node_attr_keys #dicionario de atributos indexados para cada node
         self.edge_attr_keys = edge_attr_keys #dicionario de atributos indexados para cada edge
+        self.pdb_list = [k for k, _ in pdb_to_nodes.items()]
 
     def _reconstruct_node_attributes(self, extracted_graph, nodes):
         for node in nodes:
@@ -43,47 +45,61 @@ class PDBGraphStore:
 
                     extracted_graph.nodes[node][key] = value
 
-    def _reconstruct_edge_attributes(self, extracted_graph, edges, edge_funcs):
+    def _reconstruct_edge_attributes(self, extracted_graph, edges, edge_funcs, pdb_code):
         for u, v in edges:
             edge = u, v
+            kind_idx = self.edge_attrs[edge][0]
+            kinds = [self.edge_attr_keys["kind"][k] for k in kind_idx]
 
-            kinds = self.edge_attrs[edge][0]
-            if len(self.edge_attrs[edge]) > 1:
-                distance = self.edge_attrs[edge][1]
-
-            kind_names = [self.edge_attr_keys["kind"][k] for k in kinds]
-            kind_names = list(filter(lambda x: edgeModel.edge_functions_dict[x] in edge_funcs, kind_names))
-
-            if len(kind_names) > 0:
-                if not extracted_graph.has_edge(*edge):
+            kind_names = edge_funcs
+            
+            if not extracted_graph.has_edge(*edge):
                     extracted_graph.add_edge(*edge)
 
-                extracted_graph.edges[edge].setdefault("kind", set())
+            extracted_graph.edges[edge].setdefault("kind", set())
+            
+            if len(kind_names) > 0:
 
-                for kind in kind_names:
-                    extracted_graph.edges[edge]["kind"].add(kind)
+                for k in kinds:
+                    if k in kind_names:
+                        extracted_graph.edges[edge]["kind"].add(k)
+
+            distance_idx = self.edge_attrs[edge][1][pdb_code]
 
             try:
-                extracted_graph.edges[edge]["distance"] = self.edge_attr_keys["distance"][self.edge_attrs[edge][1]]
+                extracted_graph.edges[edge]["distance"] = self.edge_attr_keys["distance"][distance_idx]
             except Exception as e:
-                print(e)
+                print("ERROR at reconstruct edge attr: ", e)
 
     def extract_pdb_graphs(self, pdb_codes=[], edge_construction_functions=[]):
+        extracted_graphs = []
         for pdb_code in pdb_codes:
             extracted_graph = nx.Graph()
 
-            extracted_nodes = [self.node_to_id.inverse[self.node_id] for node_id in self.pdb_to_nodes[pdb_code][0]]
-            extracted_edges = [self.edge_to_id.inverse[self.edge_id] for edge_id in self.pdb_to_edges[pdb_code][0]]
+            extracted_nodes = [self.node_to_id.inverse[node_id] for node_id in self.pdb_to_nodes[pdb_code][0]]
+            extracted_edges = [self.edge_to_id.inverse[edge_id] for edge_id in self.pdb_to_edges[pdb_code][0]]
 
             extracted_graph.graph["pdb_code"] = pdb_code
             extracted_graph.update(nodes=extracted_nodes)
 
             self._reconstruct_node_attributes(extracted_graph, extracted_nodes)
-            self._reconstruct_edge_attributes(extracted_graph, extracted_edges, edge_construction_functions)
+            self._reconstruct_edge_attributes(extracted_graph, extracted_edges, edge_construction_functions, pdb_code)
+            extracted_graphs.append(extracted_graph)
 
-            return extracted_graph
+        return extracted_graphs
+    
+    def extract_pdb_graphs_multiprocessing(self, pdb_codes=[], edge_constructions_functions=[], num_cpus=4):
+        pass
 
-    def insert_pdb(self, pdb_code, graph):
+    def insert_pdbs(self, graphs={}):
+        self.node_to_id,\
+        self.edge_to_id,\
+        self.pdb_to_nodes,\
+        self.pdb_to_edges,\
+        self.node_attrs,\
+        self.edge_attrs,\
+        self.node_attr_keys,\
+        self.edge_attr_keys
         pass
 
     def remove_pdb(self, pdb_code):

@@ -47,17 +47,17 @@ def initialize_pdb_data_path(general_data_path):
 
     return pdb_data_path
 
-def write_result(dataset, msg, result_path):
-    with open(f"{result_path}/{dataset}_results.log", "a") as file:
+def write_result(dataset, msg, result_path, file_mode='a'):
+    with open(f"{result_path}/{dataset}_results.log", file_mode) as file:
         file.write(msg)
 
-def write_error(dataset, msg, error_path):
-    with open(f"{error_path}/{dataset}_errors.log", "a") as file:
+def write_error(dataset, msg, error_path, file_mode='a'):
+    with open(f"{error_path}/{dataset}_errors.log", file_mode) as file:
         file.write(msg)
 
-def read_dataset(general_data_path, dataset_txt_name):
+def read_dataset(general_data_path, dataset_txt_name, file_mode='r'):
     pdb_codes = list()
-    with open(f"{general_data_path}/{dataset_txt_name}", "r") as file:
+    with open(f"{general_data_path}/{dataset_txt_name}", file_mode) as file:
         for line in file:
             if line[0] != '#':
                 pdb_codes.append(line.strip().upper())
@@ -65,7 +65,8 @@ def read_dataset(general_data_path, dataset_txt_name):
     return pdb_codes
 
 def define_graphein_edge_funcs():
-    return random.sample([v for _, v in edgeModel.edge_functions_dict.items()], 3)
+    # return random.sample([v for _, v in edgeModel.edge_functions_dict.items()], 3)
+    return [edgeModel.edge_functions_dict[f] for f in ["aromatic", "bb_carbonyl_carbonyl"]]
 
 def define_configuration(edge_construction_funcs):
     return {
@@ -93,6 +94,42 @@ def get_pdb_file(pdb_data_path, pdb_code):
 
     return pdb_file
 
+def prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path):
+    protein_graph_with_metadata_dict = dict()
+    protein_graph_without_metadata_dict = dict()
+
+    edge_funcs = define_graphein_edge_funcs()
+    config = ProteinGraphConfig(**define_configuration(edge_funcs))
+
+    try:
+        pdb_file = get_pdb_file(pdb_data_path=pdb_data_path, pdb_code=pdb_code)
+    except Exception as e:
+        write_error(dataset_name, pdb_file, error_path)            
+
+    graph = construct_graph(config=config, path=pdb_file)
+    graph.graph["pdb_code"] = pdb_code
+    print(graph, "\n")
+
+    graph_config = graph.graph["config"]
+    graph_pdb_code = graph.graph["pdb_code"]
+    graph.graph.clear()
+    graph.graph["config"] = graph_config
+    graph.graph["pdb_code"] = graph_pdb_code
+
+    protein_graph_with_metadata_dict.setdefault(pdb_code, []).append(graph.copy())
+
+    for node in graph.nodes():
+        graph.nodes[node].clear()
+        
+    for u, v in graph.edges():
+        graph.edges[u, v].clear()
+
+    protein_graph_without_metadata_dict.setdefault(pdb_code, []).append(graph.copy())
+
+    del graph
+
+    return protein_graph_with_metadata_dict, protein_graph_without_metadata_dict
+
 def main():
     current_file_path = os.path.dirname(os.path.realpath(metadata.__file__))
     general_data_path = os.environ.get("DATA_DIR") if os.environ.get("DATA_DIR") is not None else os.path.abspath(f"{current_file_path}/../../data/")
@@ -102,6 +139,9 @@ def main():
     error_path = initialize_errors_directory(current_file_path=current_file_path)
     result_path = initialize_results_directory(current_file_path=current_file_path)
     pdb_data_path = initialize_pdb_data_path(general_data_path=general_data_path)
+
+    create_dataset_error_file(error_path, dataset_name)
+    create_dataset_result_file(result_path, dataset_name)
 
     print(f"\
           current_file_path={current_file_path}, \
@@ -115,46 +155,21 @@ def main():
 
     pdb_codes = read_dataset(general_data_path=general_data_path, dataset_txt_name=dataset_txt_file_name)
 
-    edge_funcs = define_graphein_edge_funcs()
-    config = ProteinGraphConfig(**define_configuration(edge_funcs))
-
-    protein_graph_with_metadata_dict = dict()
-    protein_graph_without_metadata_dict = dict()
+    protein_graph_with_metadata_dict = {}
+    protein_graph_without_metadata_dict = {}
     number_of_nodes_in_which_graph = list()
     number_of_edges_in_which_graph = list()
 
     time_start = time.time()
 
     for i, pdb_code in enumerate(pdb_codes.copy()):
-        try:
-            pdb_file = get_pdb_file(pdb_data_path=pdb_data_path, pdb_code=pdb_code)
-        except Exception as e:
-            write_error(dataset_name, pdb_file, error_path)            
+        graph_with_data,\
+        graph_without_data = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path)
+        protein_graph_with_metadata_dict[pdb_code] = graph_with_data[pdb_code]
+        protein_graph_without_metadata_dict[pdb_code] = graph_with_data[pdb_code]
 
-        graph = construct_graph(config=config, path=pdb_file)
-        graph.graph["pdb_code"] = pdb_code
-        print(graph, "\n")
-
-        graph_config = graph.graph["config"]
-        graph_pdb_code = graph.graph["pdb_code"]
-        graph.graph.clear()
-        graph.graph["config"] = graph_config
-        graph.graph["pdb_code"] = graph_pdb_code
-
-        protein_graph_with_metadata_dict.setdefault(pdb_code, []).append(graph.copy())
-
-        for node in graph.nodes():
-            graph.nodes[node].clear()
-        
-        for u, v in graph.edges():
-            graph.edges[u, v].clear()
-
-        protein_graph_without_metadata_dict.setdefault(pdb_code, []).append(graph.copy())
-
-        number_of_edges_in_which_graph.append(len(graph.edges()))
-        number_of_nodes_in_which_graph.append(len(graph.nodes()))
-
-        del graph
+        number_of_edges_in_which_graph.append(len(protein_graph_without_metadata_dict[pdb_code][-1].edges()))
+        number_of_nodes_in_which_graph.append(len(protein_graph_without_metadata_dict[pdb_code][-1].nodes()))
 
     msg = f"Average number of nodes: {np.mean(number_of_nodes_in_which_graph)} \
         \nAverage number of edges: {np.mean(number_of_edges_in_which_graph)} \
@@ -178,7 +193,6 @@ def main():
     time_start = time.time()
     print(v_size, v_serialized, e_size, e_serialized)
 
-    #TODO: here comes the builder
     node_to_id,\
     edge_to_id,\
     pdb_to_nodes,\
@@ -192,6 +206,19 @@ def main():
 
     pdb_store = PDBGraphStore(node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_attrs, node_attr_keys, edge_attr_keys)
 
+    graphs_extracted = pdb_store.extract_pdb_graphs(["1BXL", "1G5J"], ["aromatic", "bb_carbonyl_carbonyl"])
+
+    for g in graphs_extracted:
+        print(g.graph["pdb_code"])
+        print(g)
+        for u, v in g.edges():
+            print(g.edges[u, v])
+
+    #TODO: insert pdb into the pdb_store
+    # graph_to_insert, _ = prepare_graph(pdb_data_path, "2NL9", dataset_name, error_path)
+    # pdb_store.insert_pdbs(graph_to_insert)
+    #TODO: remove pdb from the pdb_store
+    
     #TODO build the output string and then print it and write it to results file
 
 if __name__=="__main__":
