@@ -215,9 +215,11 @@ def main():
             print(g.edges[u, v])
 
     #TODO: insert pdb into the pdb_store
-    # graph_to_insert, _ = prepare_graph(pdb_data_path, "2NL9", dataset_name, error_path)
-    # pdb_store.insert_pdbs(graph_to_insert)
+    graph_to_insert, _ = prepare_graph(pdb_data_path, "2NL9", dataset_name, error_path)
+    pdb_store.insert_pdbs(graph_to_insert)
+    
     #TODO: remove pdb from the pdb_store
+    print(pdb_store.remove_pdb("2NL9"))    
     
     #TODO build the output string and then print it and write it to results file
 
