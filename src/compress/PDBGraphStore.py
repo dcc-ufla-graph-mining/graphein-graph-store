@@ -18,7 +18,6 @@ class PDBGraphStore:
             edge_attrs={},
             node_attr_keys={},
             edge_attr_keys={},
-            pdb_list=[]
             ):
         self.node_to_id = node_to_id #mapeamento de de node para id, e vice versa, global
         self.edge_to_id = edge_to_id #mapeamento de de edge para id, e vice versa, global
@@ -28,8 +27,9 @@ class PDBGraphStore:
         self.edge_attrs = edge_attrs #lista de indices para o attr de cada edge
         self.node_attr_keys = node_attr_keys #dicionario de atributos indexados para cada node
         self.edge_attr_keys = edge_attr_keys #dicionario de atributos indexados para cada edge
-        self.pdb_list = [k for k, _ in pdb_to_nodes.items()]
 
+    def get_pdb_list(self):
+        return [pdb_code for pdb_code in self.pdb_to_nodes]
     def _reconstruct_node_attributes(self, extracted_graph, nodes):
         for node in nodes:
             if node in self.node_attrs:

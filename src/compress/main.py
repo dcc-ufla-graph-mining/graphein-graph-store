@@ -9,6 +9,7 @@ from pympler import asizeof
 import pickle
 import Builder
 import edge_functions_Model as edgeModel
+import operations
 
 from graphein.protein.config import ProteinGraphConfig
 from graphein.protein.graphs import construct_graph
@@ -206,6 +207,7 @@ def main():
 
     pdb_store = PDBGraphStore(node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_attrs, node_attr_keys, edge_attr_keys)
 
+    #extract pdb graph from the pdb_store
     graphs_extracted = pdb_store.extract_pdb_graphs(["1BXL", "1G5J"], ["aromatic", "bb_carbonyl_carbonyl"])
 
     for g in graphs_extracted:
@@ -214,12 +216,18 @@ def main():
         for u, v in g.edges():
             print(g.edges[u, v])
 
-    #TODO: insert pdb into the pdb_store
+    #insert pdb into the pdb_store
     graph_to_insert, _ = prepare_graph(pdb_data_path, "2NL9", dataset_name, error_path)
     pdb_store.insert_pdbs(graph_to_insert)
     
-    #TODO: remove pdb from the pdb_store
+    #remove pdb from the pdb_store
     print(pdb_store.remove_pdb("2NL9"))    
+
+
+    #merge 2 pdb_stores
+    pdb_store2 = PDBGraphStore(node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_attrs, node_attr_keys, edge_attr_keys)
+
+    operations.merge_graph_stores([pdb_store, pdb_store2])
     
     #TODO build the output string and then print it and write it to results file
 
