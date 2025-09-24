@@ -6,7 +6,7 @@ services:
     environment:
       - PROGRAM_NAME=main
       - DATA_DIR=/app/data
-      - DATASET=bcl_ppigremlin.txt
+      - DATASET=soybean_ppigremlin.txt
     volumes:
       - .:/app
     # command: sh run_metadata_with_different_datasets.sh
