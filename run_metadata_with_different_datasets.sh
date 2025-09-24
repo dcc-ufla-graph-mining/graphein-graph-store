@@ -5,10 +5,10 @@ else
 fi
 
 if $(ls /app/logs | grep -q "metadata.log"); then
-    echo "File /app/logs/metadata.log exists."
-else
-    touch /app/logs/metadata.log
+    rm /app/logs/metadata.log
 fi
+
+touch /app/logs/metadata.log
 
 # Check if the error directory exists
 if $(ls /app | grep -q "errors"); then
