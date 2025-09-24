@@ -1,0 +1,30 @@
+Result log for nucleotides_FMN
+Average number of nodes: 734.0869565217391         
+Average number of edges: 5484.495652173913     
+Time to construct graphs: 29.44028329849243
+Number of graphs: 115
+Time to compress: 13.748427629470825
+        
+Mean time to extract: 0.07678860166798467         
+Uncompressed complete graph size: 409.4496612548828        
+Uncompressed structure graph size: 409.4496612548828        
+Uncompressed edge size: 1.5199203491210938        
+Uncompressed node size: 0.32867431640625        
+Uncompressed complete graph serialized: 46.290321350097656        
+Uncompressed edge serialized: 0.130767822265625        
+Uncompressed node serialized: 0.0422821044921875        
+        
+Compressed graph complete size: 592.5709991455078        
+Compressed complete node size: 35.652099609375         
+Compressed complete edge size: 556.9188995361328         
+Compressed node attributes size: 12.106620788574219        
+Compressed edge attributes size: 393.41092681884766        
+Compressed node attributes keys size: 14.253341674804688        
+Compressed edge attributes keys size: 63.528175354003906        
+Compressed pdb to nodes size: 0.1710357666015625        
+Compressed pdb to edges size: 0.7061080932617188        
+Compressed node to id size: 9.121101379394531        
+Compressed edge to id size: 99.27368927001953        
+        
+Compressed graph object size: 525.5441741943359        
+Compressed graph complete size serialized: 47.53253936767578    

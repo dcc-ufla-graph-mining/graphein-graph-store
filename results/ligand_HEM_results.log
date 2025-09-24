@@ -1,0 +1,30 @@
+Result log for ligand_HEM
+Average number of nodes: 832.8963414634146         
+Average number of edges: 6249.317073170731     
+Time to construct graphs: 48.201897859573364
+Number of graphs: 164
+Time to compress: 23.505602598190308
+        
+Mean time to extract: 0.08579151368722683         
+Uncompressed complete graph size: 659.6586685180664        
+Uncompressed structure graph size: 659.6586685180664        
+Uncompressed edge size: 3.1631011962890625        
+Uncompressed node size: 0.6031570434570312        
+Uncompressed complete graph serialized: 74.66006469726562        
+Uncompressed edge serialized: 0.2733612060546875        
+Uncompressed node serialized: 0.08213043212890625        
+        
+Compressed graph complete size: 944.2955093383789        
+Compressed complete node size: 46.847145080566406         
+Compressed complete edge size: 897.4483642578125         
+Compressed node attributes size: 16.266868591308594        
+Compressed edge attributes size: 614.4955520629883        
+Compressed node attributes keys size: 19.35637664794922        
+Compressed edge attributes keys size: 110.61369323730469        
+Compressed pdb to nodes size: 0.2745208740234375        
+Compressed pdb to edges size: 1.0546035766601562        
+Compressed node to id size: 10.949378967285156        
+Compressed edge to id size: 171.28451538085938        
+        
+Compressed graph object size: 840.1061859130859        
+Compressed graph complete size serialized: 74.60211181640625    

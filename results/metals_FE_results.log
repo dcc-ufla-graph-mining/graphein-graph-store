@@ -1,0 +1,30 @@
+Result log for metals_FE
+Average number of nodes: 894.5377358490566         
+Average number of edges: 6719.679245283019     
+Time to construct graphs: 65.79619646072388
+Number of graphs: 212
+Time to compress: 33.19731569290161
+        
+Mean time to extract: 0.0915738377930983         
+Uncompressed complete graph size: 915.1523971557617        
+Uncompressed structure graph size: 915.1523971557617        
+Uncompressed edge size: 2.97064208984375        
+Uncompressed node size: 0.5777435302734375        
+Uncompressed complete graph serialized: 103.70403289794922        
+Uncompressed edge serialized: 0.2572174072265625        
+Uncompressed node serialized: 0.07663726806640625        
+        
+Compressed graph complete size: 1308.5921249389648        
+Compressed complete node size: 53.499717712402344         
+Compressed complete edge size: 1255.0924072265625         
+Compressed node attributes size: 18.792098999023438        
+Compressed edge attributes size: 864.1412506103516        
+Compressed node attributes keys size: 22.261146545410156        
+Compressed edge attributes keys size: 178.42350006103516        
+Compressed pdb to nodes size: 0.39203643798828125        
+Compressed pdb to edges size: 1.5504608154296875        
+Compressed node to id size: 12.054435729980469        
+Compressed edge to id size: 210.9771957397461        
+        
+Compressed graph object size: 1163.184455871582        
+Compressed graph complete size serialized: 104.10891723632812    

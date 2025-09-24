@@ -1,0 +1,30 @@
+Result log for metals_NI
+Average number of nodes: 547.3198847262248         
+Average number of edges: 4036.57060518732     
+Time to construct graphs: 28.282336711883545
+Number of graphs: 347
+Time to compress: 30.416600465774536
+        
+Mean time to extract: 0.05334404497393957         
+Uncompressed complete graph size: 904.0813369750977        
+Uncompressed structure graph size: 904.0813369750977        
+Uncompressed edge size: 4.643890380859375        
+Uncompressed node size: 0.8512649536132812        
+Uncompressed complete graph serialized: 102.19322204589844        
+Uncompressed edge serialized: 0.40349578857421875        
+Uncompressed node serialized: 0.11881256103515625        
+        
+Compressed graph complete size: 1274.6814193725586        
+Compressed complete node size: 44.797279357910156         
+Compressed complete edge size: 1229.8841400146484         
+Compressed node attributes size: 15.537117004394531        
+Compressed edge attributes size: 843.4917907714844        
+Compressed node attributes keys size: 18.20306396484375        
+Compressed edge attributes keys size: 176.9654312133789        
+Compressed pdb to nodes size: 0.42986297607421875        
+Compressed pdb to edges size: 2.0485916137695312        
+Compressed node to id size: 10.627235412597656        
+Compressed edge to id size: 207.37832641601562        
+        
+Compressed graph object size: 1134.9663848876953        
+Compressed graph complete size serialized: 100.99534606933594    

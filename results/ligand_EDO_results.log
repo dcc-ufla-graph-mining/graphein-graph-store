@@ -1,0 +1,30 @@
+Result log for ligand_EDO
+Average number of nodes: 645.7770919067216         
+Average number of edges: 4796.122770919067     
+Time to construct graphs: 301.15905833244324
+Number of graphs: 1458
+Time to compress: 172.04582405090332
+        
+Mean time to extract: 0.07148089363087679         
+Uncompressed complete graph size: 4506.124603271484        
+Uncompressed structure graph size: 4506.124603271484        
+Uncompressed edge size: 2.0241851806640625        
+Uncompressed node size: 0.4100494384765625        
+Uncompressed complete graph serialized: 509.28536224365234        
+Uncompressed edge serialized: 0.17424774169921875        
+Uncompressed node serialized: 0.05499267578125        
+        
+Compressed graph complete size: 6016.247589111328        
+Compressed complete node size: 98.9677505493164         
+Compressed complete edge size: 5917.279838562012         
+Compressed node attributes size: 34.435508728027344        
+Compressed edge attributes size: 3896.8820037841797        
+Compressed node attributes keys size: 39.546775817871094        
+Compressed edge attributes keys size: 806.4711685180664        
+Compressed pdb to nodes size: 2.078704833984375        
+Compressed pdb to edges size: 10.342445373535156        
+Compressed node to id size: 22.906761169433594        
+Compressed edge to id size: 1203.5842208862305        
+        
+Compressed graph object size: 5394.716735839844        
+Compressed graph complete size serialized: 462.9080047607422    

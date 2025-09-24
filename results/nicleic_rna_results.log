@@ -1,0 +1,30 @@
+Result log for nicleic_rna
+Average number of nodes: 986.3745928338762         
+Average number of edges: 7432.9250814332245     
+Time to construct graphs: 59.85978960990906
+Number of graphs: 307
+Time to compress: 50.12773323059082
+        
+Mean time to extract: 0.10827393252220527         
+Uncompressed complete graph size: 1470.6017990112305        
+Uncompressed structure graph size: 1470.6017990112305        
+Uncompressed edge size: 4.031608581542969        
+Uncompressed node size: 0.7356338500976562        
+Uncompressed complete graph serialized: 166.41634368896484        
+Uncompressed edge serialized: 0.348907470703125        
+Uncompressed node serialized: 0.1015472412109375        
+        
+Compressed graph complete size: 1959.1830215454102        
+Compressed complete node size: 87.34689331054688         
+Compressed complete edge size: 1871.8361282348633         
+Compressed node attributes size: 30.35431671142578        
+Compressed edge attributes size: 1282.1965637207031        
+Compressed node attributes keys size: 35.396827697753906        
+Compressed edge attributes keys size: 237.57315826416016        
+Compressed pdb to nodes size: 0.6150054931640625        
+Compressed pdb to edges size: 2.183563232421875        
+Compressed node to id size: 20.980743408203125        
+Compressed edge to id size: 349.8828430175781        
+        
+Compressed graph object size: 1740.5418395996094        
+Compressed graph complete size serialized: 159.31988525390625    
