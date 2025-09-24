@@ -12,6 +12,7 @@ import Builder
 import edge_functions_Model as edgeModel
 import operations
 import networkx as nx
+import traceback
 
 from graphein.protein.config import ProteinGraphConfig
 from graphein.protein.graphs import construct_graph
@@ -91,7 +92,7 @@ def get_pdb_file(pdb_data_path, pdb_code):
         try:
             pdb_file = download_pdb(pdb_code, f"{pdb_data_path}/")
         except Exception as e:
-            return e
+            raise e
         
     if pdb_file == None:
         raise Exception("Error reading the pdb file")
@@ -107,8 +108,8 @@ def prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path):
 
     try:
         pdb_file = get_pdb_file(pdb_data_path=pdb_data_path, pdb_code=pdb_code)
-    except Exception as e:
-        write_error(dataset_name, pdb_file, error_path)            
+    except Exception as e:     
+        raise e    
 
     graph = construct_graph(config=config, path=pdb_file)
     graph.graph["pdb_code"] = pdb_code
@@ -199,8 +200,13 @@ def main():
     time_start = time.time()
 
     for i, pdb_code in enumerate(pdb_codes.copy()):
-        graph_with_data,\
-        graph_without_data = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path)
+        try:
+            graph_with_data, graph_without_data = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path)
+        except Exception as e:
+            msg = traceback.format_exc()
+            print(msg)
+            write_error(dataset_name, msg, error_path)
+            continue
         protein_graph_with_metadata_dict[pdb_code] = graph_with_data[pdb_code]
         protein_graph_without_metadata_dict[pdb_code] = graph_with_data[pdb_code]
 
