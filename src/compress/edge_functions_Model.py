@@ -21,13 +21,13 @@ from graphein.protein.edges.distance import (
     add_vdw_clashes, #kind = vdw_clash 
 )
 
+from bidict import bidict
 
-edge_functions_dict = {
+edge_functions_dict = bidict({
     "aromatic": add_aromatic_interactions,
     "aromatic_sulphur": add_aromatic_sulphur_interactions,
     "bb_carbonyl_carbonyl": add_backbone_carbonyl_carbonyl_interactions,
     "cation_pi": add_cation_pi_interactions,
-    # "distance_window": add_distance_window,
     "delaunay": add_delaunay_triangulation,
     "disulfide": add_disulfide_interactions,
     "fully_connected": add_fully_connected_edges,
@@ -36,7 +36,8 @@ edge_functions_dict = {
     "ionic": add_ionic_interactions,
     "knn": add_k_nn_edges,
     "peptide_bond": add_peptide_bonds,
+    # "distance_window": add_distance_window,
     # "pi_stacking": add_pi_stacking_interactions,
     # "t_stacking": add_t_stacking,
     # "salt_bridge": add_salt_bridges, 
-}
+})

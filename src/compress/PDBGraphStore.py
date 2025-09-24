@@ -70,15 +70,20 @@ class PDBGraphStore:
             kind_names = edge_funcs
             
             if not extracted_graph.has_edge(*edge):
-                    extracted_graph.add_edge(*edge)
+                extracted_graph.add_edge(*edge)
 
             extracted_graph.edges[edge].setdefault("kind", set())
             
             if len(kind_names) > 0:
-
                 for k in kinds:
                     if k in kind_names:
                         extracted_graph.edges[edge]["kind"].add(k)
+            else:
+                raise Exception("Deve ser dado ao menos uma função como parâmetro")
+            
+            if len(extracted_graph.edges[edge]["kind"]) == 0:
+                extracted_graph.remove_edge(*edge)
+                continue
 
             distance_idx = self.edge_attrs[edge][1][pdb_code]
 
@@ -89,7 +94,7 @@ class PDBGraphStore:
 
     def extract_pdb_graphs(self, pdb_codes=[], edge_construction_functions=[]):
         extracted_graphs = []
-        print(f"dentro de extract_pdb. pdb_code={pdb_codes}")
+        print(f"dentro de extract_pdb. pdb_code={pdb_codes}, {edge_construction_functions}")
         for pdb_code in pdb_codes:
             extracted_graph = nx.Graph()
 
