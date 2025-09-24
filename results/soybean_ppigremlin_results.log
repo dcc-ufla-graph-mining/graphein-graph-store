@@ -1,1 +1,30 @@
 Result log for soybean_ppigremlin
+Average number of nodes: 339.63440860215053         
+Average number of edges: 2417.7311827956987     
+Time to construct graphs: 4.533958911895752
+Number of graphs: 93
+Time to compress: 3.94915509223938
+        
+Mean time to extract: 0.028181586214291152         
+Uncompressed complete graph size: 145.81346893310547        
+Uncompressed structure graph size: 145.81346893310547        
+Uncompressed edge size: 1.09429931640625        
+Uncompressed node size: 0.2545166015625        
+Uncompressed complete graph serialized: 16.480628967285156        
+Uncompressed edge serialized: 0.0935516357421875        
+Uncompressed node serialized: 0.03319549560546875        
+        
+Compressed graph complete size: 98.55287170410156        
+Compressed complete node size: 5.746055603027344         
+Compressed complete edge size: 92.80681610107422         
+Compressed node attributes size: 1.9316329956054688        
+Compressed edge attributes size: 54.59259796142578        
+Compressed node attributes keys size: 2.4965972900390625        
+Compressed edge attributes keys size: 25.468429565429688        
+Compressed pdb to nodes size: 0.07808685302734375        
+Compressed pdb to edges size: 0.4268035888671875        
+Compressed node to id size: 1.2397384643554688        
+Compressed edge to id size: 12.318984985351562        
+        
+Compressed graph object size: 85.29125213623047        
+Compressed graph complete size serialized: 11.059440612792969    
