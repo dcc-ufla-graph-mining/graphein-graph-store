@@ -247,9 +247,9 @@ def _reconstruct_and_validate_graphs(protein_graphs,
             print(f"number of edges in original graph: {len(original_graph.edges())}")
             print(f"number of edges in extracted graph: {len(extracted_graph.edges())}")
 
-            for e in original_graph.edges:
-                print(f"original: {original_graph.edges[e]}")
-                print(f"extracted: {extracted_graph.edges[e]}")
+            # for e in original_graph.edges:
+            #     print(f"original: {original_graph.edges[e]}")
+            #     print(f"extracted: {extracted_graph.edges[e]}")
 
 def compress_pdb_graphs(protein_graphs):
     print("reached compress")

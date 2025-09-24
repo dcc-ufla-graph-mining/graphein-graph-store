@@ -28,8 +28,24 @@ class PDBGraphStore:
         self.node_attr_keys = node_attr_keys #dicionario de atributos indexados para cada node
         self.edge_attr_keys = edge_attr_keys #dicionario de atributos indexados para cada edge
 
+        if len(node_to_id) == 0:
+            self.init_attribute_keys()
+
+    def __str__(self):
+        return f'PDBGraphStore with {len(self.get_pdb_list())} pdbs'
+
+    def init_attribute_keys(self):
+        node_attr_keys_list = ["chain_id", "residue_name", "residue_number", "atom_type", "element_symbol", "coords", "b_factor", "meiler"]
+
+        for k in node_attr_keys_list:
+            self.node_attr_keys[k] = OrderedSet()
+        
+        self.edge_attr_keys["kind"] = OrderedSet(set([k for k, _ in edgeModel.edge_functions_dict.items()]))
+        self.edge_attr_keys["distance"] = OrderedSet()
+
     def get_pdb_list(self):
         return [pdb_code for pdb_code in self.pdb_to_nodes]
+
     def _reconstruct_node_attributes(self, extracted_graph, nodes):
         for node in nodes:
             if node in self.node_attrs:
@@ -73,6 +89,7 @@ class PDBGraphStore:
 
     def extract_pdb_graphs(self, pdb_codes=[], edge_construction_functions=[]):
         extracted_graphs = []
+        print(f"dentro de extract_pdb. pdb_code={pdb_codes}")
         for pdb_code in pdb_codes:
             extracted_graph = nx.Graph()
 
@@ -86,10 +103,7 @@ class PDBGraphStore:
             self._reconstruct_edge_attributes(extracted_graph, extracted_edges, edge_construction_functions, pdb_code)
             extracted_graphs.append(extracted_graph)
 
-        return extracted_graphs
-    
-    def extract_pdb_graphs_multiprocessing(self, pdb_codes=[], edge_constructions_functions=[], num_cpus=4):
-        pass
+        return extracted_graphs  
 
     def insert_pdbs(self, graphs={}):
         if not graphs:

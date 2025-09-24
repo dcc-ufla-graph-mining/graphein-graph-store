@@ -208,26 +208,35 @@ def main():
     pdb_store = PDBGraphStore(node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_attrs, node_attr_keys, edge_attr_keys)
 
     #extract pdb graph from the pdb_store
-    graphs_extracted = pdb_store.extract_pdb_graphs(["1BXL", "1G5J"], ["aromatic", "bb_carbonyl_carbonyl"])
+    # graphs_extracted = pdb_store.extract_pdb_graphs(["1BXL", "1G5J"], ["aromatic", "bb_carbonyl_carbonyl"])
+    graphs_extracted = operations.extract_pdb_graphs_multiprocessing(pdb_store, ["1BXL", "1G5J"], ["aromatic", "bb_carbonyl_carbonyl"], 2)
 
-    for g in graphs_extracted:
-        print(g.graph["pdb_code"])
-        print(g)
-        for u, v in g.edges():
-            print(g.edges[u, v])
 
-    #insert pdb into the pdb_store
-    graph_to_insert, _ = prepare_graph(pdb_data_path, "2NL9", dataset_name, error_path)
-    pdb_store.insert_pdbs(graph_to_insert)
+    for graphs in graphs_extracted:
+        for g in graphs:
+            print(g.graph["pdb_code"])
+            print(g)
+            for u, v in g.edges():
+                print(g.edges[u, v])
+
+    # #insert pdb into the pdb_store
+    # graph_to_insert, _ = prepare_graph(pdb_data_path, "2NL9", dataset_name, error_path)
+
+    # pdb_store.insert_pdbs(graph_to_insert)
     
-    #remove pdb from the pdb_store
-    print(pdb_store.remove_pdb("2NL9"))    
+    # #remove pdb from the pdb_store
+    # # print(pdb_store.remove_multiple_pdbs(["2NL9"]))    
 
+    # #merge 2 pdb_stores
+    # pdb_store2 = PDBGraphStore(node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_attrs, node_attr_keys, edge_attr_keys)
 
-    #merge 2 pdb_stores
-    pdb_store2 = PDBGraphStore(node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_attrs, node_attr_keys, edge_attr_keys)
-
-    operations.merge_graph_stores([pdb_store, pdb_store2])
+    # #operation merge graph stores
+    # gs_merged = operations.merge_graph_stores([pdb_store, pdb_store2])
+    # print(pdb_store)
+    # #operation split graph store into 2
+    # gs1, gs2 = operations.split_graph_store(pdb_store, ["2NL9"])
+    
+    # print(gs1, gs2)
     
     #TODO build the output string and then print it and write it to results file
 
