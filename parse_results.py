@@ -1,52 +1,71 @@
 import os
 import csv
-import re
 
-# Pasta onde estão os arquivos .txt
-input_folder = "results"
-# Nome do arquivo de saída CSV
-output_csv = "results.csv"
+RESULTS_DIR = "./results"
+DATA_DIR = "./data"
+OUTPUT_CSV = "results.csv"
 
-# Expressão regular para capturar os pares chave: valor
-pattern = re.compile(r"^(.*?):\s+([0-9eE\.\-]+)$")
+def parse_log_file(filepath):
+    """Lê um arquivo de log e retorna um dicionário {chave: valor}"""
+    data = {}
+    with open(filepath, "r") as f:
+        for line in f:
+            if ":" in line:
+                key, value = line.split(":", 1)
+                key = key.strip()
+                value = value.strip()
+                try:
+                    value = float(value)
+                except ValueError:
+                    pass  # mantém string se não for número
+                data[key] = value
+    return data
 
-# Lista para armazenar os dados extraídos
-data_rows = []
-headers_set = set()
+def count_codes(filepath):
+    """Conta quantos códigos (linhas não vazias) existem no arquivo .txt"""
+    with open(filepath, "r") as f:
+        return sum(1 for line in f if line.strip())
 
-# Lê todos os arquivos .txt da pasta
-for filename in os.listdir(input_folder):
-    if filename.endswith(".txt"):
-        filepath = os.path.join(input_folder, filename)
-        with open(filepath, "r") as f:
-            lines = f.readlines()
+def main():
+    all_data = {}
+    keys = []
 
-        row_data = {"filename": filename.split("_results")[0]}
-        headers_set.add("Amt of pdbs")
-        with open(f"data/{filename.split('_results')[0]}.txt", "r") as f:
-            row_data["Amt of pdbs"] = len(f.readlines())
-        
-        for line in lines:
-            match = pattern.match(line.strip())
-            if match:
-                key = match.group(1).strip()
-                value = float(match.group(2))
-                row_data[key] = value
-                headers_set.add(key)
-        
-        
-        
+    # Itera sobre os arquivos no diretório ./results
+    for filename in os.listdir(RESULTS_DIR):
+        if filename.endswith("_results.log"):
+            dataset = filename.replace("_results.log", "")
+            filepath = os.path.join(RESULTS_DIR, filename)
 
-        data_rows.append(row_data)
+            parsed = parse_log_file(filepath)
 
-# Ordenar headers para consistência (exceto filename, que vai primeiro)
-headers = ["filename"] + sorted(headers_set)
+            # conta códigos do dataset correspondente
+            txt_path = os.path.join(DATA_DIR, dataset + ".txt")
+            if os.path.exists(txt_path):
+                code_count = count_codes(txt_path)
+            else:
+                code_count = 0  # se não existir .txt correspondente
 
-# Escreve o arquivo CSV
-with open(output_csv, "w", newline="") as csvfile:
-    writer = csv.DictWriter(csvfile, fieldnames=headers)
-    writer.writeheader()
-    for row in data_rows:
-        writer.writerow(row)
+            parsed = {"code_count": code_count, **parsed}
+            all_data[dataset] = parsed
 
-print(f"Arquivo CSV '{output_csv}' gerado com sucesso.")
+            # mantém ordem das chaves na primeira vez
+            if not keys:
+                keys = list(parsed.keys())
+            else:
+                for k in parsed.keys():
+                    if k not in keys:
+                        keys.append(k)
+
+    # Escreve CSV
+    with open(OUTPUT_CSV, "w", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        header = ["dataset"] + keys
+        writer.writerow(header)
+        for dataset, values in all_data.items():
+            row = [dataset] + [values.get(k, "") for k in keys]
+            writer.writerow(row)
+
+    print(f"CSV gerado em: {OUTPUT_CSV}")
+
+if __name__ == "__main__":
+    main()
