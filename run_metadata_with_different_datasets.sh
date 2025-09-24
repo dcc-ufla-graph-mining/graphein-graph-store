@@ -29,5 +29,5 @@ do
     dataset_name=$(basename $dataset)
     export DATASET=$dataset_name
     echo $dataset_name
-    python src/compress/metadata.py >> /app/logs/metadata.log 2>&1
+    python src/compress/main.py >> /app/logs/metadata.log 2>&1
 done
