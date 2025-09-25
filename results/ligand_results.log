@@ -1,1 +1,6 @@
 Result log for ligand
+Average number of nodes: 699.9827454573217         
+Average number of edges: 5214.8424186898765     
+Time to construct graphs: 735.7733509540558
+Number of graphs: 6549
+Time to compress: 770.0662145614624

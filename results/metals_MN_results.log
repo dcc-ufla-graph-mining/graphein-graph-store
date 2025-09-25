@@ -1,30 +1,30 @@
 Result log for metals_MN
 Average number of nodes: 870.4096385542168         
 Average number of edges: 6524.943775100402     
-Time to construct graphs: 153.190105676651
+Time to construct graphs: 74.0900399684906
 Number of graphs: 498
-Time to compress: 75.76948499679565
+Time to compress: 71.2666232585907
         
-Mean time to extract: 0.08764820357403123         
-Uncompressed complete graph size: 2092.942939758301        
-Uncompressed structure graph size: 2092.942939758301        
+Mean time to extract: 0.09597823945394003         
+Uncompressed complete graph size: 2092.9157638549805        
+Uncompressed structure graph size: 2092.9157638549805        
 Uncompressed edge size: 21.643661499023438        
 Uncompressed node size: 3.522430419921875        
-Uncompressed complete graph serialized: 236.78791046142578        
+Uncompressed complete graph serialized: 236.7870101928711        
 Uncompressed edge serialized: 1.8873138427734375        
 Uncompressed node serialized: 0.5207366943359375        
         
-Compressed graph complete size: 3021.533042907715        
+Compressed graph complete size: 3021.534019470215        
 Compressed complete node size: 86.70488739013672         
-Compressed complete edge size: 2934.828155517578         
+Compressed complete edge size: 2934.829132080078         
 Compressed node attributes size: 30.02581024169922        
-Compressed edge attributes size: 1944.3227081298828        
+Compressed edge attributes size: 1944.3231964111328        
 Compressed node attributes keys size: 34.85435485839844        
 Compressed edge attributes keys size: 384.4601593017578        
 Compressed pdb to nodes size: 0.8992919921875        
 Compressed pdb to edges size: 3.7472152709960938        
 Compressed node to id size: 20.925430297851562        
-Compressed edge to id size: 602.2980728149414        
+Compressed edge to id size: 602.2985610961914        
         
-Compressed graph object size: 2710.4421768188477        
-Compressed graph complete size serialized: 226.76370239257812    
+Compressed graph object size: 2710.4426651000977        
+Compressed graph complete size serialized: 226.76375579833984    

@@ -1,16 +1,16 @@
 Result log for ligand_PLP
 Average number of nodes: 1076.2380952380952         
 Average number of edges: 8107.571428571428     
-Time to construct graphs: 21.622700929641724
+Time to construct graphs: 10.452717781066895
 Number of graphs: 63
-Time to compress: 11.385903358459473
+Time to compress: 10.704641580581665
         
-Mean time to extract: 0.11416025388808478         
-Uncompressed complete graph size: 328.4681091308594        
-Uncompressed structure graph size: 328.4681091308594        
+Mean time to extract: 0.10687930621798077         
+Uncompressed complete graph size: 328.4636764526367        
+Uncompressed structure graph size: 328.4636764526367        
 Uncompressed edge size: 3.0242538452148438        
 Uncompressed node size: 0.5842361450195312        
-Uncompressed complete graph serialized: 37.15040588378906        
+Uncompressed complete graph serialized: 37.150291442871094        
 Uncompressed edge serialized: 0.26088714599609375        
 Uncompressed node serialized: 0.07927703857421875        
         

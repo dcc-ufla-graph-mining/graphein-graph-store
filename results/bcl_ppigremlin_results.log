@@ -1,16 +1,16 @@
 Result log for bcl_ppigremlin
 Average number of nodes: 284.5258620689655         
 Average number of edges: 2046.1206896551723     
-Time to construct graphs: 5.537578821182251
+Time to construct graphs: 5.393757104873657
 Number of graphs: 116
-Time to compress: 4.37508749961853
+Time to compress: 4.373832702636719
         
-Mean time to extract: 0.025367091441976613         
-Uncompressed complete graph size: 154.4715576171875        
-Uncompressed structure graph size: 154.4715576171875        
+Mean time to extract: 0.02492459272516185         
+Uncompressed complete graph size: 154.471435546875        
+Uncompressed structure graph size: 154.471435546875        
 Uncompressed edge size: 0.7350540161132812        
 Uncompressed node size: 0.19293212890625        
-Uncompressed complete graph serialized: 17.50743865966797        
+Uncompressed complete graph serialized: 17.507423400878906        
 Uncompressed edge serialized: 0.062286376953125        
 Uncompressed node serialized: 0.0243988037109375        
         
