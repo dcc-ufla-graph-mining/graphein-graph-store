@@ -258,7 +258,7 @@ def main():
 
     extract_times = []
 
-    for pdb_code in set(pdb_codes):
+    for pdb_code in set(protein_graph_with_metadata_dict.keys()):
         for g in protein_graph_with_metadata_dict[pdb_code]:
             time_start = time.time()
             extracted_graph = pdb_store.extract_pdb_graphs([pdb_code], [edgeModel.edge_functions_dict.inverse[func] for func in g.graph["config"].edge_construction_functions])
