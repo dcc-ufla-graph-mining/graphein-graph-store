@@ -1,1 +1,13 @@
 Result log for bcl_ppigremlin
+number of nodes: 106520
+number of edges initially (with one func): 37818
+Number of edges at 1 insertion <function add_aromatic_sulphur_interactions at 0x7f38785d2050>: 37818
+Number of edges at 2 insertion <function add_backbone_carbonyl_carbonyl_interactions at 0x7f38785d23b0>: 48275
+Number of edges at 3 insertion <function add_cation_pi_interactions at 0x7f38785d20e0>: 48275
+Number of edges at 4 insertion <function add_delaunay_triangulation at 0x7f38785d2560>: 1260803
+Number of edges at 5 insertion <function add_disulfide_interactions at 0x7f38785d1e10>: 1260803
+Number of edges at 6 insertion <function add_hydrogen_bond_interactions at 0x7f38785d1ea0>: 1260901
+Number of edges at 7 insertion <function add_hydrophobic_interactions at 0x7f38785d1d80>: 1438324
+Number of edges at 8 insertion <function add_ionic_interactions at 0x7f38785d1f30>: 1495771
+Number of edges at 9 insertion <function add_k_nn_edges at 0x7f38785d27a0>: 1503841
+Number of edges at 10 insertion <function add_peptide_bonds at 0x7f38785d1cf0>: 1503841
