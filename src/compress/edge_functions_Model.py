@@ -30,7 +30,7 @@ edge_functions_dict = bidict({
     "cation_pi": add_cation_pi_interactions,
     "delaunay": add_delaunay_triangulation,
     "disulfide": add_disulfide_interactions,
-    "fully_connected": add_fully_connected_edges,
+    # "fully_connected": add_fully_connected_edges, #deixado de fora pois adiciona aresta entre todos os nodes presentes no graph
     "hbond": add_hydrogen_bond_interactions,
     "hydrophobic": add_hydrophobic_interactions,
     "ionic": add_ionic_interactions,

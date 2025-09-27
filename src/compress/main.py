@@ -69,13 +69,19 @@ def read_dataset(general_data_path, dataset_txt_name, file_mode='r'):
 
     return pdb_codes
 
-def define_graphein_edge_funcs():
+def define_graphein_edge_funcs(func_idx=1):
     # return random.sample([v for _, v in edgeModel.edge_functions_dict.items()], 3)
-    return [edgeModel.edge_functions_dict[f] for f in ["aromatic", "bb_carbonyl_carbonyl", "delaunay"]]
+    # return [edgeModel.edge_functions_dict[f] for f in ["aromatic", "bb_carbonyl_carbonyl", "delaunay"]] #usado no experimento 1
+    print()
+    sorted_func_list = sorted(edgeModel.edge_functions_dict.keys())
+    print(f'returning {sorted_func_list[func_idx]}')
+    print(f'returning {[edgeModel.edge_functions_dict[sorted_func_list[func_idx]]]}')
+    return [edgeModel.edge_functions_dict[sorted_func_list[func_idx]]]
+
 
 def define_configuration(edge_construction_funcs):
     return {
-        "granularity": "CA",
+        "granularity": "atom",
         "edge_construction_functions": edge_construction_funcs
     }
 
@@ -99,11 +105,12 @@ def get_pdb_file(pdb_data_path, pdb_code):
 
     return pdb_file
 
-def prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path):
+def prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path, func_idx):
     protein_graph_with_metadata_dict = dict()
     protein_graph_without_metadata_dict = dict()
 
-    edge_funcs = define_graphein_edge_funcs()
+    print(func_idx)
+    edge_funcs = define_graphein_edge_funcs(func_idx)
     config = ProteinGraphConfig(**define_configuration(edge_funcs))
 
     try:
@@ -163,11 +170,16 @@ def test():
     # gs1, gs2 = operations.split_graph_store(pdb_store, ["2NL9"])
     
     # print(gs1, gs2)
-    
-    #TODO build the output string and then print it and write it to results file
     pass
 
-def main():
+def experimento_1():
+
+    #config usada:
+    #granularity: CA
+    #edge_construction_funcs: ["aromatic", "bb_carbonyl_carbonyl", "delaunay"]
+
+    #datasets usados: todos (porem, alguns nao foram possiveis terminar a execucao por causa de estouro da memoria)
+    
     current_file_path = os.path.dirname(os.path.realpath(metadata.__file__))
     general_data_path = os.environ.get("DATA_DIR") if os.environ.get("DATA_DIR") is not None else os.path.abspath(f"{current_file_path}/../../data/")
     dataset_txt_file_name = os.environ.get("DATASET")
@@ -316,14 +328,108 @@ def main():
 
     write_result(dataset=dataset_name, msg=msg, result_path=result_path)
 
+def experimento_2():
+    '''
+    Avaliar a sobreposição de arestas entre as funções de arestas. 
+    Por exemplo, será que existem funções de aresta que geram muitas 
+    arestas iguais no grafo de uma determinada granularidade? Para isso, 
+    podemos construir o PDB store incrementalmente, adicionando funções 
+    de aresta uma a uma, e determinando se o tamanho do PDBStore está 
+    aumentando significativamente quando incluímos uma nova função de aresta.
 
+    obs: executado somente com o bcl_ppigremlin dataset
 
+    get_len_edges
+    get_len_nodes
 
-    #extract pdb graph from the pdb_store
-    # graphs_extracted = pdb_store.extract_pdb_graphs(["1BXL", "1G5J"], ["aromatic", "bb_carbonyl_carbonyl"])
+    '''
 
+    #config usada: 
+    #granularity: atom
+    #edge_construction_funcs: todas, menos fully_connected, pois ela adiciona todas as arestas possiveis entre os nodes
+    
+    #dataset usado: bcl (a principio apenas ele)
 
+    current_file_path = os.path.dirname(os.path.realpath(metadata.__file__))
+    general_data_path = os.environ.get("DATA_DIR") if os.environ.get("DATA_DIR") is not None else os.path.abspath(f"{current_file_path}/../../data/")
+    dataset_txt_file_name = os.environ.get("DATASET")
+    dataset_name = dataset_txt_file_name.split(".")[0]
+    
+    error_path = initialize_errors_directory(current_file_path=current_file_path)
+    result_path = initialize_results_directory(current_file_path=current_file_path)
+    pdb_data_path = initialize_pdb_data_path(general_data_path=general_data_path)
+
+    create_dataset_error_file(error_path, dataset_name)
+    create_dataset_result_file(result_path, dataset_name)
+
+    print(f"\
+          current_file_path={current_file_path}, \
+          general_data_path={general_data_path}, \
+          dataset_txt_file_name={dataset_txt_file_name}, \
+          dataset_name={dataset_name}, \
+          error_path={error_path}, \
+          result_path={result_path}, \
+          pdb_data_path={pdb_data_path} \
+          ")
+
+    pdb_codes = read_dataset(general_data_path=general_data_path, dataset_txt_name=dataset_txt_file_name)
+
+    protein_graph_with_metadata_dict = {}
+    number_of_nodes_in_which_graph = list()
+    number_of_edges_in_which_graph = list()
+
+    for _, pdb_code in enumerate(pdb_codes.copy()):
+        try:
+            #construct graph with 1 edge_func
+            graph_with_data, _ = prepare_graph(pdb_data_path=pdb_data_path, pdb_code=pdb_code, dataset_name=dataset_name, error_path=error_path, func_idx=0)
+        except:
+            msg = traceback.format_exc()
+            print(msg)
+            write_error(dataset_name, msg, error_path)
+            continue
+
+        protein_graph_with_metadata_dict[pdb_code] = graph_with_data[pdb_code]
+
+    node_to_id,\
+    edge_to_id,\
+    pdb_to_nodes,\
+    pdb_to_edges,\
+    node_attrs,\
+    edge_attrs,\
+    node_attr_keys,\
+    edge_attr_keys = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
+
+    pdb_store = PDBGraphStore(node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_attrs, node_attr_keys, edge_attr_keys)
+
+    print(f'graphStore with 1 edgefunc amount of edge: {pdb_store.get_len_edges()}')
+    print(f'graphStore with 1 edgefunc amount of node: {pdb_store.get_len_nodes()}')
+
+    msg = f'number of nodes: {pdb_store.get_len_nodes()}\nnumber of edges initially (with one func): {pdb_store.get_len_edges()}\n'
+    write_result(dataset=dataset_name, msg=msg, result_path=result_path)
+
+    for i in range(1, len(edgeModel.edge_functions_dict.keys())):
+        graphs_to_insert = {}
+        for pdb_code in pdb_codes:
+            try:
+                print(f'pdb_code: {pdb_code}')
+                graph_to_insert, _ = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path, i)
+                
+            except:
+                msg = traceback.format_exc()
+                print(msg)
+                write_error(dataset_name, msg, error_path)
+                continue
+            graphs_to_insert[pdb_code] = graph_to_insert[pdb_code]
+
+        sorted_func_list = sorted(edgeModel.edge_functions_dict.keys())
+        pdb_store.insert_pdbs(graphs_to_insert)
+        msg = f'Number of edges at {i} insertion {edgeModel.edge_functions_dict[sorted_func_list[i]]}: {pdb_store.get_len_edges()}\n'
+
+        write_result(dataset=dataset_name, msg=msg, result_path=result_path)
+
+def experimento_3():
+    pass
     
 
 if __name__=="__main__":
-    main()
+    experimento_2()

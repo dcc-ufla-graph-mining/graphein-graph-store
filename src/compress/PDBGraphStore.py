@@ -43,6 +43,12 @@ class PDBGraphStore:
         self.edge_attr_keys["kind"] = OrderedSet(set([k for k, _ in edgeModel.edge_functions_dict.items()]))
         self.edge_attr_keys["distance"] = OrderedSet()
 
+    def get_len_edges(self):
+        return len(self.edge_to_id.keys())
+    
+    def get_len_nodes(self):
+        return len(self.node_to_id.keys())
+
     def get_pdb_list(self):
         return [pdb_code for pdb_code in self.pdb_to_nodes]
 
@@ -115,12 +121,11 @@ class PDBGraphStore:
             return
         
         for pdb_code, graph_list in graphs.items():
-            if pdb_code in self.pdb_to_nodes:
-                print(f"PDB {pdb_code} já existe no supergrafo. Pulando...")
-                continue
-                
-            self.pdb_to_nodes[pdb_code] = [BitMap64()]
-            self.pdb_to_edges[pdb_code] = [BitMap64()]
+            
+            if pdb_code not in self.pdb_to_nodes:
+                self.pdb_to_nodes[pdb_code] = [BitMap64()]
+            if pdb_code not in self.pdb_to_edges:
+                self.pdb_to_edges[pdb_code] = [BitMap64()]
             
             for graph in graph_list:
                 for node in graph.nodes():
@@ -186,6 +191,7 @@ class PDBGraphStore:
                     
                     edge_id = self.edge_to_id[edge]
                     self.pdb_to_edges[pdb_code][0].add(edge_id)
+                    print(f'edge {edge} added')
         
         self.pdb_list = [k for k in self.pdb_to_nodes.keys()]
         
