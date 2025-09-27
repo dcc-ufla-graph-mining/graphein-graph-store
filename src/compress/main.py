@@ -72,11 +72,15 @@ def read_dataset(general_data_path, dataset_txt_name, file_mode='r'):
 def define_graphein_edge_funcs(func_idx=1):
     # return random.sample([v for _, v in edgeModel.edge_functions_dict.items()], 3)
     # return [edgeModel.edge_functions_dict[f] for f in ["aromatic", "bb_carbonyl_carbonyl", "delaunay"]] #usado no experimento 1
-    print()
+    """
+    usado no experimento 2
     sorted_func_list = sorted(edgeModel.edge_functions_dict.keys())
     print(f'returning {sorted_func_list[func_idx]}')
     print(f'returning {[edgeModel.edge_functions_dict[sorted_func_list[func_idx]]]}')
     return [edgeModel.edge_functions_dict[sorted_func_list[func_idx]]]
+    """
+    print(list(edgeModel.edge_functions_dict.values()))
+    return list(edgeModel.edge_functions_dict.values())
 
 
 def define_configuration(edge_construction_funcs):
@@ -428,8 +432,81 @@ def experimento_2():
         write_result(dataset=dataset_name, msg=msg, result_path=result_path)
 
 def experimento_3():
-    pass
+
+    #config usada: 
+    #granularity: atom
+    #edge_construction_funcs: todas, menos fully_connected
+    #dataset usado: bcl (a principio apenas ele)
+
+    current_file_path = os.path.dirname(os.path.realpath(metadata.__file__))
+    general_data_path = os.environ.get("DATA_DIR") if os.environ.get("DATA_DIR") is not None else os.path.abspath(f"{current_file_path}/../../data/")
+    dataset_txt_file_name = os.environ.get("DATASET")
+    dataset_name = dataset_txt_file_name.split(".")[0]
     
+    error_path = initialize_errors_directory(current_file_path=current_file_path)
+    result_path = initialize_results_directory(current_file_path=current_file_path)
+    pdb_data_path = initialize_pdb_data_path(general_data_path=general_data_path)
+
+    create_dataset_error_file(error_path, dataset_name)
+    create_dataset_result_file(result_path, dataset_name)
+
+    print(f"\
+          current_file_path={current_file_path}, \
+          general_data_path={general_data_path}, \
+          dataset_txt_file_name={dataset_txt_file_name}, \
+          dataset_name={dataset_name}, \
+          error_path={error_path}, \
+          result_path={result_path}, \
+          pdb_data_path={pdb_data_path} \
+          ")
+
+    pdb_codes = read_dataset(general_data_path=general_data_path, dataset_txt_name=dataset_txt_file_name)
+
+    protein_graph_with_metadata_dict = {}
+    number_of_nodes_in_which_graph = list()
+    number_of_edges_in_which_graph = list()
+
+    for _, pdb_code in enumerate(pdb_codes.copy()):
+        try:
+            #construct graph with 1 edge_func
+            graph_with_data, _ = prepare_graph(pdb_data_path=pdb_data_path, pdb_code=pdb_code, dataset_name=dataset_name, error_path=error_path, func_idx=0)
+        except:
+            msg = traceback.format_exc()
+            print(msg)
+            write_error(dataset_name, msg, error_path)
+            continue
+
+        protein_graph_with_metadata_dict[pdb_code] = graph_with_data[pdb_code]
+
+    node_to_id,\
+    edge_to_id,\
+    pdb_to_nodes,\
+    pdb_to_edges,\
+    node_attrs,\
+    edge_attrs,\
+    node_attr_keys,\
+    edge_attr_keys = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
+
+    pdb_store = PDBGraphStore(node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_attrs, node_attr_keys, edge_attr_keys)
+
+    edge_funcs_to_extract = list(random.sample(edgeModel.edge_functions_dict.values(), 3))
+
+    for _, pdb_code in enumerate(pdb_codes.copy()):
+        time_start = time.time()
+        extracted_graph = pdb_store.extract_pdb_graphs(pdb_codes=[pdb_code], edge_construction_functions=edge_funcs_to_extract)
+        time_to_extract = time_count(time_start=time_start)
+        print(extracted_graph[0].graph)
+
+        time_start = time.time()
+        config = ProteinGraphConfig(**{"granularity": "atom", "edge_construction_functions": edge_funcs_to_extract})
+        pdb_file = get_pdb_file(pdb_data_path=pdb_data_path, pdb_code=pdb_code)
+        graph = construct_graph(config=config, path=pdb_file)
+        time_to_construct = time_count(time_start=time_start)
+
+        msg = f'Time to construct pdb graph {pdb_code}: {time_to_construct}\n\
+            Time to extract the same graph: {time_to_extract}\n\n'
+
+        write_result(dataset=dataset_name, msg=msg, result_path=result_path)
 
 if __name__=="__main__":
-    experimento_2()
+    experimento_3()
