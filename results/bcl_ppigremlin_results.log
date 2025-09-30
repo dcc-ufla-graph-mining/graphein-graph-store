@@ -1,0 +1,10 @@
+Result log for bcl_ppigremlin
+number of nodes: 106552
+number of edges initially (with one func): 37813        
+memory size initially: 105.35 MB
+Number of edges after 1 insertion (aromatic_sulphur): 37813            
+Memory size: 105.35 MB
+Number of edges after 2 insertion (bb_carbonyl_carbonyl): 48267            
+Memory size: 121.11 MB
+Number of edges after 3 insertion (cation_pi): 48267            
+Memory size: 121.11 MB

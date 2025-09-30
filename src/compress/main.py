@@ -72,15 +72,15 @@ def read_dataset(general_data_path, dataset_txt_name, file_mode='r'):
 def define_graphein_edge_funcs(func_idx=1):
     # return random.sample([v for _, v in edgeModel.edge_functions_dict.items()], 3)
     # return [edgeModel.edge_functions_dict[f] for f in ["aromatic", "bb_carbonyl_carbonyl", "delaunay"]] #usado no experimento 1
-    """
-    usado no experimento 2
+    
+    # usado no experimento 2
     sorted_func_list = sorted(edgeModel.edge_functions_dict.keys())
     print(f'returning {sorted_func_list[func_idx]}')
     print(f'returning {[edgeModel.edge_functions_dict[sorted_func_list[func_idx]]]}')
     return [edgeModel.edge_functions_dict[sorted_func_list[func_idx]]]
-    """
-    print(list(edgeModel.edge_functions_dict.values()))
-    return list(edgeModel.edge_functions_dict.values())
+    
+    # print(list(edgeModel.edge_functions_dict.values()))
+    # return list(edgeModel.edge_functions_dict.values()) #usado no experimento 3
 
 
 def define_configuration(edge_construction_funcs):
@@ -408,7 +408,8 @@ def experimento_2():
     print(f'graphStore with 1 edgefunc amount of edge: {pdb_store.get_len_edges()}')
     print(f'graphStore with 1 edgefunc amount of node: {pdb_store.get_len_nodes()}')
 
-    msg = f'number of nodes: {pdb_store.get_len_nodes()}\nnumber of edges initially (with one func): {pdb_store.get_len_edges()}\n'
+    msg = f'number of nodes: {pdb_store.get_len_nodes()}\nnumber of edges initially (with one func): {pdb_store.get_len_edges()}\
+        \nmemory size initially: {asizeof.asizeof(pdb_store)/1024/1024:.2f} MB'
     write_result(dataset=dataset_name, msg=msg, result_path=result_path)
 
     for i in range(1, len(edgeModel.edge_functions_dict.keys())):
@@ -427,7 +428,8 @@ def experimento_2():
 
         sorted_func_list = sorted(edgeModel.edge_functions_dict.keys())
         pdb_store.insert_pdbs(graphs_to_insert)
-        msg = f'Number of edges at {i} insertion {edgeModel.edge_functions_dict[sorted_func_list[i]]}: {pdb_store.get_len_edges()}\n'
+        msg = f'\nNumber of edges after {i} insertion ({sorted_func_list[i]}): {pdb_store.get_len_edges()}\
+            \nMemory size: {asizeof.asizeof(pdb_store)/1024/1024:.2f} MB'
 
         write_result(dataset=dataset_name, msg=msg, result_path=result_path)
 
@@ -509,4 +511,4 @@ def experimento_3():
         write_result(dataset=dataset_name, msg=msg, result_path=result_path)
 
 if __name__=="__main__":
-    experimento_3()
+    experimento_2()
