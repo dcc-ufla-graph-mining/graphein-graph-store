@@ -1,30 +1,24 @@
 Result log for ligand_BME
-Average number of nodes: 561.0695187165776         
-Average number of edges: 4144.347593582887     
-Time to construct graphs: 15.535281658172607
-Number of graphs: 187
-Time to compress: 16.844085454940796
-        
-Mean time to extract: 0.05429144466624541         
-Uncompressed complete graph size: 499.99534606933594        
-Uncompressed structure graph size: 499.99534606933594        
-Uncompressed edge size: 0.8127822875976562        
-Uncompressed node size: 0.20865631103515625        
-Uncompressed complete graph serialized: 56.543235778808594        
-Uncompressed edge serialized: 0.0694732666015625        
-Uncompressed node serialized: 0.02642059326171875        
-        
-Compressed graph complete size: 767.9274291992188        
-Compressed complete node size: 28.749122619628906         
-Compressed complete edge size: 739.1783065795898         
-Compressed node attributes size: 10.123222351074219        
-Compressed edge attributes size: 492.49219512939453        
-Compressed node attributes keys size: 12.056747436523438        
-Compressed edge attributes keys size: 93.67021179199219        
-Compressed pdb to nodes size: 0.23418426513671875        
-Compressed pdb to edges size: 1.09332275390625        
-Compressed node to id size: 6.334968566894531        
-Compressed edge to id size: 151.92257690429688        
-        
-Compressed graph object size: 688.3436508178711        
-Compressed graph complete size serialized: 56.998809814453125    
+number of nodes: 347683
+number of edges initially (with one func): 200871        
+memory size initially: 371.91 MB
+Number of edges after 1 insertion (aromatic_sulphur): 200871            
+Memory size: 371.91 MB
+Number of edges after 2 insertion (bb_carbonyl_carbonyl): 255667            
+Memory size: 415.33 MB
+Number of edges after 3 insertion (cation_pi): 255667            
+Memory size: 415.33 MB
+Number of edges after 4 insertion (delaunay): 5343674            
+Memory size: 4706.30 MB
+Number of edges after 5 insertion (disulfide): 5343674            
+Memory size: 4706.30 MB
+Number of edges after 6 insertion (hbond): 5343729            
+Memory size: 4706.34 MB
+Number of edges after 7 insertion (hydrophobic): 5536223            
+Memory size: 4844.78 MB
+Number of edges after 8 insertion (ionic): 5671136            
+Memory size: 5425.58 MB
+Number of edges after 9 insertion (knn): 5740816            
+Memory size: 5480.37 MB
+Number of edges after 10 insertion (peptide_bond): 5740816            
+Memory size: 5480.37 MB

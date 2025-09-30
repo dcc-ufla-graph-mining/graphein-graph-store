@@ -1,30 +1,10 @@
 Result log for ligand_NAG
-Average number of nodes: 832.4289897510981         
-Average number of edges: 6233.216691068814     
-Time to construct graphs: 91.08125352859497
-Number of graphs: 683
-Time to compress: 97.14517712593079
-        
-Mean time to extract: 0.08123859409706484         
-Uncompressed complete graph size: 2738.5049591064453        
-Uncompressed structure graph size: 2738.5049591064453        
-Uncompressed edge size: 6.9143829345703125        
-Uncompressed node size: 1.2243118286132812        
-Uncompressed complete graph serialized: 309.26525115966797        
-Uncompressed edge serialized: 0.6022491455078125        
-Uncompressed node serialized: 0.168487548828125        
-        
-Compressed graph complete size: 3666.969680786133        
-Compressed complete node size: 97.43083953857422         
-Compressed complete edge size: 3569.5388412475586         
-Compressed node attributes size: 33.68824768066406        
-Compressed edge attributes size: 2434.128807067871        
-Compressed node attributes keys size: 40.12640380859375        
-Compressed edge attributes keys size: 452.4547576904297        
-Compressed pdb to nodes size: 1.220947265625        
-Compressed pdb to edges size: 5.343223571777344        
-Compressed node to id size: 22.395240783691406        
-Compressed edge to id size: 677.6120529174805        
-        
-Compressed graph object size: 3271.5516815185547        
-Compressed graph complete size serialized: 291.5375061035156    
+number of nodes: 1158717
+number of edges initially (with one func): 1061560        
+memory size initially: 1569.68 MB
+Number of edges after 1 insertion (aromatic_sulphur): 1061560            
+Memory size: 1569.68 MB
+Number of edges after 2 insertion (bb_carbonyl_carbonyl): 1282175            
+Memory size: 1745.54 MB
+Number of edges after 3 insertion (cation_pi): 1282175            
+Memory size: 1745.54 MB
