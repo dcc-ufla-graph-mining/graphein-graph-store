@@ -70,17 +70,19 @@ def read_dataset(general_data_path, dataset_txt_name, file_mode='r'):
     return pdb_codes
 
 def define_graphein_edge_funcs(func_idx=1):
+    #usado no experimento 1
     # return random.sample([v for _, v in edgeModel.edge_functions_dict.items()], 3)
-    # return [edgeModel.edge_functions_dict[f] for f in ["aromatic", "bb_carbonyl_carbonyl", "delaunay"]] #usado no experimento 1
+    # return [edgeModel.edge_functions_dict[f] for f in ["aromatic", "bb_carbonyl_carbonyl", "delaunay"]] 
     
     # usado no experimento 2
-    sorted_func_list = sorted(edgeModel.edge_functions_dict.keys())
-    print(f'returning {sorted_func_list[func_idx]}')
-    print(f'returning {[edgeModel.edge_functions_dict[sorted_func_list[func_idx]]]}')
-    return [edgeModel.edge_functions_dict[sorted_func_list[func_idx]]]
+    # sorted_func_list = sorted(edgeModel.edge_functions_dict.keys())
+    # print(f'returning {sorted_func_list[func_idx]}')
+    # print(f'returning {[edgeModel.edge_functions_dict[sorted_func_list[func_idx]]]}')
+    # return [edgeModel.edge_functions_dict[sorted_func_list[func_idx]]]
     
-    # print(list(edgeModel.edge_functions_dict.values()))
-    # return list(edgeModel.edge_functions_dict.values()) #usado no experimento 3
+    #usado no experimento 3
+    print(list(edgeModel.edge_functions_dict.values()))
+    return list(edgeModel.edge_functions_dict.values()) 
 
 
 def define_configuration(edge_construction_funcs):
@@ -505,10 +507,10 @@ def experimento_3():
         graph = construct_graph(config=config, path=pdb_file)
         time_to_construct = time_count(time_start=time_start)
 
-        msg = f'Time to construct pdb graph {pdb_code}: {time_to_construct}\n\
-            Time to extract the same graph: {time_to_extract}\n\n'
+        msg = f'Time to construct pdb graph {pdb_code}: {time_to_construct}\
+            \nTime to extract the same graph: {time_to_extract}\n\n'
 
         write_result(dataset=dataset_name, msg=msg, result_path=result_path)
 
 if __name__=="__main__":
-    experimento_2()
+    experimento_3()
