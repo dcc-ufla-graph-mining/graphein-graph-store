@@ -1,12 +1,130 @@
 Result log for nucleotides_UDP
-number of nodes: 319789
-number of edges initially (with one func): 137465        
-memory size initially: 295.98 MB
-Number of edges after 1 insertion (aromatic_sulphur): 137465            
-Memory size: 295.98 MB
-Number of edges after 2 insertion (bb_carbonyl_carbonyl): 172780            
-Memory size: 323.73 MB
-Number of edges after 3 insertion (cation_pi): 172780            
-Memory size: 323.73 MB
-Number of edges after 4 insertion (delaunay): 3672907            
-Memory size: 3336.00 MB
+Time to construct pdb graph 1F7P: 0.47264909744262695            
+Time to extract the same graph: 0.12398886680603027
+
+Time to construct pdb graph 1F7R: 0.15107202529907227            
+Time to extract the same graph: 0.04761028289794922
+
+Time to construct pdb graph 1FGG: 0.7767453193664551            
+Time to extract the same graph: 0.18181443214416504
+
+Time to construct pdb graph 1GY8: 11.287919282913208            
+Time to extract the same graph: 0.5463061332702637
+
+Time to construct pdb graph 1HXP: 1.2316410541534424            
+Time to extract the same graph: 0.2599954605102539
+
+Time to construct pdb graph 1IXY: 1.7629201412200928            
+Time to extract the same graph: 0.3250257968902588
+
+Time to construct pdb graph 1ON8: 0.8716249465942383            
+Time to extract the same graph: 0.20303630828857422
+
+Time to construct pdb graph 1QGQ: 0.35271549224853516            
+Time to extract the same graph: 0.0962212085723877
+
+Time to construct pdb graph 1XJG: 2.8410937786102295            
+Time to extract the same graph: 0.4829673767089844
+
+Time to construct pdb graph 1XV5: 0.6558232307434082            
+Time to extract the same graph: 0.16073250770568848
+
+Time to construct pdb graph 1ZCT: 0.8599050045013428            
+Time to extract the same graph: 0.2009282112121582
+
+Time to construct pdb graph 2AIZ: 0.5131545066833496            
+Time to extract the same graph: 0.1038212776184082
+
+Time to construct pdb graph 2AM5: 0.5495660305023193            
+Time to extract the same graph: 0.13880586624145508
+
+Time to construct pdb graph 2BIS: 3.111351251602173            
+Time to extract the same graph: 0.5184621810913086
+
+Time to construct pdb graph 2BND: 0.6909728050231934            
+Time to extract the same graph: 0.17239665985107422
+
+Time to construct pdb graph 2BVL: 0.94203782081604            
+Time to extract the same graph: 0.21894431114196777
+
+Time to construct pdb graph 2CVV: 1.1851520538330078            
+Time to extract the same graph: 0.25723862648010254
+
+Time to construct pdb graph 2D7I: 0.9337687492370605            
+Time to extract the same graph: 0.2162618637084961
+
+Time to construct pdb graph 2GN8: 1.1399550437927246            
+Time to extract the same graph: 0.2535820007324219
+
+Time to construct pdb graph 2IER: 0.9003088474273682            
+Time to extract the same graph: 0.2145845890045166
+
+Time to construct pdb graph 2IV3: 2.861685037612915            
+Time to extract the same graph: 0.49385976791381836
+
+Time to construct pdb graph 2IV7: 6.432913303375244            
+Time to extract the same graph: 0.14272761344909668
+
+Time to construct pdb graph 2IYF: 1.3598644733428955            
+Time to extract the same graph: 0.2896585464477539
+
+Time to construct pdb graph 2J0B: 0.3406803607940674            
+Time to extract the same graph: 0.09582662582397461
+
+Time to construct pdb graph 2P73: 0.2936980724334717            
+Time to extract the same graph: 0.08479499816894531
+
+Time to construct pdb graph 2Q6V: 0.5664441585540771            
+Time to extract the same graph: 0.14480280876159668
+
+Time to construct pdb graph 2QGI: 0.878953218460083            
+Time to extract the same graph: 0.2010643482208252
+
+Time to construct pdb graph 2V0K: 0.6363966464996338            
+Time to extract the same graph: 0.16718626022338867
+
+Time to construct pdb graph 2VG8: 0.6998863220214844            
+Time to extract the same graph: 0.17741012573242188
+
+Time to construct pdb graph 2VSN: 2.1222312450408936            
+Time to extract the same graph: 0.39638304710388184
+
+Time to construct pdb graph 2WZF: 0.8506121635437012            
+Time to extract the same graph: 0.203657865524292
+
+Time to construct pdb graph 2XMP: 1.6691927909851074            
+Time to extract the same graph: 0.3393082618713379
+
+Time to construct pdb graph 2Z86: 8.311392545700073            
+Time to extract the same graph: 0.9632539749145508
+
+Time to construct pdb graph 3CKN: 0.3882896900177002            
+Time to extract the same graph: 0.10956954956054688
+
+Time to construct pdb graph 3DJQ: 0.3146495819091797            
+Time to extract the same graph: 0.09149050712585449
+
+Time to construct pdb graph 3EIC: 1.4963068962097168            
+Time to extract the same graph: 0.30832767486572266
+
+Time to construct pdb graph 3HBN: 0.4056980609893799            
+Time to extract the same graph: 0.11072039604187012
+
+Time to construct pdb graph 3M2P: 4.170469284057617            
+Time to extract the same graph: 0.6295886039733887
+
+Time to construct pdb graph 3MBO: 11.735842227935791            
+Time to extract the same graph: 6.814884424209595
+
+Time to construct pdb graph 3MQG: 2.334620475769043            
+Time to extract the same graph: 0.4274911880493164
+
+Time to construct pdb graph 3OIS: 2.3854169845581055            
+Time to extract the same graph: 0.4305870532989502
+
+Time to construct pdb graph 3Q3H: 2.8116443157196045            
+Time to extract the same graph: 0.485642671585083
+
+Time to construct pdb graph 3QEN: 0.8080687522888184            
+Time to extract the same graph: 0.19546055793762207
+

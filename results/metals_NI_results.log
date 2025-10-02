@@ -1,24 +1,1042 @@
 Result log for metals_NI
-number of nodes: 524177
-number of edges initially (with one func): 335420        
-memory size initially: 584.14 MB
-Number of edges after 1 insertion (aromatic_sulphur): 335420            
-Memory size: 584.14 MB
-Number of edges after 2 insertion (bb_carbonyl_carbonyl): 426955            
-Memory size: 696.50 MB
-Number of edges after 3 insertion (cation_pi): 426955            
-Memory size: 696.50 MB
-Number of edges after 4 insertion (delaunay): 9322858            
-Memory size: 8442.45 MB
-Number of edges after 5 insertion (disulfide): 9322858            
-Memory size: 8442.45 MB
-Number of edges after 6 insertion (hbond): 9322904            
-Memory size: 8442.48 MB
-Number of edges after 7 insertion (hydrophobic): 9708129            
-Memory size: 8719.03 MB
-Number of edges after 8 insertion (ionic): 9957771            
-Memory size: 8905.12 MB
-Number of edges after 9 insertion (knn): 10065437            
-Memory size: 8990.53 MB
-Number of edges after 10 insertion (peptide_bond): 10065448            
-Memory size: 8990.54 MB
+Time to construct pdb graph 1B9M: 0.3066089153289795            
+Time to extract the same graph: 0.17909026145935059
+
+Time to construct pdb graph 1BS6: 0.3356790542602539            
+Time to extract the same graph: 0.19787263870239258
+
+Time to construct pdb graph 1BXI: 0.11941790580749512            
+Time to extract the same graph: 0.08112764358520508
+
+Time to construct pdb graph 1E0O: 0.4617433547973633            
+Time to extract the same graph: 0.2426595687866211
+
+Time to construct pdb graph 1E20: 0.1048896312713623            
+Time to extract the same graph: 0.07060122489929199
+
+Time to construct pdb graph 1E42: 0.3199927806854248            
+Time to extract the same graph: 0.17798852920532227
+
+Time to construct pdb graph 1EF8: 0.5710709095001221            
+Time to extract the same graph: 0.2878875732421875
+
+Time to construct pdb graph 1EJE: 0.10051178932189941            
+Time to extract the same graph: 0.07052183151245117
+
+Time to construct pdb graph 1ELR: 0.0781550407409668            
+Time to extract the same graph: 0.053029537200927734
+
+Time to construct pdb graph 1ELW: 0.14571523666381836            
+Time to extract the same graph: 0.09494423866271973
+
+Time to construct pdb graph 1F5T: 0.5222461223602295            
+Time to extract the same graph: 0.2651994228363037
+
+Time to construct pdb graph 1FCP: 0.5237860679626465            
+Time to extract the same graph: 0.2647216320037842
+
+Time to construct pdb graph 1GNU: 0.07399749755859375            
+Time to extract the same graph: 0.049219608306884766
+
+Time to construct pdb graph 1GUB: 0.15368342399597168            
+Time to extract the same graph: 0.1033773422241211
+
+Time to construct pdb graph 1H04: 0.0662240982055664            
+Time to extract the same graph: 0.04436373710632324
+
+Time to construct pdb graph 1H9R: 0.15199017524719238            
+Time to extract the same graph: 0.0995941162109375
+
+Time to construct pdb graph 1H9U: 0.5938816070556641            
+Time to extract the same graph: 0.30213427543640137
+
+Time to construct pdb graph 1HBK: 0.05767536163330078            
+Time to extract the same graph: 0.03730201721191406
+
+Time to construct pdb graph 1HE1: 0.4137599468231201            
+Time to extract the same graph: 0.22977924346923828
+
+Time to construct pdb graph 1HYO: 0.6533210277557373            
+Time to extract the same graph: 0.31483888626098633
+
+Time to construct pdb graph 1IA7: 0.29830217361450195            
+Time to extract the same graph: 0.16717267036437988
+
+Time to construct pdb graph 1IAE: 0.12452888488769531            
+Time to extract the same graph: 0.07872843742370605
+
+Time to construct pdb graph 1IE7: 0.5655291080474854            
+Time to extract the same graph: 0.29186487197875977
+
+Time to construct pdb graph 1IID: 0.2986416816711426            
+Time to extract the same graph: 0.17184758186340332
+
+Time to construct pdb graph 1IQY: 21.020916223526            
+Time to extract the same graph: 0.4789891242980957
+
+Time to construct pdb graph 1J5Y: 0.08519792556762695            
+Time to extract the same graph: 0.06379342079162598
+
+Time to construct pdb graph 1J6P: 0.24870085716247559            
+Time to extract the same graph: 0.1549997329711914
+
+Time to construct pdb graph 1JHJ: 0.08886194229125977            
+Time to extract the same graph: 0.06261730194091797
+
+Time to construct pdb graph 1JMX: 0.7237827777862549            
+Time to extract the same graph: 0.347625732421875
+
+Time to construct pdb graph 1JVL: 0.1404869556427002            
+Time to extract the same graph: 0.09670567512512207
+
+Time to construct pdb graph 1K2E: 0.17801523208618164            
+Time to extract the same graph: 0.11920619010925293
+
+Time to construct pdb graph 1K8T: 0.34515905380249023            
+Time to extract the same graph: 0.19645142555236816
+
+Time to construct pdb graph 1KFG: 1.14756441116333            
+Time to extract the same graph: 0.48194098472595215
+
+Time to construct pdb graph 1MN0: 0.5026910305023193            
+Time to extract the same graph: 0.2655055522918701
+
+Time to construct pdb graph 1MVH: 0.16285157203674316            
+Time to extract the same graph: 0.10528874397277832
+
+Time to construct pdb graph 1OAO: 3.99517560005188            
+Time to extract the same graph: 1.0725111961364746
+
+Time to construct pdb graph 1OEJ: 0.11791825294494629            
+Time to extract the same graph: 0.07593798637390137
+
+Time to construct pdb graph 1OID: 0.8825874328613281            
+Time to extract the same graph: 0.40807247161865234
+
+Time to construct pdb graph 1OX4: 0.9082670211791992            
+Time to extract the same graph: 0.4155440330505371
+
+Time to construct pdb graph 1Q0G: 1.424828290939331            
+Time to extract the same graph: 0.5523319244384766
+
+Time to construct pdb graph 1Q3I: 0.10723471641540527            
+Time to extract the same graph: 0.0753781795501709
+
+Time to construct pdb graph 1Q99: 0.552546501159668            
+Time to extract the same graph: 0.28302001953125
+
+Time to construct pdb graph 1QWZ: 0.1429271697998047            
+Time to extract the same graph: 0.09734058380126953
+
+Time to construct pdb graph 1QXJ: 0.24765539169311523            
+Time to extract the same graph: 0.14920902252197266
+
+Time to construct pdb graph 1QY7: 0.193284273147583            
+Time to extract the same graph: 0.12629437446594238
+
+Time to construct pdb graph 1R6Z: 1.4909930229187012            
+Time to extract the same graph: 0.5732958316802979
+
+Time to construct pdb graph 1RXQ: 0.5352528095245361            
+Time to extract the same graph: 0.2796032428741455
+
+Time to construct pdb graph 1RZE: 0.15758395195007324            
+Time to extract the same graph: 0.10340452194213867
+
+Time to construct pdb graph 1S3M: 0.2060096263885498            
+Time to extract the same graph: 0.13116955757141113
+
+Time to construct pdb graph 1S3Z: 0.1784358024597168            
+Time to extract the same graph: 0.11512374877929688
+
+Time to construct pdb graph 1S6M: 0.2145547866821289            
+Time to extract the same graph: 0.13453197479248047
+
+Time to construct pdb graph 1SCR: 0.13121271133422852            
+Time to extract the same graph: 0.0896601676940918
+
+Time to construct pdb graph 1SDW: 0.1956620216369629            
+Time to extract the same graph: 0.12030935287475586
+
+Time to construct pdb graph 1SF8: 0.7132816314697266            
+Time to extract the same graph: 0.35022711753845215
+
+Time to construct pdb graph 1SK3: 0.0930643081665039            
+Time to extract the same graph: 0.06442117691040039
+
+Time to construct pdb graph 1SLW: 0.20193195343017578            
+Time to extract the same graph: 0.12798857688903809
+
+Time to construct pdb graph 1SUM: 0.126068115234375            
+Time to extract the same graph: 0.08826017379760742
+
+Time to construct pdb graph 1UUO: 0.19935345649719238            
+Time to extract the same graph: 0.13188624382019043
+
+Time to construct pdb graph 1UWV: 0.24626684188842773            
+Time to extract the same graph: 0.1536569595336914
+
+Time to construct pdb graph 1VJR: 0.14388322830200195            
+Time to extract the same graph: 0.09811210632324219
+
+Time to construct pdb graph 1VKL: 0.9486653804779053            
+Time to extract the same graph: 0.4333469867706299
+
+Time to construct pdb graph 1VR3: 0.10363006591796875            
+Time to extract the same graph: 0.07084918022155762
+
+Time to construct pdb graph 1WN7: 0.5674240589141846            
+Time to extract the same graph: 0.29424333572387695
+
+Time to construct pdb graph 1WVC: 0.15450787544250488            
+Time to extract the same graph: 0.10076713562011719
+
+Time to construct pdb graph 1XEA: 1.1450443267822266            
+Time to extract the same graph: 0.4869053363800049
+
+Time to construct pdb graph 1XI3: 0.23272943496704102            
+Time to extract the same graph: 0.14922642707824707
+
+Time to construct pdb graph 1XM5: 0.4248495101928711            
+Time to extract the same graph: 0.2421739101409912
+
+Time to construct pdb graph 1XU1: 0.3626894950866699            
+Time to extract the same graph: 0.20461535453796387
+
+Time to construct pdb graph 1Y1O: 0.5203311443328857            
+Time to extract the same graph: 0.27231717109680176
+
+Time to construct pdb graph 1YNU: 0.26957178115844727            
+Time to extract the same graph: 0.16376113891601562
+
+Time to construct pdb graph 1YQW: 3.065337657928467            
+Time to extract the same graph: 0.910043478012085
+
+Time to construct pdb graph 1YSJ: 0.49858951568603516            
+Time to extract the same graph: 0.2702951431274414
+
+Time to construct pdb graph 1ZIU: 0.2312917709350586            
+Time to extract the same graph: 0.1441786289215088
+
+Time to construct pdb graph 1ZQR: 0.2374269962310791            
+Time to extract the same graph: 0.14444184303283691
+
+Time to construct pdb graph 1ZRR: 0.2808399200439453            
+Time to extract the same graph: 0.15573811531066895
+
+Time to construct pdb graph 1ZTC: 0.6799516677856445            
+Time to extract the same graph: 0.33739233016967773
+
+Time to construct pdb graph 1ZVF: 0.2223212718963623            
+Time to extract the same graph: 0.13977980613708496
+
+Time to construct pdb graph 260L: 0.09378981590270996            
+Time to extract the same graph: 0.06485772132873535
+
+Time to construct pdb graph 2AFB: 0.4566514492034912            
+Time to extract the same graph: 0.24649667739868164
+
+Time to construct pdb graph 2AI7: 0.10655069351196289            
+Time to extract the same graph: 0.07570457458496094
+
+Time to construct pdb graph 2AJ7: 0.18716812133789062            
+Time to extract the same graph: 0.11903882026672363
+
+Time to construct pdb graph 2AP9: 1.6016101837158203            
+Time to extract the same graph: 0.6225132942199707
+
+Time to construct pdb graph 2ARP: 0.14611101150512695            
+Time to extract the same graph: 0.09498786926269531
+
+Time to construct pdb graph 2ATF: 0.1058659553527832            
+Time to extract the same graph: 0.07522845268249512
+
+Time to construct pdb graph 2AW2: 0.2563138008117676            
+Time to extract the same graph: 0.15697002410888672
+
+Time to construct pdb graph 2BE6: 0.32891225814819336            
+Time to extract the same graph: 0.18918228149414062
+
+Time to construct pdb graph 2BMQ: 0.48136138916015625            
+Time to extract the same graph: 0.2541921138763428
+
+Time to construct pdb graph 2C0N: 0.11697196960449219            
+Time to extract the same graph: 0.0787045955657959
+
+Time to construct pdb graph 2C21: 0.7028870582580566            
+Time to extract the same graph: 0.3367278575897217
+
+Time to construct pdb graph 2C5D: 0.9552979469299316            
+Time to extract the same graph: 0.4279041290283203
+
+Time to construct pdb graph 2C7V: 0.7783749103546143            
+Time to extract the same graph: 0.37816762924194336
+
+Time to construct pdb graph 2C9H: 20.194686889648438            
+Time to extract the same graph: 0.15275001525878906
+
+Time to construct pdb graph 2C9W: 0.202833890914917            
+Time to extract the same graph: 0.13037919998168945
+
+Time to construct pdb graph 2CAJ: 0.14754581451416016            
+Time to extract the same graph: 0.10421466827392578
+
+Time to construct pdb graph 2CG5: 0.20698213577270508            
+Time to extract the same graph: 0.1303119659423828
+
+Time to construct pdb graph 2CQZ: 0.979245662689209            
+Time to extract the same graph: 0.42040538787841797
+
+Time to construct pdb graph 2D58: 0.06339335441589355            
+Time to extract the same graph: 0.043520450592041016
+
+Time to construct pdb graph 2DRS: 0.2823774814605713            
+Time to extract the same graph: 0.16043639183044434
+
+Time to construct pdb graph 2EAQ: 0.05299663543701172            
+Time to extract the same graph: 0.03483772277832031
+
+Time to construct pdb graph 2ET2: 0.09382510185241699            
+Time to extract the same graph: 0.06698203086853027
+
+Time to construct pdb graph 2ETV: 0.4622478485107422            
+Time to extract the same graph: 0.2506711483001709
+
+Time to construct pdb graph 2F22: 0.16482257843017578            
+Time to extract the same graph: 0.11220479011535645
+
+Time to construct pdb graph 2F9M: 0.10396289825439453            
+Time to extract the same graph: 0.0730292797088623
+
+Time to construct pdb graph 2FFF: 0.30975914001464844            
+Time to extract the same graph: 0.17767953872680664
+
+Time to construct pdb graph 2FJ1: 0.11300301551818848            
+Time to extract the same graph: 0.08140206336975098
+
+Time to construct pdb graph 2G1L: 0.05696296691894531            
+Time to extract the same graph: 0.03953719139099121
+
+Time to construct pdb graph 2GA0: 1.0569360256195068            
+Time to extract the same graph: 0.46729326248168945
+
+Time to construct pdb graph 2GK2: 0.12290549278259277            
+Time to extract the same graph: 0.08566737174987793
+
+Time to construct pdb graph 2GQK: 0.3209998607635498            
+Time to extract the same graph: 0.1565108299255371
+
+Time to construct pdb graph 2GU3: 0.0709543228149414            
+Time to extract the same graph: 0.05016136169433594
+
+Time to construct pdb graph 2GW3: 0.30135035514831543            
+Time to extract the same graph: 0.17692255973815918
+
+Time to construct pdb graph 2GW4: 0.2990894317626953            
+Time to extract the same graph: 0.17572617530822754
+
+Time to construct pdb graph 2GZX: 0.3286266326904297            
+Time to extract the same graph: 0.19828009605407715
+
+Time to construct pdb graph 2H9J: 0.07534527778625488            
+Time to extract the same graph: 0.05029749870300293
+
+Time to construct pdb graph 2HJE: 0.11817669868469238            
+Time to extract the same graph: 0.08265542984008789
+
+Time to construct pdb graph 2HKV: 0.08474922180175781            
+Time to extract the same graph: 0.058632850646972656
+
+Time to construct pdb graph 2I2O: 0.27129101753234863            
+Time to extract the same graph: 0.16898202896118164
+
+Time to construct pdb graph 2ILT: 0.15535306930541992            
+Time to extract the same graph: 0.10612368583679199
+
+Time to construct pdb graph 2ISG: 0.6937267780303955            
+Time to extract the same graph: 0.34128332138061523
+
+Time to construct pdb graph 2ISY: 0.16640758514404297            
+Time to extract the same graph: 0.11494803428649902
+
+Time to construct pdb graph 2IWB: 0.17120766639709473            
+Time to extract the same graph: 0.1050562858581543
+
+Time to construct pdb graph 2J5S: 0.35735177993774414            
+Time to extract the same graph: 0.20235896110534668
+
+Time to construct pdb graph 2JIH: 0.38929033279418945            
+Time to extract the same graph: 0.21811151504516602
+
+Time to construct pdb graph 2JK8: 0.4208388328552246            
+Time to extract the same graph: 0.23510050773620605
+
+Time to construct pdb graph 2NQC: 0.048679351806640625            
+Time to extract the same graph: 0.03319215774536133
+
+Time to construct pdb graph 2NZ6: 0.1909809112548828            
+Time to extract the same graph: 0.12113666534423828
+
+Time to construct pdb graph 2O3B: 0.2370765209197998            
+Time to extract the same graph: 0.1462233066558838
+
+Time to construct pdb graph 2O8Q: 0.1375446319580078            
+Time to extract the same graph: 0.09358096122741699
+
+Time to construct pdb graph 2OK3: 0.09204554557800293            
+Time to extract the same graph: 0.06356263160705566
+
+Time to construct pdb graph 2OU6: 0.10137176513671875            
+Time to extract the same graph: 0.07081413269042969
+
+Time to construct pdb graph 2POS: 0.24752092361450195            
+Time to extract the same graph: 0.14543533325195312
+
+Time to construct pdb graph 2PW8: 0.21754145622253418            
+Time to extract the same graph: 0.1330568790435791
+
+Time to construct pdb graph 2QE9: 0.22413182258605957            
+Time to extract the same graph: 0.13703465461730957
+
+Time to construct pdb graph 2QJ3: 0.38220763206481934            
+Time to extract the same graph: 0.2269585132598877
+
+Time to construct pdb graph 2QJV: 0.3536186218261719            
+Time to extract the same graph: 0.20158767700195312
+
+Time to construct pdb graph 2QNK: 0.1746509075164795            
+Time to extract the same graph: 0.11246609687805176
+
+Time to construct pdb graph 2QQA: 0.11369752883911133            
+Time to extract the same graph: 0.08585000038146973
+
+Time to construct pdb graph 2QQH: 0.19239187240600586            
+Time to extract the same graph: 0.12070655822753906
+
+Time to construct pdb graph 2R9Z: 0.6661896705627441            
+Time to extract the same graph: 0.33225107192993164
+
+Time to construct pdb graph 2RD9: 0.6112060546875            
+Time to extract the same graph: 0.31162071228027344
+
+Time to construct pdb graph 2RJ2: 0.1122279167175293            
+Time to extract the same graph: 0.07560563087463379
+
+Time to construct pdb graph 2UUI: 0.08896756172180176            
+Time to extract the same graph: 0.061002254486083984
+
+Time to construct pdb graph 2UVE: 0.9818346500396729            
+Time to extract the same graph: 0.44387149810791016
+
+Time to construct pdb graph 2UWJ: 0.11505842208862305            
+Time to extract the same graph: 0.08062314987182617
+
+Time to construct pdb graph 2VCO: 0.19011664390563965            
+Time to extract the same graph: 0.11962080001831055
+
+Time to construct pdb graph 2VTC: 0.31068968772888184            
+Time to extract the same graph: 0.17993950843811035
+
+Time to construct pdb graph 2W37: 0.859591007232666            
+Time to extract the same graph: 0.4033942222595215
+
+Time to construct pdb graph 2W94: 0.583444356918335            
+Time to extract the same graph: 0.3029441833496094
+
+Time to construct pdb graph 2WCR: 0.18045425415039062            
+Time to extract the same graph: 0.11706948280334473
+
+Time to construct pdb graph 2X27: 0.12358546257019043            
+Time to extract the same graph: 0.07960796356201172
+
+Time to construct pdb graph 2XAU: 1.5200257301330566            
+Time to extract the same graph: 0.6021029949188232
+
+Time to construct pdb graph 2Y3Y: 0.20374226570129395            
+Time to extract the same graph: 0.1337590217590332
+
+Time to construct pdb graph 2YBP: 0.596062183380127            
+Time to extract the same graph: 0.30136919021606445
+
+Time to construct pdb graph 2YG9: 0.24413299560546875            
+Time to extract the same graph: 0.15363860130310059
+
+Time to construct pdb graph 2YOL: 0.1183316707611084            
+Time to extract the same graph: 0.0804433822631836
+
+Time to construct pdb graph 2ZPL: 0.14830422401428223            
+Time to extract the same graph: 0.1021413803100586
+
+Time to construct pdb graph 3A1F: 0.09936833381652832            
+Time to extract the same graph: 0.06441307067871094
+
+Time to construct pdb graph 3AL6: 1.0425467491149902            
+Time to extract the same graph: 0.454941987991333
+
+Time to construct pdb graph 3B2Y: 0.35277676582336426            
+Time to extract the same graph: 0.20140528678894043
+
+Time to construct pdb graph 3BEM: 0.2537252902984619            
+Time to extract the same graph: 0.1577920913696289
+
+Time to construct pdb graph 3BIX: 2.923602819442749            
+Time to extract the same graph: 0.8848965167999268
+
+Time to construct pdb graph 3BJD: 0.8304531574249268            
+Time to extract the same graph: 0.3945424556732178
+
+Time to construct pdb graph 3BKH: 0.1561729907989502            
+Time to extract the same graph: 0.10359930992126465
+
+Time to construct pdb graph 3BQ8: 0.15988922119140625            
+Time to extract the same graph: 0.10739850997924805
+
+Time to construct pdb graph 3BVC: 0.2683253288269043            
+Time to extract the same graph: 0.16297101974487305
+
+Time to construct pdb graph 3C2Q: 0.418499231338501            
+Time to extract the same graph: 0.24555206298828125
+
+Time to construct pdb graph 3C6C: 0.155045747756958            
+Time to extract the same graph: 0.10627603530883789
+
+Time to construct pdb graph 3C7J: 0.2861790657043457            
+Time to extract the same graph: 0.17885041236877441
+
+Time to construct pdb graph 3CC8: 0.12157344818115234            
+Time to extract the same graph: 0.08143496513366699
+
+Time to construct pdb graph 3CJ3: 0.9798016548156738            
+Time to extract the same graph: 0.43770503997802734
+
+Time to construct pdb graph 3CU2: 0.3043208122253418            
+Time to extract the same graph: 0.18377232551574707
+
+Time to construct pdb graph 3D34: 0.279111385345459            
+Time to extract the same graph: 0.16670489311218262
+
+Time to construct pdb graph 3D82: 0.34055566787719727            
+Time to extract the same graph: 0.19908881187438965
+
+Time to construct pdb graph 3D9B: 0.847841739654541            
+Time to extract the same graph: 0.3977842330932617
+
+Time to construct pdb graph 3DE9: 0.05653810501098633            
+Time to extract the same graph: 0.041019439697265625
+
+Time to construct pdb graph 3DI5: 0.07964682579040527            
+Time to extract the same graph: 0.05544543266296387
+
+Time to construct pdb graph 3DKQ: 0.460831880569458            
+Time to extract the same graph: 0.25545668601989746
+
+Time to construct pdb graph 3E3U: 0.10390448570251465            
+Time to extract the same graph: 0.0729525089263916
+
+Time to construct pdb graph 3EGJ: 0.5110690593719482            
+Time to extract the same graph: 0.2839992046356201
+
+Time to construct pdb graph 3EYY: 0.14591503143310547            
+Time to extract the same graph: 0.09895610809326172
+
+Time to construct pdb graph 3F0A: 0.09795236587524414            
+Time to extract the same graph: 19.88788628578186
+
+Time to construct pdb graph 3FFO: 0.09570074081420898            
+Time to extract the same graph: 0.06582021713256836
+
+Time to construct pdb graph 3FMD: 0.19459772109985352            
+Time to extract the same graph: 0.1304483413696289
+
+Time to construct pdb graph 3FPU: 0.09420442581176758            
+Time to extract the same graph: 0.06505990028381348
+
+Time to construct pdb graph 3GB7: 0.348555326461792            
+Time to extract the same graph: 0.20447039604187012
+
+Time to construct pdb graph 3GC8: 0.5075781345367432            
+Time to extract the same graph: 0.2751312255859375
+
+Time to construct pdb graph 3GW7: 0.27855348587036133            
+Time to extract the same graph: 0.17093253135681152
+
+Time to construct pdb graph 3H0N: 0.09689879417419434            
+Time to extract the same graph: 0.06995964050292969
+
+Time to construct pdb graph 3H85: 0.15505146980285645            
+Time to extract the same graph: 0.10616326332092285
+
+Time to construct pdb graph 3HDP: 0.0750892162322998            
+Time to extract the same graph: 0.05395221710205078
+
+Time to construct pdb graph 3HG9: 0.1230001449584961            
+Time to extract the same graph: 0.08757781982421875
+
+Time to construct pdb graph 3HPX: 0.6160683631896973            
+Time to extract the same graph: 0.3200991153717041
+
+Time to construct pdb graph 3HTJ: 0.18886232376098633            
+Time to extract the same graph: 0.13213396072387695
+
+Time to construct pdb graph 3HTN: 0.27127957344055176            
+Time to extract the same graph: 0.1642448902130127
+
+Time to construct pdb graph 3HWP: 0.41651415824890137            
+Time to extract the same graph: 0.23196077346801758
+
+Time to construct pdb graph 3HY6: 0.1114051342010498            
+Time to extract the same graph: 0.0795285701751709
+
+Time to construct pdb graph 3I0O: 0.20252513885498047            
+Time to extract the same graph: 0.13287997245788574
+
+Time to construct pdb graph 3I2B: 1.7289016246795654            
+Time to extract the same graph: 0.6389553546905518
+
+Time to construct pdb graph 3IDQ: 0.15693092346191406            
+Time to extract the same graph: 0.11008977890014648
+
+Time to construct pdb graph 3IHT: 0.184326171875            
+Time to extract the same graph: 0.12460970878601074
+
+Time to construct pdb graph 3II3: 0.09855079650878906            
+Time to extract the same graph: 0.06606340408325195
+
+Time to construct pdb graph 3III: 0.4067230224609375            
+Time to extract the same graph: 0.22577643394470215
+
+Time to construct pdb graph 3IU8: 0.16218209266662598            
+Time to extract the same graph: 0.10930728912353516
+
+Time to construct pdb graph 3K0H: 0.12739014625549316            
+Time to extract the same graph: 0.08479976654052734
+
+Time to construct pdb graph 3K2I: 0.6325969696044922            
+Time to extract the same graph: 0.3214132785797119
+
+Time to construct pdb graph 3K4Z: 0.17741012573242188            
+Time to extract the same graph: 0.1145331859588623
+
+Time to construct pdb graph 3KBV: 0.24649286270141602            
+Time to extract the same graph: 0.15396380424499512
+
+Time to construct pdb graph 3KV4: 0.3074209690093994            
+Time to extract the same graph: 0.1803297996520996
+
+Time to construct pdb graph 3KVB: 0.24634218215942383            
+Time to extract the same graph: 0.14905500411987305
+
+Time to construct pdb graph 3LA4: 0.6162333488464355            
+Time to extract the same graph: 0.3138413429260254
+
+Time to construct pdb graph 3LEI: 0.07871890068054199            
+Time to extract the same graph: 0.05679941177368164
+
+Time to construct pdb graph 3LHO: 0.14594197273254395            
+Time to extract the same graph: 0.09963512420654297
+
+Time to construct pdb graph 3LOP: 0.19712018966674805            
+Time to extract the same graph: 0.1297011375427246
+
+Time to construct pdb graph 3LXY: 0.1848909854888916            
+Time to extract the same graph: 0.12417483329772949
+
+Time to construct pdb graph 3MGQ: 1.6027605533599854            
+Time to extract the same graph: 0.593428373336792
+
+Time to construct pdb graph 3N6L: 0.3229496479034424            
+Time to extract the same graph: 0.18991875648498535
+
+Time to construct pdb graph 3NBK: 0.44115281105041504            
+Time to extract the same graph: 0.2469477653503418
+
+Time to construct pdb graph 3NV1: 0.07857251167297363            
+Time to extract the same graph: 0.054964303970336914
+
+Time to construct pdb graph 3NZZ: 0.3788290023803711            
+Time to extract the same graph: 0.21712541580200195
+
+Time to construct pdb graph 3PHT: 0.10484933853149414            
+Time to extract the same graph: 0.07682204246520996
+
+Time to construct pdb graph 3PIV: 0.20815205574035645            
+Time to extract the same graph: 0.13333487510681152
+
+Time to construct pdb graph 3QM4: 0.7511396408081055            
+Time to extract the same graph: 0.3697826862335205
+
+Time to construct pdb graph 3QVQ: 0.8152062892913818            
+Time to extract the same graph: 0.3915374279022217
+
+Time to construct pdb graph 3R3U: 1.1543617248535156            
+Time to extract the same graph: 0.4917912483215332
+
+Time to construct pdb graph 3RDH: 0.7470018863677979            
+Time to extract the same graph: 0.3712925910949707
+
+Time to construct pdb graph 3RVA: 0.30722546577453613            
+Time to extract the same graph: 0.18265032768249512
+
+Time to construct pdb graph 3SAI: 0.23191571235656738            
+Time to extract the same graph: 0.14244723320007324
+
+Time to construct pdb graph 3SLU: 0.494584321975708            
+Time to extract the same graph: 0.273468017578125
+
+Time to construct pdb graph 3T00: 0.26380491256713867            
+Time to extract the same graph: 0.16190433502197266
+
+Time to construct pdb graph 3T9W: 0.1626129150390625            
+Time to extract the same graph: 0.10849738121032715
+
+Time to construct pdb graph 3TA9: 0.7929351329803467            
+Time to extract the same graph: 0.3746967315673828
+
+Time to construct pdb graph 3TOY: 1.324474573135376            
+Time to extract the same graph: 0.5531644821166992
+
+Time to construct pdb graph 3TQ0: 0.43709754943847656            
+Time to extract the same graph: 0.24344944953918457
+
+Time to construct pdb graph 3TR6: 0.11610555648803711            
+Time to extract the same graph: 0.08608651161193848
+
+Time to construct pdb graph 3UM9: 0.30228185653686523            
+Time to extract the same graph: 0.17935442924499512
+
+Time to construct pdb graph 3UYJ: 0.3389298915863037            
+Time to extract the same graph: 0.19574236869812012
+
+Time to construct pdb graph 3VJ6: 0.2706940174102783            
+Time to extract the same graph: 0.16290545463562012
+
+Time to construct pdb graph 3WD7: 0.5942463874816895            
+Time to extract the same graph: 0.31351327896118164
+
+Time to construct pdb graph 3WQA: 0.3786780834197998            
+Time to extract the same graph: 0.2219557762145996
+
+Time to construct pdb graph 3X2Y: 0.4788529872894287            
+Time to extract the same graph: 0.2679402828216553
+
+Time to construct pdb graph 3ZEZ: 0.09076762199401855            
+Time to extract the same graph: 0.06714606285095215
+
+Time to construct pdb graph 4ASF: 0.11922931671142578            
+Time to extract the same graph: 0.08505749702453613
+
+Time to construct pdb graph 4AWX: 0.1788032054901123            
+Time to extract the same graph: 0.12166047096252441
+
+Time to construct pdb graph 4B29: 0.116668701171875            
+Time to extract the same graph: 0.08001136779785156
+
+Time to construct pdb graph 4BA9: 0.4776449203491211            
+Time to extract the same graph: 0.25743865966796875
+
+Time to construct pdb graph 4BF5: 1.6654367446899414            
+Time to extract the same graph: 0.7186195850372314
+
+Time to construct pdb graph 4BU2: 0.2365741729736328            
+Time to extract the same graph: 0.15169453620910645
+
+Time to construct pdb graph 4C8R: 3.1616923809051514            
+Time to extract the same graph: 0.9569551944732666
+
+Time to construct pdb graph 4CXY: 0.2986445426940918            
+Time to extract the same graph: 0.18085360527038574
+
+Time to construct pdb graph 4DF0: 0.24117588996887207            
+Time to extract the same graph: 0.1552894115447998
+
+Time to construct pdb graph 4ER8: 0.1714153289794922            
+Time to extract the same graph: 0.10514116287231445
+
+Time to construct pdb graph 4EVV: 0.1274876594543457            
+Time to extract the same graph: 0.08359360694885254
+
+Time to construct pdb graph 4EYU: 0.7674076557159424            
+Time to extract the same graph: 0.3661777973175049
+
+Time to construct pdb graph 4FPP: 0.3911123275756836            
+Time to extract the same graph: 0.229933500289917
+
+Time to construct pdb graph 4FR2: 0.19848990440368652            
+Time to extract the same graph: 0.1363205909729004
+
+Time to construct pdb graph 4GSV: 20.16469931602478            
+Time to extract the same graph: 0.24405932426452637
+
+Time to construct pdb graph 4GU7: 1.0927884578704834            
+Time to extract the same graph: 0.48513031005859375
+
+Time to construct pdb graph 4GUH: 0.3241539001464844            
+Time to extract the same graph: 0.20248079299926758
+
+Time to construct pdb graph 4H73: 7.274984121322632            
+Time to extract the same graph: 1.558875322341919
+
+Time to construct pdb graph 4HT4: 0.1578059196472168            
+Time to extract the same graph: 0.10604691505432129
+
+Time to construct pdb graph 4I72: 0.4750678539276123            
+Time to extract the same graph: 0.25614142417907715
+
+Time to construct pdb graph 4I7H: 0.17376041412353516            
+Time to extract the same graph: 0.12033438682556152
+
+Time to construct pdb graph 4I8C: 1.5456535816192627            
+Time to extract the same graph: 0.613154411315918
+
+Time to construct pdb graph 4IX0: 0.1387937068939209            
+Time to extract the same graph: 0.1011958122253418
+
+Time to construct pdb graph 4JH4: 0.17837166786193848            
+Time to extract the same graph: 0.12057685852050781
+
+Time to construct pdb graph 4JOO: 0.2552917003631592            
+Time to extract the same graph: 0.1618649959564209
+
+Time to construct pdb graph 4JXD: 0.11844873428344727            
+Time to extract the same graph: 0.08750176429748535
+
+Time to construct pdb graph 4JZR: 0.11366057395935059            
+Time to extract the same graph: 0.08037161827087402
+
+Time to construct pdb graph 4K70: 0.7541265487670898            
+Time to extract the same graph: 0.372821569442749
+
+Time to construct pdb graph 4KNG: 1.3858859539031982            
+Time to extract the same graph: 0.5554654598236084
+
+Time to construct pdb graph 4KOO: 1.460265874862671            
+Time to extract the same graph: 0.6250591278076172
+
+Time to construct pdb graph 4KSF: 0.24397945404052734            
+Time to extract the same graph: 0.16204214096069336
+
+Time to construct pdb graph 4L3F: 3.572890043258667            
+Time to extract the same graph: 0.9936144351959229
+
+Time to construct pdb graph 4L3K: 0.17680907249450684            
+Time to extract the same graph: 0.11679816246032715
+
+Time to construct pdb graph 4LK2: 0.6503658294677734            
+Time to extract the same graph: 0.33920907974243164
+
+Time to construct pdb graph 4LM1: 0.5067663192749023            
+Time to extract the same graph: 0.2688772678375244
+
+Time to construct pdb graph 4LS3: 0.4337460994720459            
+Time to extract the same graph: 0.24741721153259277
+
+Time to construct pdb graph 4M6O: 0.27892088890075684            
+Time to extract the same graph: 0.166579008102417
+
+Time to construct pdb graph 4MTS: 0.14932608604431152            
+Time to extract the same graph: 0.10480403900146484
+
+Time to construct pdb graph 4NPP: 1.700002670288086            
+Time to extract the same graph: 0.6504888534545898
+
+Time to construct pdb graph 4NUK: 0.10298323631286621            
+Time to extract the same graph: 0.07335066795349121
+
+Time to construct pdb graph 4O6F: 0.2979001998901367            
+Time to extract the same graph: 0.18112730979919434
+
+Time to construct pdb graph 4OI6: 0.08466768264770508            
+Time to extract the same graph: 0.06284117698669434
+
+Time to construct pdb graph 4PEI: 2.172900915145874            
+Time to extract the same graph: 0.7509422302246094
+
+Time to construct pdb graph 4PPT: 0.06720662117004395            
+Time to extract the same graph: 0.047182321548461914
+
+Time to construct pdb graph 4QU2: 0.4875805377960205            
+Time to extract the same graph: 0.26242995262145996
+
+Time to construct pdb graph 4R8Z: 0.2708563804626465            
+Time to extract the same graph: 0.1732633113861084
+
+Time to construct pdb graph 4RNZ: 0.23391056060791016            
+Time to extract the same graph: 0.14843320846557617
+
+Time to construct pdb graph 4X68: 0.5209016799926758            
+Time to extract the same graph: 0.28220534324645996
+
+Time to construct pdb graph 4X9M: 0.2379136085510254            
+Time to extract the same graph: 0.15133190155029297
+
+Time to construct pdb graph 4XAA: 0.1175234317779541            
+Time to extract the same graph: 0.08682942390441895
+
+Time to construct pdb graph 4XBZ: 3.1809027194976807            
+Time to extract the same graph: 0.9800732135772705
+
+Time to construct pdb graph 4XCB: 0.8879780769348145            
+Time to extract the same graph: 0.4190046787261963
+
+Time to construct pdb graph 4Y2O: 0.21051621437072754            
+Time to extract the same graph: 0.13828468322753906
+
+Time to construct pdb graph 4Y33: 2.136361837387085            
+Time to extract the same graph: 0.7472703456878662
+
+Time to construct pdb graph 4Y5U: 0.7159509658813477            
+Time to extract the same graph: 0.35720229148864746
+
+Time to construct pdb graph 4YBN: 0.24713349342346191            
+Time to extract the same graph: 0.1576385498046875
+
+Time to construct pdb graph 4YPG: 1.0501132011413574            
+Time to extract the same graph: 0.46839356422424316
+
+Time to construct pdb graph 4ZF6: 0.3154776096343994            
+Time to extract the same graph: 0.18829917907714844
+
+Time to construct pdb graph 4ZMW: 0.26148223876953125            
+Time to extract the same graph: 0.16509556770324707
+
+Time to construct pdb graph 5A3T: 0.3277876377105713            
+Time to extract the same graph: 0.1892547607421875
+
+Time to construct pdb graph 5ARD: 0.12881684303283691            
+Time to extract the same graph: 0.0952765941619873
+
+Time to construct pdb graph 5AUN: 0.22783231735229492            
+Time to extract the same graph: 0.147871732711792
+
+Time to construct pdb graph 5B7Z: 0.3680567741394043            
+Time to extract the same graph: 0.21892714500427246
+
+Time to construct pdb graph 5BNC: 0.2928292751312256            
+Time to extract the same graph: 0.18228721618652344
+
+Time to construct pdb graph 5BY3: 0.5801906585693359            
+Time to extract the same graph: 0.30533933639526367
+
+Time to construct pdb graph 5C4V: 0.6966392993927002            
+Time to extract the same graph: 0.33870434761047363
+
+Time to construct pdb graph 5CB9: 0.06135368347167969            
+Time to extract the same graph: 0.04440045356750488
+
+Time to construct pdb graph 5CK0: 20.382750511169434            
+Time to extract the same graph: 0.2524440288543701
+
+Time to construct pdb graph 5CK6: 0.17727422714233398            
+Time to extract the same graph: 0.1210324764251709
+
+Time to construct pdb graph 5CXM: 0.2090625762939453            
+Time to extract the same graph: 0.14216113090515137
+
+Time to construct pdb graph 5D1R: 0.7282023429870605            
+Time to extract the same graph: 0.40459561347961426
+
+Time to construct pdb graph 5D27: 0.08991408348083496            
+Time to extract the same graph: 0.06356287002563477
+
+Time to construct pdb graph 5D7Z: 0.16451311111450195            
+Time to extract the same graph: 0.11203145980834961
+
+Time to construct pdb graph 5DMV: 0.13729429244995117            
+Time to extract the same graph: 0.09599828720092773
+
+Time to construct pdb graph 5DMY: 3.312781572341919            
+Time to extract the same graph: 0.9946002960205078
+
+Time to construct pdb graph 5E6J: 0.7496020793914795            
+Time to extract the same graph: 0.3722848892211914
+
+Time to construct pdb graph 5FG6: 0.06877541542053223            
+Time to extract the same graph: 0.048665523529052734
+
+Time to construct pdb graph 5FLH: 0.24504709243774414            
+Time to extract the same graph: 0.1541275978088379
+
+Time to construct pdb graph 5FPZ: 0.06434488296508789            
+Time to extract the same graph: 0.0447998046875
+
+Time to construct pdb graph 5GOL: 0.3509788513183594            
+Time to extract the same graph: 0.2064509391784668
+
+Time to construct pdb graph 5GZF: 0.08524465560913086            
+Time to extract the same graph: 0.0601956844329834
+
+Time to construct pdb graph 5HT8: 0.053205013275146484            
+Time to extract the same graph: 0.03546547889709473
+
+Time to construct pdb graph 5HT9: 0.09860992431640625            
+Time to extract the same graph: 0.06704330444335938
+
+Time to construct pdb graph 5I14: 0.1366114616394043            
+Time to extract the same graph: 0.09534096717834473
+
+Time to construct pdb graph 5JJT: 0.8001608848571777            
+Time to extract the same graph: 0.38480186462402344
+
+Time to construct pdb graph 5JOU: 0.8686478137969971            
+Time to extract the same graph: 0.398040771484375
+
+Time to construct pdb graph 5K7H: 0.6227357387542725            
+Time to extract the same graph: 0.3366210460662842
+
+Time to construct pdb graph 5KD8: 0.4039325714111328            
+Time to extract the same graph: 0.22431135177612305
+
+Time to construct pdb graph 5M7M: 0.5698411464691162            
+Time to extract the same graph: 0.29908084869384766
+
+Time to construct pdb graph 5MLE: 0.7362306118011475            
+Time to extract the same graph: 0.36742639541625977
+
+Time to construct pdb graph 5N16: 0.3554694652557373            
+Time to extract the same graph: 0.20869135856628418
+
+Time to construct pdb graph 5NZY: 0.22131919860839844            
+Time to extract the same graph: 0.1374664306640625
+
+Time to construct pdb graph 5O59: 0.6460320949554443            
+Time to extract the same graph: 0.32206249237060547
+
+Time to construct pdb graph 5O7Y: 0.21981430053710938            
+Time to extract the same graph: 0.14046168327331543
+
+Time to construct pdb graph 5TCV: 0.18109989166259766            
+Time to extract the same graph: 0.11998486518859863
+
+Time to construct pdb graph 5U7H: 0.08299922943115234            
+Time to extract the same graph: 0.06006956100463867
+
+Time to construct pdb graph 5UP7: 0.10234999656677246            
+Time to extract the same graph: 0.0721445083618164
+
+Time to construct pdb graph 5V2V: 0.18067073822021484            
+Time to extract the same graph: 0.11625027656555176
+
+Time to construct pdb graph 5VB0: 0.9980378150939941            
+Time to extract the same graph: 0.4462010860443115
+
+Time to construct pdb graph 5WTQ: 0.29488587379455566            
+Time to extract the same graph: 0.17800354957580566
+
+Time to construct pdb graph 5WWX: 0.05548381805419922            
+Time to extract the same graph: 0.038667917251586914
+
+Time to construct pdb graph 5X7O: 3.324690580368042            
+Time to extract the same graph: 0.9800615310668945
+
+Time to construct pdb graph 5YQW: 0.3921983242034912            
+Time to extract the same graph: 0.2216472625732422
+
+Time to construct pdb graph 6C1W: 1.151005506515503            
+Time to extract the same graph: 0.5067217350006104
+
+Time to construct pdb graph 6C8Z: 0.32346296310424805            
+Time to extract the same graph: 0.1965341567993164
+
+Time to construct pdb graph 6EUV: 0.9440367221832275            
+Time to extract the same graph: 0.4403548240661621
+
