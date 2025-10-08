@@ -87,7 +87,7 @@ def define_graphein_edge_funcs(func_idx=1):
 
 def define_configuration(edge_construction_funcs):
     return {
-        "granularity": "atom",
+        "granularity": "CA",
         "edge_construction_functions": edge_construction_funcs
     }
 
@@ -227,7 +227,7 @@ def experimento_1():
             write_error(dataset_name, msg, error_path)
             continue
         protein_graph_with_metadata_dict[pdb_code] = graph_with_data[pdb_code]
-        protein_graph_without_metadata_dict[pdb_code] = graph_with_data[pdb_code]
+        protein_graph_without_metadata_dict[pdb_code] = graph_without_data[pdb_code]
 
         number_of_edges_in_which_graph.append(len(protein_graph_without_metadata_dict[pdb_code][-1].edges()))
         number_of_nodes_in_which_graph.append(len(protein_graph_without_metadata_dict[pdb_code][-1].nodes()))
@@ -242,9 +242,8 @@ def experimento_1():
     del number_of_edges_in_which_graph
     del number_of_nodes_in_which_graph
     
-    time_to_construct = time_count(time_start=time_start)
+    time_to_construct = time_count(time_start=time_start)            
 
-    print(protein_graph_without_metadata_dict)
     msg = f'\nTime to construct graphs: {time_to_construct}\nNumber of graphs: {len(protein_graph_with_metadata_dict)}'
 
     write_result(dataset=dataset_name, msg=msg, result_path=result_path)

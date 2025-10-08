@@ -53,7 +53,7 @@ class PDBGraphStore:
         return len(self.node_to_id.keys())
 
     def get_pdb_list(self):
-        return [pdb_code for pdb_code in self.pdb_to_nodes]
+        return [pdb_code for pdb_code in self.all_pdb_codes]
 
     def _reconstruct_node_attributes(self, extracted_graph, nodes):
         for node in nodes:
@@ -71,6 +71,7 @@ class PDBGraphStore:
                     extracted_graph.nodes[node][key] = value
 
     def _reconstruct_edge_attributes(self, extracted_graph, edges, edge_funcs, pdb_code):
+        pdb_idx = self.all_pdb_codes.index(pdb_code)
         for u, v in edges:
             edge = (u, v)
             
@@ -99,9 +100,8 @@ class PDBGraphStore:
             try:
                 edge_id = self.edge_to_id[edge]
                 if edge_id in self.edge_distances:
-                    pdb_code_index = self.all_pdb_codes.index(pdb_code)
-                    if pdb_code_index in self.edge_distances[edge_id]:
-                        extracted_graph.edges[edge]["distance"] = self.edge_distances[edge_id][pdb_code_index]
+                    if pdb_idx in self.edge_distances[edge_id]:
+                        extracted_graph.edges[edge]["distance"] = self.edge_distances[edge_id][pdb_idx]
             except KeyError as e:
                 print(f"ERROR at reconstruct edge attr (KeyError): edge={edge}, error={e}")
             except Exception as e:
@@ -111,10 +111,11 @@ class PDBGraphStore:
         extracted_graphs = []
         print(f"dentro de extract_pdb. pdb_code={pdb_codes}, {edge_construction_functions}")
         for pdb_code in pdb_codes:
+            pdb_idx = self.all_pdb_codes.index(pdb_code)
             extracted_graph = nx.Graph()
 
-            extracted_nodes = [self.node_to_id.inverse[node_id] for node_id in self.pdb_to_nodes[pdb_code]]
-            extracted_edges = [self.edge_to_id.inverse[edge_id] for edge_id in self.pdb_to_edges[pdb_code]]
+            extracted_nodes = [self.node_to_id.inverse[node_id] for node_id in self.pdb_to_nodes[pdb_idx]]
+            extracted_edges = [self.edge_to_id.inverse[edge_id] for edge_id in self.pdb_to_edges[pdb_idx]]
 
             extracted_graph.graph["pdb_code"] = pdb_code
             extracted_graph.update(nodes=extracted_nodes)
@@ -131,14 +132,16 @@ class PDBGraphStore:
         
         for pdb_code, graph_list in graphs.items():
             
-            # Adiciona pdb_code ao all_pdb_codes se não existir
+            
             if pdb_code not in self.all_pdb_codes:
                 self.all_pdb_codes.add(pdb_code)
+
+            pdb_idx = self.all_pdb_codes.index(pdb_code)
             
-            if pdb_code not in self.pdb_to_nodes:
-                self.pdb_to_nodes[pdb_code] = BitMap64()
-            if pdb_code not in self.pdb_to_edges:
-                self.pdb_to_edges[pdb_code] = BitMap64()
+            if pdb_idx not in self.pdb_to_nodes:
+                self.pdb_to_nodes[pdb_idx] = BitMap64()
+            if pdb_idx not in self.pdb_to_edges:
+                self.pdb_to_edges[pdb_idx] = BitMap64()
             
             for graph in graph_list:
                 for node in graph.nodes():
@@ -161,7 +164,7 @@ class PDBGraphStore:
                         self.node_attrs[node] = attr_indexes
 
                     node_id = self.node_to_id[node]
-                    self.pdb_to_nodes[pdb_code].add(node_id)
+                    self.pdb_to_nodes[pdb_idx].add(node_id)
                 
                 for u, v, data in graph.edges.data():
                     edge = (u, v)
@@ -170,7 +173,6 @@ class PDBGraphStore:
                         new_edge_id = len(self.edge_to_id)
                         self.edge_to_id[edge] = new_edge_id
                         
-                        # Processa kinds
                         attr_kind_value = list(data["kind"]) if "kind" in data else []
                         kind_indexes = set()
                         
@@ -179,18 +181,14 @@ class PDBGraphStore:
                                 kind_index = self.edge_attr_keys["kind"].add(kind)
                                 kind_indexes.add(kind_index)
                         
-                        # Armazena kinds como lista contendo o set de índices
                         self.edge_kinds[edge] = [kind_indexes]
                         
-                        # Processa distance
                         if "distance" in data and data["distance"] is not None:
-                            pdb_code_index = self.all_pdb_codes.index(pdb_code)
                             if new_edge_id not in self.edge_distances:
                                 self.edge_distances[new_edge_id] = {}
-                            self.edge_distances[new_edge_id][pdb_code_index] = data["distance"]
+                            self.edge_distances[new_edge_id][pdb_idx] = data["distance"]
                     
                     else:
-                        # Edge já existe, atualiza kinds
                         if "kind" in data:
                             kinds = set(filter(lambda x: x, data["kind"]))
                             for kind in kinds:
@@ -198,16 +196,14 @@ class PDBGraphStore:
                                     kind_index = self.edge_attr_keys["kind"].add(kind)
                                     self.edge_kinds[edge][0].add(kind_index)
 
-                        # Atualiza distance para este pdb_code
                         if "distance" in data and data["distance"] is not None:
                             edge_id = self.edge_to_id[edge]
-                            pdb_code_index = self.all_pdb_codes.index(pdb_code)
                             if edge_id not in self.edge_distances:
                                 self.edge_distances[edge_id] = {}
-                            self.edge_distances[edge_id][pdb_code_index] = data["distance"]
+                            self.edge_distances[edge_id][pdb_idx] = data["distance"]
                     
                     edge_id = self.edge_to_id[edge]
-                    self.pdb_to_edges[pdb_code].add(edge_id)
+                    self.pdb_to_edges[pdb_idx].add(edge_id)
                     print(f'edge {edge} added')
         
         self.pdb_list = [k for k in self.pdb_to_nodes.keys()]
@@ -217,6 +213,8 @@ class PDBGraphStore:
         print(f"Total de arestas únicas: {len(self.edge_to_id)}")
         print(f"Total de PDBs: {len(self.pdb_list)}")
 
+#daqui pra baixo nao mudou ainda
+#TODO aplicar a mudanca das keys de pdb_to_edge e node que foi de str para int
     def remove_pdb(self, pdb_code):        
         if pdb_code not in self.pdb_to_nodes:
             print(f"PDB {pdb_code} não encontrado no supergrafo.")

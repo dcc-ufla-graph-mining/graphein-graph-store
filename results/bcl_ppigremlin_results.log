@@ -1,30 +1,30 @@
 Result log for bcl_ppigremlin
-Average number of nodes: 2642.543103448276         
-Average number of edges: 20957.206896551725     
-Time to construct graphs: 36.55401134490967
-Number of graphs: 116
-Time to compress: 46.512136936187744
+Average number of nodes: 3001.75         
+Average number of edges: 23840.5     
+Time to construct graphs: 2.675311326980591
+Number of graphs: 4
+Time to compress: 3.259661912918091
         
-Mean time to extract: 0.21247983800953832         
-Uncompressed complete graph size: 1524.9633102416992        
-Uncompressed structure graph size: 1524.9633102416992        
-Uncompressed edge size: 12.724494934082031        
-Uncompressed node size: 2.0683059692382812        
-Uncompressed complete graph serialized: 173.48770141601562        
-Uncompressed edge serialized: 1.1127395629882812        
-Uncompressed node serialized: 0.311309814453125        
+Mean time to extract: 0.41460299491882324         
+Uncompressed complete graph size: 60.024566650390625        
+Uncompressed structure graph size: 15.923309326171875        
+Uncompressed edge size: 12.485626220703125        
+Uncompressed node size: 2.0462799072265625        
+Uncompressed complete graph serialized: 6.808448791503906        
+Uncompressed edge serialized: 1.0905532836914062        
+Uncompressed node serialized: 0.30133056640625        
         
-Compressed graph complete size: 1226.1353454589844        
-Compressed complete node size: 79.4851303100586         
-Compressed complete edge size: 1146.6502151489258         
-Compressed node attributes size: 27.39532470703125        
-Compressed edge attributes size: 943.1777572631836        
-Compressed node attributes keys size: 31.764381408691406        
+Compressed graph complete size: 96.19287872314453        
+Compressed complete node size: 8.665298461914062         
+Compressed complete edge size: 87.52758026123047         
+Compressed node attributes size: 2.9422454833984375        
+Compressed edge attributes size: 68.95027923583984        
+Compressed node attributes keys size: 3.5502700805664062        
 Compressed edge attributes keys size: 0.00262451171875        
-Compressed pdb to nodes size: 0.5722122192382812        
-Compressed pdb to edges size: 2.400726318359375        
-Compressed node to id size: 19.753211975097656        
-Compressed edge to id size: 201.06910705566406        
+Compressed pdb to nodes size: 0.0233612060546875        
+Compressed pdb to edges size: 0.04221343994140625        
+Compressed node to id size: 2.1494216918945312        
+Compressed edge to id size: 18.53246307373047        
         
-Compressed graph object size: 1088.344093322754        
-Compressed graph complete size serialized: 128.12818908691406    
+Compressed graph object size: 85.86341857910156        
+Compressed graph complete size serialized: 6.950347900390625    
