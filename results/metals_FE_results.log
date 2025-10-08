@@ -1,103 +1,30 @@
 Result log for metals_FE
-Time to construct pdb graph 1AOR: 2.337763547897339            
-Time to extract the same graph: 0.4553234577178955
-
-Time to construct pdb graph 1AUI: 0.8131113052368164            
-Time to extract the same graph: 0.21255850791931152
-
-Time to construct pdb graph 1B4U: 1.4422504901885986            
-Time to extract the same graph: 0.3236808776855469
-
-Time to construct pdb graph 1BK0: 0.4234933853149414            
-Time to extract the same graph: 0.1279001235961914
-
-Time to construct pdb graph 1BSZ: 0.7214398384094238            
-Time to extract the same graph: 0.19330930709838867
-
-Time to construct pdb graph 1DLM: 0.913902759552002            
-Time to extract the same graph: 0.23336505889892578
-
-Time to construct pdb graph 1DVB: 0.21946382522583008            
-Time to extract the same graph: 20.935785055160522
-
-Time to construct pdb graph 1E14: 1.383934736251831            
-Time to extract the same graph: 0.31525754928588867
-
-Time to construct pdb graph 1EIL: 0.34534716606140137            
-Time to extract the same graph: 0.10892748832702637
-
-Time to construct pdb graph 1EO2: 0.6092262268066406            
-Time to extract the same graph: 0.17003679275512695
-
-Time to construct pdb graph 1FRF: 1.2709307670593262            
-Time to extract the same graph: 0.29698777198791504
-
-Time to construct pdb graph 1FZI: 6.045918703079224            
-Time to extract the same graph: 0.863612174987793
-
-Time to construct pdb graph 1GP5: 0.4327573776245117            
-Time to extract the same graph: 0.1321115493774414
-
-Time to construct pdb graph 1GUP: 2.9373576641082764            
-Time to extract the same graph: 0.5402131080627441
-
-Time to construct pdb graph 1GV8: 0.17113733291625977            
-Time to extract the same graph: 0.05945324897766113
-
-Time to construct pdb graph 1GVG: 0.3875730037689209            
-Time to extract the same graph: 0.11722779273986816
-
-Time to construct pdb graph 1GY9: 0.7971909046173096            
-Time to extract the same graph: 0.21413612365722656
-
-Time to construct pdb graph 1INE: 0.540076732635498            
-Time to extract the same graph: 0.15334701538085938
-
-Time to construct pdb graph 1J2C: 0.2508814334869385            
-Time to extract the same graph: 0.08535289764404297
-
-Time to construct pdb graph 1J30: 0.33985328674316406            
-Time to extract the same graph: 0.10824227333068848
-
-Time to construct pdb graph 1J3P: 0.4899930953979492            
-Time to extract the same graph: 0.14625334739685059
-
-Time to construct pdb graph 1K6W: 0.5682785511016846            
-Time to extract the same graph: 0.16212201118469238
-
-Time to construct pdb graph 1LNB: 0.39090490341186523            
-Time to extract the same graph: 0.11790609359741211
-
-Time to construct pdb graph 1LTV: 0.3436930179595947            
-Time to extract the same graph: 0.10863018035888672
-
-Time to construct pdb graph 1MOJ: 1.0742435455322266            
-Time to extract the same graph: 0.26572513580322266
-
-Time to construct pdb graph 1NF6: 8.260035037994385            
-Time to extract the same graph: 1.0386309623718262
-
-Time to construct pdb graph 1NMO: 3.009943962097168            
-Time to extract the same graph: 0.543006181716919
-
-Time to construct pdb graph 1NO3: 1.448531150817871            
-Time to extract the same graph: 0.3340792655944824
-
-Time to construct pdb graph 1NX4: 1.2534358501434326            
-Time to extract the same graph: 0.29676389694213867
-
-Time to construct pdb graph 1PO3: 2.5543148517608643            
-Time to extract the same graph: 0.48325514793395996
-
-Time to construct pdb graph 1PRC: 2.2908036708831787            
-Time to extract the same graph: 0.45641088485717773
-
-Time to construct pdb graph 1Q0C: 2.748213768005371            
-Time to extract the same graph: 0.5152590274810791
-
-Time to construct pdb graph 1Q0O: 1.1577413082122803            
-Time to extract the same graph: 0.28606748580932617
-
-Time to construct pdb graph 1RCW: 0.9765355587005615            
-Time to extract the same graph: 0.2563190460205078
-
+Average number of nodes: 7116.523584905661         
+Average number of edges: 56729.31603773585     
+Time to construct graphs: 286.0166983604431
+Number of graphs: 212
+Time to compress: 248.04783248901367
+        
+Mean time to extract: 0.6000188679065345         
+Uncompressed complete graph size: 7557.641456604004        
+Uncompressed structure graph size: 7557.641456604004        
+Uncompressed edge size: 25.391029357910156        
+Uncompressed node size: 4.047111511230469        
+Uncompressed complete graph serialized: 858.454345703125        
+Uncompressed edge serialized: 2.2163772583007812        
+Uncompressed node serialized: 0.5857620239257812        
+        
+Compressed graph complete size: 8919.737884521484        
+Compressed complete node size: 425.73876190185547         
+Compressed complete edge size: 8493.999122619629         
+Compressed node attributes size: 152.03759765625        
+Compressed edge attributes size: 6936.6237869262695        
+Compressed node attributes keys size: 172.90323638916016        
+Compressed edge attributes keys size: 0.00262451171875        
+Compressed pdb to nodes size: 2.3446121215820312        
+Compressed pdb to edges size: 6.960487365722656        
+Compressed node to id size: 98.45331573486328        
+Compressed edge to id size: 1550.412223815918        
+        
+Compressed graph object size: 7911.369827270508        
+Compressed graph complete size serialized: 766.4100570678711    
