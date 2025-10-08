@@ -270,7 +270,7 @@ def experimento_1():
     node_attrs,\
     edge_kinds,\
     node_attr_keys,\
-    edge_attr_keys, \
+    edge_kind_keys, \
     edge_distances, \
     all_pdb_codes = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
 
@@ -279,7 +279,7 @@ def experimento_1():
     msg = f'\nTime to compress: {time_to_compress}'
     write_result(dataset=dataset_name, msg=msg, result_path=result_path)
 
-    pdb_store = PDBGraphStore(node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_kinds, node_attr_keys, edge_attr_keys, edge_distances, all_pdb_codes)
+    pdb_store = PDBGraphStore(node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_kinds, node_attr_keys, edge_kind_keys, edge_distances, all_pdb_codes)
 
     extract_times = []
 
@@ -301,8 +301,12 @@ def experimento_1():
             print(msg)
 
             try:
-                assert nx.utils.nodes_equal(g._node, protein_graph_with_metadata_dict[pdb_code][0]._node)
-                assert nx.utils.edges_equal(g._adj, protein_graph_with_metadata_dict[pdb_code][0]._adj)
+                assert nx.utils.nodes_equal(g.nodes.data(), protein_graph_with_metadata_dict[pdb_code][0].nodes.data())
+                assert nx.utils.edges_equal(g.edges.data(), protein_graph_with_metadata_dict[pdb_code][0].edges.data())
+
+                # for u, v in g.edges:
+                #     print(f'original graph edge data: {g.edges[(u,v)]}')
+                #     print(f'extracted graph edge data: {protein_graph_with_metadata_dict[pdb_code][0].edges[(u,v)]}')
             
             except AssertionError as e:
                 msg = f'\n\
@@ -329,7 +333,7 @@ def experimento_1():
         \nCompressed node attributes size: {pdb_store.node_attrs_size()}\
         \nCompressed edge attributes size: {pdb_store.edge_attrs_size()}\
         \nCompressed node attributes keys size: {pdb_store.node_attr_keys_size()}\
-        \nCompressed edge attributes keys size: {pdb_store.edge_attr_keys_size()}\
+        \nCompressed edge attributes keys size: {pdb_store.edge_kind_keys_size()}\
         \nCompressed pdb to nodes size: {pdb_store.pdb_to_nodes_size()}\
         \nCompressed pdb to edges size: {pdb_store.pdb_to_edges_size()}\
         \nCompressed node to id size: {pdb_store.node_to_id_size()}\

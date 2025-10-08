@@ -3,7 +3,7 @@ import numpy as np
 from bidict import bidict
 from pympler import asizeof
 from pyroaring import BitMap64
-from ordered_set import OrderedSet
+from sortedcontainers import SortedSet
 import pandas as pd
 import edge_functions_Model as edgeModel
 
@@ -17,18 +17,18 @@ class PDBGraphStore:
             node_attrs={},
             edge_kinds={},
             node_attr_keys={},
-            edge_attr_keys={},
+            edge_kind_keys={},
             edge_distances={},
             all_pdb_codes={},
             ):
-        self.node_to_id = node_to_id #mapeamento de de node para id, e vice versa, global
-        self.edge_to_id = edge_to_id #mapeamento de de edge para id, e vice versa, global
-        self.pdb_to_nodes = pdb_to_nodes #bitmap indicando quais pdbs cada node pertence
-        self.pdb_to_edges = pdb_to_edges #bitmap indicando quais pdbs cada edge pertence
-        self.node_attrs = node_attrs #lista de indices para o attr de cada node
-        self.edge_kinds = edge_kinds #lista de indices para o attr de cada edge
-        self.node_attr_keys = node_attr_keys #dicionario de atributos indexados para cada node
-        self.edge_attr_keys = edge_attr_keys #dicionario de atributos indexados para cada edge
+        self.node_to_id = node_to_id 
+        self.edge_to_id = edge_to_id 
+        self.pdb_to_nodes = pdb_to_nodes 
+        self.pdb_to_edges = pdb_to_edges 
+        self.node_attrs = node_attrs
+        self.edge_kinds = edge_kinds 
+        self.node_attr_keys = node_attr_keys 
+        self.edge_kind_keys = edge_kind_keys 
         self.edge_distances = edge_distances
         self.all_pdb_codes = all_pdb_codes
 
@@ -42,9 +42,9 @@ class PDBGraphStore:
         node_attr_keys_list = ["chain_id", "residue_name", "residue_number", "atom_type", "element_symbol", "coords", "b_factor", "meiler"]
 
         for k in node_attr_keys_list:
-            self.node_attr_keys[k] = OrderedSet()
+            self.node_attr_keys[k] = SortedSet()
         
-        self.edge_attr_keys["kind"] = OrderedSet(set([k for k, _ in edgeModel.edge_functions_dict.items()]))
+        self.edge_kind_keys = SortedSet(set([k for k, _ in edgeModel.edge_functions_dict.items()]))
 
     def get_len_edges(self):
         return len(self.edge_to_id.keys())
@@ -86,7 +86,7 @@ class PDBGraphStore:
             if len(kind_indexes_list) > 0:
                 kind_indexes = kind_indexes_list[0]
                 
-                kinds = [self.edge_attr_keys["kind"][k] for k in kind_indexes]
+                kinds = [self.edge_kind_keys[k] for k in kind_indexes]
                 
                 kind_names = list(filter(lambda x: edgeModel.edge_functions_dict[x] in edge_funcs, kinds))
                 
@@ -178,7 +178,7 @@ class PDBGraphStore:
                         
                         for kind in attr_kind_value:
                             if kind in [k for k, _ in edgeModel.edge_functions_dict.items()]:
-                                kind_index = self.edge_attr_keys["kind"].add(kind)
+                                kind_index = self.edge_kind_keys.add(kind)
                                 kind_indexes.add(kind_index)
                         
                         self.edge_kinds[edge] = [kind_indexes]
@@ -193,7 +193,7 @@ class PDBGraphStore:
                             kinds = set(filter(lambda x: x, data["kind"]))
                             for kind in kinds:
                                 if kind in [k for k, _ in edgeModel.edge_functions_dict.items()]:
-                                    kind_index = self.edge_attr_keys["kind"].add(kind)
+                                    kind_index = self.edge_kind_keys.add(kind)
                                     self.edge_kinds[edge][0].add(kind_index)
 
                         if "distance" in data and data["distance"] is not None:
@@ -434,8 +434,8 @@ class PDBGraphStore:
     def node_attr_keys_size(self):
         return asizeof.asizeof(self.node_attr_keys) / 1024 / 1024
     
-    def edge_attr_keys_size(self):
-        return asizeof.asizeof(self.edge_attr_keys) / 1024 / 1024
+    def edge_kind_keys_size(self):
+        return asizeof.asizeof(self.edge_kind_keys) / 1024 / 1024
     
     def calculate_graph_complete_space_size(self):
         return self.node_to_id_size() + \
@@ -445,7 +445,7 @@ class PDBGraphStore:
             self.node_attrs_size() + \
             self.edge_attrs_size() + \
             self.node_attr_keys_size() + \
-            self.edge_attr_keys_size()
+            self.edge_kind_keys_size()
     
     def calculate_total_nodes_size(self):
         return self.node_to_id_size() + \
@@ -457,4 +457,4 @@ class PDBGraphStore:
         return self.edge_to_id_size() + \
             self.pdb_to_edges_size() + \
             self.edge_attrs_size() + \
-            self.edge_attr_keys_size()
+            self.edge_kind_keys_size()
