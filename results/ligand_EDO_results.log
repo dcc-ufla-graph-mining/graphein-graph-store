@@ -1,30 +1,30 @@
 Result log for ligand_EDO
 Average number of nodes: 645.7770919067216         
 Average number of edges: 4796.122770919067     
-Time to construct graphs: 146.32169771194458
+Time to construct graphs: 146.45628476142883
 Number of graphs: 1458
-Time to compress: 154.4746799468994
+Time to compress: 155.49580240249634
         
-Mean time to extract: 0.0517230848226037         
-Uncompressed complete graph size: 4506.045608520508        
-Uncompressed structure graph size: 1222.773307800293        
+Mean time to extract: 0.03780595625051909         
+Uncompressed complete graph size: 4506.04573059082        
+Uncompressed structure graph size: 1222.7734298706055        
 Uncompressed edge size: 2.0241851806640625        
 Uncompressed node size: 0.4100494384765625        
-Uncompressed complete graph serialized: 509.2825622558594        
+Uncompressed complete graph serialized: 509.28258514404297        
 Uncompressed edge serialized: 0.17424774169921875        
 Uncompressed node serialized: 0.05499267578125        
         
-Compressed graph complete size: 5710.668182373047        
-Compressed complete node size: 98.84538269042969         
-Compressed complete edge size: 5611.822799682617         
-Compressed node attributes size: 34.435508728027344        
-Compressed edge attributes size: 4398.015815734863        
-Compressed node attributes keys size: 39.546775817871094        
-Compressed edge attributes keys size: 0.00262451171875        
+Compressed graph complete size: 5884.8984451293945        
+Compressed complete node size: 99.51126861572266         
+Compressed complete edge size: 5785.387176513672         
+Compressed node attributes size: 40.416587829589844        
+Compressed edge attributes size: 4571.579742431641        
+Compressed node attributes keys size: 34.23158264160156        
+Compressed edge attributes keys size: 0.00331878662109375        
 Compressed pdb to nodes size: 1.9563369750976562        
 Compressed pdb to edges size: 10.220077514648438        
 Compressed node to id size: 22.906761169433594        
-Compressed edge to id size: 1203.5842819213867        
+Compressed edge to id size: 1203.5840377807617        
         
-Compressed graph object size: 5125.261329650879        
-Compressed graph complete size serialized: 440.3300247192383    
+Compressed graph object size: 5304.294845581055        
+Compressed graph complete size serialized: 440.2247543334961    

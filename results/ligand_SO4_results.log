@@ -1,1 +1,30 @@
 Result log for ligand_SO4
+Average number of nodes: 668.9656893325016         
+Average number of edges: 4976.262632563943     
+Time to construct graphs: 334.03516125679016
+Number of graphs: 3206
+Time to compress: 375.10454654693604
+        
+Mean time to extract: 0.04414062974457435         
+Uncompressed complete graph size: 10276.821533203125        
+Uncompressed structure graph size: 2787.614532470703        
+Uncompressed edge size: 1.2974472045898438        
+Uncompressed node size: 0.28853607177734375        
+Uncompressed complete graph serialized: 1161.9099426269531        
+Uncompressed edge serialized: 0.1115264892578125        
+Uncompressed node serialized: 0.0378265380859375        
+        
+Compressed graph complete size: 12301.68765258789        
+Compressed complete node size: 173.15106201171875         
+Compressed complete edge size: 12128.536590576172         
+Compressed node attributes size: 69.38526153564453        
+Compressed edge attributes size: 9643.655128479004        
+Compressed node attributes keys size: 57.850860595703125        
+Compressed edge attributes keys size: 0.00331878662109375        
+Compressed pdb to nodes size: 4.450347900390625        
+Compressed pdb to edges size: 24.86333465576172        
+Compressed node to id size: 41.46459197998047        
+Compressed edge to id size: 2460.014808654785        
+        
+Compressed graph object size: 11093.357749938965        
+Compressed graph complete size serialized: 958.3857269287109    

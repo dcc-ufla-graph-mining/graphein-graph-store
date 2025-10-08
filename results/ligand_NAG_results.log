@@ -1,1 +1,30 @@
 Result log for ligand_NAG
+Average number of nodes: 832.4289897510981         
+Average number of edges: 6233.216691068814     
+Time to construct graphs: 91.60614395141602
+Number of graphs: 683
+Time to compress: 93.90420031547546
+        
+Mean time to extract: 0.0735256755683642         
+Uncompressed complete graph size: 2738.504837036133        
+Uncompressed structure graph size: 738.8843154907227        
+Uncompressed edge size: 6.9143829345703125        
+Uncompressed node size: 1.2243118286132812        
+Uncompressed complete graph serialized: 309.2652359008789        
+Uncompressed edge serialized: 0.6022491455078125        
+Uncompressed node serialized: 0.168487548828125        
+        
+Compressed graph complete size: 3580.883331298828        
+Compressed complete node size: 97.85877990722656         
+Compressed complete edge size: 3483.0245513916016         
+Compressed node attributes size: 39.30757141113281        
+Compressed edge attributes size: 2800.123466491699        
+Compressed node attributes keys size: 34.992347717285156        
+Compressed edge attributes keys size: 0.00331878662109375        
+Compressed pdb to nodes size: 1.1636199951171875        
+Compressed pdb to edges size: 5.285896301269531        
+Compressed node to id size: 22.395240783691406        
+Compressed edge to id size: 677.6118698120117        
+        
+Compressed graph object size: 3206.7894744873047        
+Compressed graph complete size serialized: 277.6746597290039    
