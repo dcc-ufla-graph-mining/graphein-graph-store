@@ -1,1 +1,28 @@
-Errors log for ligand
+Errors log for ligandTraceback (most recent call last):
+  File "/app/src/compress/main.py", line 223, in experimento_1
+    graph_with_data, graph_without_data = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path,1)
+  File "/app/src/compress/main.py", line 125, in prepare_graph
+    raise e
+  File "/app/src/compress/main.py", line 123, in prepare_graph
+    pdb_file = get_pdb_file(pdb_data_path=pdb_data_path, pdb_code=pdb_code)
+  File "/app/src/compress/main.py", line 107, in get_pdb_file
+    raise e
+  File "/app/src/compress/main.py", line 105, in get_pdb_file
+    pdb_file = download_pdb(pdb_code, f"{pdb_data_path}/")
+  File "/usr/local/lib/python3.10/site-packages/graphein/protein/utils.py", line 266, in download_pdb
+    assert os.path.exists(
+AssertionError: 5fuu download failed. Not found in /app/data/pdb_files
+Traceback (most recent call last):
+  File "/app/src/compress/main.py", line 223, in experimento_1
+    graph_with_data, graph_without_data = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path,1)
+  File "/app/src/compress/main.py", line 125, in prepare_graph
+    raise e
+  File "/app/src/compress/main.py", line 123, in prepare_graph
+    pdb_file = get_pdb_file(pdb_data_path=pdb_data_path, pdb_code=pdb_code)
+  File "/app/src/compress/main.py", line 107, in get_pdb_file
+    raise e
+  File "/app/src/compress/main.py", line 105, in get_pdb_file
+    pdb_file = download_pdb(pdb_code, f"{pdb_data_path}/")
+  File "/usr/local/lib/python3.10/site-packages/graphein/protein/utils.py", line 266, in download_pdb
+    assert os.path.exists(
+AssertionError: 5szs download failed. Not found in /app/data/pdb_files
