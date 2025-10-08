@@ -70,9 +70,9 @@ def read_dataset(general_data_path, dataset_txt_name, file_mode='r'):
     return pdb_codes
 
 def define_graphein_edge_funcs(func_idx=1):
-    #usado no experimento 1
+    # usado no experimento 1
     # return random.sample([v for _, v in edgeModel.edge_functions_dict.items()], 3)
-    # return [edgeModel.edge_functions_dict[f] for f in ["aromatic", "bb_carbonyl_carbonyl", "delaunay"]] 
+    return [edgeModel.edge_functions_dict[f] for f in ["aromatic", "bb_carbonyl_carbonyl", "delaunay"]] 
     
     # usado no experimento 2
     # sorted_func_list = sorted(edgeModel.edge_functions_dict.keys())
@@ -81,8 +81,8 @@ def define_graphein_edge_funcs(func_idx=1):
     # return [edgeModel.edge_functions_dict[sorted_func_list[func_idx]]]
     
     #usado no experimento 3
-    print(list(edgeModel.edge_functions_dict.values()))
-    return list(edgeModel.edge_functions_dict.values()) 
+    # print(list(edgeModel.edge_functions_dict.values()))
+    # return list(edgeModel.edge_functions_dict.values()) 
 
 
 def define_configuration(edge_construction_funcs):
@@ -141,6 +141,7 @@ def prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path, func_idx):
         
     for u, v in graph.edges():
         graph.edges[u, v].clear()
+
 
     protein_graph_without_metadata_dict.setdefault(pdb_code, []).append(graph.copy())
 
@@ -219,7 +220,7 @@ def experimento_1():
 
     for i, pdb_code in enumerate(pdb_codes.copy()):
         try:
-            graph_with_data, graph_without_data = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path)
+            graph_with_data, graph_without_data = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path,1)
         except Exception as e:
             msg = traceback.format_exc()
             print(msg)
@@ -243,12 +244,17 @@ def experimento_1():
     
     time_to_construct = time_count(time_start=time_start)
 
-    print(graph_without_data)
+    print(protein_graph_without_metadata_dict)
     msg = f'\nTime to construct graphs: {time_to_construct}\nNumber of graphs: {len(protein_graph_with_metadata_dict)}'
 
     write_result(dataset=dataset_name, msg=msg, result_path=result_path)
 
-    for k, v in protein_graph_with_metadata_dict.items():
+    v_size = 0
+    e_size = 0
+    v_serialized = 0
+    e_serialized = 0
+
+    for _, v in protein_graph_with_metadata_dict.items():
         v_size = np.sum([asizeof.asizeof(g._node)/1024/1024 for g in v])
         e_size = np.sum([asizeof.asizeof(g._adj)/1024/1024 for g in v])
         v_serialized = np.sum([asizeof.asizeof(pickle.dumps(g._node))/1024/1024 for g in v])
@@ -263,16 +269,18 @@ def experimento_1():
     pdb_to_nodes,\
     pdb_to_edges,\
     node_attrs,\
-    edge_attrs,\
+    edge_kinds,\
     node_attr_keys,\
-    edge_attr_keys = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
+    edge_attr_keys, \
+    edge_distances, \
+    all_pdb_codes = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
 
     time_to_compress = time_count(time_start=time_start)
 
     msg = f'\nTime to compress: {time_to_compress}'
     write_result(dataset=dataset_name, msg=msg, result_path=result_path)
 
-    pdb_store = PDBGraphStore(node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_attrs, node_attr_keys, edge_attr_keys)
+    pdb_store = PDBGraphStore(node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_kinds, node_attr_keys, edge_attr_keys, edge_distances, all_pdb_codes)
 
     extract_times = []
 
@@ -513,4 +521,4 @@ def experimento_3():
         write_result(dataset=dataset_name, msg=msg, result_path=result_path)
 
 if __name__=="__main__":
-    experimento_3()
+    experimento_1()
