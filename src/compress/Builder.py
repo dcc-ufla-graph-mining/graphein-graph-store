@@ -196,7 +196,7 @@ def _reconstruct_node_attributes(extracted_graph, nodes, node_attrs, node_attr_k
                 extracted_graph.nodes[node][key] = value
 
 def _reconstruct_edge_attributes(extracted_graph, edges, edge_kinds, edge_kind_keys, edge_funcs, pdb_to_edges, pdb_code, edge_distances, edge_to_id, all_pdb_codes):
-    pdb_idx = all_pdb_codes.index(pdb_code) 
+    pdb_idx = all_pdb_codes.index(pdb_code)
     for u, v in edges:
         edge = (u, v)
         
@@ -219,12 +219,10 @@ def _reconstruct_edge_attributes(extracted_graph, edges, edge_kinds, edge_kind_k
                 for kind in kind_names:
                     extracted_graph.edges[edge]["kind"].add(kind)
 
-        edge_id = edge_to_id[edge]
-        for edge_dist_idx in pdb_to_edges[pdb_idx]:
-            edge_pair = edge_distances[edge_dist_idx]
-            if edge_pair[0] == edge_id:  # Encontrou o edge correto
-                extracted_graph.edges[edge]["distance"] = edge_pair[1]
-                break
+    for edge_dist_idx in pdb_to_edges[pdb_idx]:
+        edge_pair = edge_distances[edge_dist_idx]
+        edge = edge_to_id.inverse[edge_pair[0]]
+        extracted_graph.edges[edge]["distace"] = edge_pair[1]
 
 def _reconstruct_and_validate_graphs(protein_graphs,
                                     node_to_id,
@@ -269,9 +267,9 @@ def _reconstruct_and_validate_graphs(protein_graphs,
             print(f"number of edges in original graph: {len(original_graph.edges())}")
             print(f"number of edges in extracted graph: {len(extracted_graph.edges())}")
 
-            # for e in original_graph.edges:
-            #     print(f"original: {original_graph.edges[e]}")
-            #     print(f"extracted: {extracted_graph.edges[e]}")
+            for e in original_graph.edges:
+                print(f"original: {original_graph.edges[e]}")
+                print(f"extracted: {extracted_graph.edges[e]}")
 
 def compress_pdb_graphs(protein_graphs):
     print("reached compress")

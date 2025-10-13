@@ -97,13 +97,11 @@ class PDBGraphStore:
                     
                     for kind in kind_names:
                         extracted_graph.edges[edge]["kind"].add(kind)
-                                        
-            edge_id = edge_to_id[edge]
-            for edge_dist_idx in pdb_to_edges[pdb_idx]:
-                edge_pair = edge_distances[edge_dist_idx]
-                if edge_pair[0] == edge_id:  # Found the correct edge
-                    extracted_graph.edges[edge]["distance"] = edge_pair[1]
-                    break
+        
+        for edge_dist_idx in pdb_to_edges[pdb_idx]:
+            edge_pair = edge_distances[edge_dist_idx]
+            edge = edge_to_id.inverse[edge_pair[0]]
+            extracted_graph.edges[edge]["distance"] = edge_pair[1]
 
     def extract_pdb_graphs(self, pdb_codes=[], edge_construction_functions=[]):
         extracted_graphs = []
