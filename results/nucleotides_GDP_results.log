@@ -1,1 +1,30 @@
 Result log for nucleotides_GDP
+Average number of nodes: 751.2118644067797         
+Average number of edges: 5614.313559322034     
+Time to construct graphs: 13.51061749458313
+Number of graphs: 118
+Time to compress: 14.588435411453247
+        
+Mean time to extract: 0.05837284710447667         
+Uncompressed complete graph size: 428.60787200927734        
+Uncompressed structure graph size: 115.75761413574219        
+Uncompressed edge size: 4.945335388183594        
+Uncompressed node size: 0.8724441528320312        
+Uncompressed complete graph serialized: 48.457275390625        
+Uncompressed edge serialized: 0.43100738525390625        
+Uncompressed node serialized: 0.12218475341796875        
+        
+Compressed graph complete size: 458.54251861572266        
+Compressed complete node size: 30.52191925048828         
+Compressed complete edge size: 428.0205993652344         
+Compressed node attributes size: 11.909133911132812        
+Compressed edge attributes size: 325.90784454345703        
+Compressed node attributes keys size: 11.997230529785156        
+Compressed edge attributes keys size: 0.00331878662109375        
+Compressed pdb to nodes size: 0.17739105224609375        
+Compressed pdb to edges size: 0.8410263061523438        
+Compressed node to id size: 6.438163757324219        
+Compressed edge to id size: 101.2684097290039        
+        
+Compressed graph object size: 392.0126037597656        
+Compressed graph complete size serialized: 45.01600646972656    

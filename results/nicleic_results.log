@@ -1,1 +1,30 @@
 Result log for nicleic
+Average number of nodes: 811.3166666666667         
+Average number of edges: 6085.488095238095     
+Time to construct graphs: 124.5408205986023
+Number of graphs: 840
+Time to compress: 120.81074333190918
+        
+Mean time to extract: 0.06144904920033046         
+Uncompressed complete graph size: 3293.847038269043        
+Uncompressed structure graph size: 891.46484375        
+Uncompressed edge size: 0.5007247924804688        
+Uncompressed node size: 0.15160369873046875        
+Uncompressed complete graph serialized: 372.56529235839844        
+Uncompressed edge serialized: 0.04233551025390625        
+Uncompressed node serialized: 0.01825714111328125        
+        
+Compressed graph complete size: 3114.623680114746        
+Compressed complete node size: 141.24445343017578         
+Compressed complete edge size: 2973.3792266845703         
+Compressed node attributes size: 55.128143310546875        
+Compressed edge attributes size: 2242.907241821289        
+Compressed node attributes keys size: 48.261375427246094        
+Compressed edge attributes keys size: 0.00331878662109375        
+Compressed pdb to nodes size: 1.37481689453125        
+Compressed pdb to edges size: 6.143638610839844        
+Compressed node to id size: 36.48011779785156        
+Compressed edge to id size: 724.3250274658203        
+        
+Compressed graph object size: 2688.3854598999023        
+Compressed graph complete size serialized: 313.3056945800781    

@@ -1,1 +1,30 @@
 Result log for nucleotides_GTP
+Average number of nodes: 1083.7654320987654         
+Average number of edges: 8190.246913580247     
+Time to construct graphs: 16.34597659111023
+Number of graphs: 81
+Time to compress: 14.48090386390686
+        
+Mean time to extract: 0.10388971552436735         
+Uncompressed complete graph size: 427.4920654296875        
+Uncompressed structure graph size: 115.11678314208984        
+Uncompressed edge size: 2.1414260864257812        
+Uncompressed node size: 0.42911529541015625        
+Uncompressed complete graph serialized: 48.337059020996094        
+Uncompressed edge serialized: 0.18497467041015625        
+Uncompressed node serialized: 0.05754852294921875        
+        
+Compressed graph complete size: 456.05628967285156        
+Compressed complete node size: 41.89909362792969         
+Compressed complete edge size: 414.1571960449219         
+Compressed node attributes size: 15.8858642578125        
+Compressed edge attributes size: 314.98770904541016        
+Compressed node attributes keys size: 15.95538330078125        
+Compressed edge attributes keys size: 0.00331878662109375        
+Compressed pdb to nodes size: 0.1586151123046875        
+Compressed pdb to edges size: 0.6320953369140625        
+Compressed node to id size: 9.89923095703125        
+Compressed edge to id size: 98.53407287597656        
+        
+Compressed graph object size: 390.98009490966797        
+Compressed graph complete size serialized: 45.14576721191406    
