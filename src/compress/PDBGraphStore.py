@@ -70,61 +70,77 @@ class PDBGraphStore:
 
                     extracted_graph.nodes[node][key] = value
 
-    def _reconstruct_edge_attributes(self, extracted_graph, edges, edge_funcs, pdb_code):
-        pdb_idx = self.all_pdb_codes.index(pdb_code)
+    def _reconstruct_edge_attributes(self, extracted_graph, edges, edge_kinds, edge_kind_keys, 
+                                 edge_funcs, pdb_to_edges, pdb_code, edge_distances, 
+                                 edge_to_id, all_pdb_codes):
+        
+        pdb_idx = all_pdb_codes.index(pdb_code)
+        
         for u, v in edges:
             edge = (u, v)
             
-            if edge not in self.edge_kinds:
+            if edge not in edge_kinds:
                 continue
-
-            if not extracted_graph.has_edge(*edge):
-                extracted_graph.add_edge(*edge)
             
-            kind_indexes_list = self.edge_kinds[edge]
+            kind_indexes_list = edge_kinds[edge]
             
             if len(kind_indexes_list) > 0:
                 kind_indexes = kind_indexes_list[0]
-                
-                kinds = [self.edge_kind_keys[k] for k in kind_indexes]
-                
-                kind_names = list(filter(lambda x: edgeModel.edge_functions_dict[x] in edge_funcs, kinds))
+                kind_names = [edge_kind_keys[k] for k in kind_indexes]
+                kind_names = list(filter(lambda x: edgeModel.edge_functions_dict[x] in edge_funcs, kind_names))
                 
                 if len(kind_names) > 0:
+                    if not extracted_graph.has_edge(*edge):
+                        extracted_graph.add_edge(*edge)
                     
                     extracted_graph.edges[edge].setdefault("kind", set())
                     
                     for kind in kind_names:
                         extracted_graph.edges[edge]["kind"].add(kind)
-            
-            try:
-                edge_id = self.edge_to_id[edge]
-                if edge_id in self.edge_distances:
-                    if pdb_idx in self.edge_distances[edge_id]:
-                        extracted_graph.edges[edge]["distance"] = self.edge_distances[edge_id][pdb_idx]
-            except KeyError as e:
-                print(f"ERROR at reconstruct edge attr (KeyError): edge={edge}, error={e}")
-            except Exception as e:
-                print(f"ERROR at reconstruct edge attr: {e}")
+                                        
+            edge_id = edge_to_id[edge]
+            for edge_dist_idx in pdb_to_edges[pdb_idx]:
+                edge_pair = edge_distances[edge_dist_idx]
+                if edge_pair[0] == edge_id:  # Found the correct edge
+                    extracted_graph.edges[edge]["distance"] = edge_pair[1]
+                    break
 
     def extract_pdb_graphs(self, pdb_codes=[], edge_construction_functions=[]):
         extracted_graphs = []
-        print(f"dentro de extract_pdb. pdb_code={pdb_codes}, {edge_construction_functions}")
+        edge_funcs = [edgeModel.edge_functions_dict[x] for x in edge_construction_functions]
+        print(f"dentro de extract_pdb. pdb_code={pdb_codes}, {edge_funcs}")
+        
         for pdb_code in pdb_codes:
             pdb_idx = self.all_pdb_codes.index(pdb_code)
             extracted_graph = nx.Graph()
-
+            
+            # Extract nodes
             extracted_nodes = [self.node_to_id.inverse[node_id] for node_id in self.pdb_to_nodes[pdb_idx]]
-            extracted_edges = [self.edge_to_id.inverse[edge_id] for edge_id in self.pdb_to_edges[pdb_idx]]
-
+            
+            # Extract edges 
+            def get_edge_id(edge_distances_idx):
+                edge_pair = self.edge_distances[edge_distances_idx]
+                edge_id = edge_pair[0]
+                return edge_id
+            
+            extracted_edges = [self.edge_to_id.inverse[get_edge_id(edge_distances_idx)] 
+                              for edge_distances_idx in self.pdb_to_edges[pdb_idx]]
+            
             extracted_graph.graph["pdb_code"] = pdb_code
             extracted_graph.update(nodes=extracted_nodes)
-
+            
             self._reconstruct_node_attributes(extracted_graph, extracted_nodes)
-            self._reconstruct_edge_attributes(extracted_graph, extracted_edges, edge_construction_functions, pdb_code)
+            
+            self._reconstruct_edge_attributes(extracted_graph, extracted_edges, 
+                                             self.edge_kinds, self.edge_kind_keys,
+                                             edge_funcs,
+                                             self.pdb_to_edges, pdb_code,
+                                             self.edge_distances, self.edge_to_id,
+                                             self.all_pdb_codes)
+            
             extracted_graphs.append(extracted_graph)
-
-        return extracted_graphs  
+        
+        return extracted_graphs
 
     def insert_pdbs(self, graphs={}):
         if not graphs:

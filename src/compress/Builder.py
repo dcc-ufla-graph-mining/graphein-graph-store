@@ -138,16 +138,18 @@ def _process_edges(protein_graphs, edge_to_pdbs, edge_kinds, edge_kind_keys, pdb
 
 def _create_id_mappings(edge_to_pdbs, node_to_pdbs, pdb_to_edges, pdb_to_nodes, all_pdb_codes, edge_distances_temp):
     edge_to_id = {}
-    edge_distances = {}
+    edge_distances = []
 
     for edge_id, e in enumerate(edge_to_pdbs):
         edge_to_id[e] = edge_id
         pdbs = edge_to_pdbs[e]
         for pdb_code in pdbs:
             pdb_idx = all_pdb_codes.index(pdb_code)
-            pdb_to_edges[pdb_idx].add(edge_id)
 
-            edge_distances.setdefault(edge_id, {})[pdb_idx] = edge_distances_temp[e][pdb_code]
+            edge_pair = tuple([edge_id, edge_distances_temp[e][pdb_code]])
+            edge_distances.append(edge_pair)
+
+            pdb_to_edges[pdb_idx].add(len(edge_distances)-1)
 
     node_to_id = {}
 
@@ -193,8 +195,9 @@ def _reconstruct_node_attributes(extracted_graph, nodes, node_attrs, node_attr_k
 
                 extracted_graph.nodes[node][key] = value
 
-def _reconstruct_edge_attributes(extracted_graph, edges, edge_kinds, edge_kind_keys, edge_funcs, pdb_code, edge_distances, edge_to_id, all_pdb_codes):
-     for u, v in edges:
+def _reconstruct_edge_attributes(extracted_graph, edges, edge_kinds, edge_kind_keys, edge_funcs, pdb_to_edges, pdb_code, edge_distances, edge_to_id, all_pdb_codes):
+    pdb_idx = all_pdb_codes.index(pdb_code) 
+    for u, v in edges:
         edge = (u, v)
         
         if edge not in edge_kinds:
@@ -204,9 +207,7 @@ def _reconstruct_edge_attributes(extracted_graph, edges, edge_kinds, edge_kind_k
         
         if len(kind_indexes_list) > 0:
             kind_indexes = kind_indexes_list[0]  
-            
             kind_names = [edge_kind_keys[k] for k in kind_indexes]
-            
             kind_names = list(filter(lambda x: edgeModel.edge_functions_dict[x] in edge_funcs, kind_names))
             
             if len(kind_names) > 0:
@@ -218,15 +219,12 @@ def _reconstruct_edge_attributes(extracted_graph, edges, edge_kinds, edge_kind_k
                 for kind in kind_names:
                     extracted_graph.edges[edge]["kind"].add(kind)
 
-        try:
-            if edge_to_id[edge] in edge_distances:
-                pdb_code_index = all_pdb_codes.index(pdb_code)
-                if pdb_code_index in edge_distances[edge_to_id[edge]]:
-                    extracted_graph.edges[edge]["distance"] = edge_distances[edge_to_id[edge]][pdb_code_index]
-        except KeyError as e:
-            print(f"error at reconstruct edge attr (KeyError): edge={edge}, error={e}")
-        except Exception as e:
-            print(f"error at reconstruct edge attr: {e}")
+        edge_id = edge_to_id[edge]
+        for edge_dist_idx in pdb_to_edges[pdb_idx]:
+            edge_pair = edge_distances[edge_dist_idx]
+            if edge_pair[0] == edge_id:  # Encontrou o edge correto
+                extracted_graph.edges[edge]["distance"] = edge_pair[1]
+                break
 
 def _reconstruct_and_validate_graphs(protein_graphs,
                                     node_to_id,
@@ -249,14 +247,20 @@ def _reconstruct_and_validate_graphs(protein_graphs,
             original_graph = graph.copy()
 
             nodes = [node_to_id.inverse[node_id] for node_id in pdb_to_nodes[pdb_idx]]
-            edges = [edge_to_id.inverse[edge_id] for edge_id in pdb_to_edges[pdb_idx]]
+
+            def get_edge_id(edge_distances_idx):
+                edge_pair = edge_distances[edge_distances_idx]
+                edge_id = edge_pair[0]
+                return edge_id
+            
+            edges = [edge_to_id.inverse[get_edge_id(edge_distances_idx)] for edge_distances_idx in pdb_to_edges[pdb_idx]]
 
             extracted_graph = nx.Graph()
             extracted_graph.graph["pdb_code"] = pdb_code
             extracted_graph.update(nodes=nodes)
 
             _reconstruct_node_attributes(extracted_graph, nodes, node_attrs, node_attr_keys)
-            _reconstruct_edge_attributes(extracted_graph, edges, edge_kinds, edge_kind_keys, original_graph.graph["config"].edge_construction_functions, pdb_code, edge_distances, edge_to_id, all_pdb_codes)
+            _reconstruct_edge_attributes(extracted_graph, edges, edge_kinds, edge_kind_keys, original_graph.graph["config"].edge_construction_functions, pdb_to_edges, pdb_code, edge_distances, edge_to_id, all_pdb_codes)
 
             print(f"original {pdb_code} graph edge funcs: {original_graph.graph['config'].edge_construction_functions}")
             print(f"number of nodes in original graph: {len(original_graph.nodes())}")
