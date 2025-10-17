@@ -5,3 +5,4 @@ data/pdb_files/
 fractal/
 spark/
 type=docker/
+logs/metadata.log

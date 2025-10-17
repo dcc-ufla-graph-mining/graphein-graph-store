@@ -6,6 +6,7 @@ from pyroaring import BitMap64
 from sortedcontainers import SortedSet
 import pandas as pd
 import edge_functions_Model as edgeModel
+import struct
 
 class PDBGraphStore:
     def __init__(
@@ -100,6 +101,9 @@ class PDBGraphStore:
         
         for edge_dist_idx in pdb_to_edges[pdb_idx]:
             edge_pair = edge_distances[edge_dist_idx]
+
+            edge_pair = struct.unpack("ld", edge_pair)
+
             edge = edge_to_id.inverse[edge_pair[0]]
             extracted_graph.edges[edge]["distance"] = edge_pair[1]
 
@@ -118,6 +122,7 @@ class PDBGraphStore:
             # Extract edges 
             def get_edge_id(edge_distances_idx):
                 edge_pair = self.edge_distances[edge_distances_idx]
+                edge_pair = struct.unpack("ld", edge_pair)
                 edge_id = edge_pair[0]
                 return edge_id
             

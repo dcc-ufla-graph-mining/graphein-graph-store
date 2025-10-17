@@ -6,6 +6,7 @@ from pyroaring import BitMap, BitMap64
 from sortedcontainers import SortedSet
 import pandas as pd
 import edge_functions_Model as edgeModel
+import struct
 
 edge_functions_func_list = []
 edge_functions_str_list = []
@@ -147,6 +148,9 @@ def _create_id_mappings(edge_to_pdbs, node_to_pdbs, pdb_to_edges, pdb_to_nodes, 
             pdb_idx = all_pdb_codes.index(pdb_code)
 
             edge_pair = tuple([edge_id, edge_distances_temp[e][pdb_code]])
+
+            edge_pair = struct.pack("ld", *edge_pair)
+
             edge_distances.append(edge_pair)
 
             pdb_to_edges[pdb_idx].add(len(edge_distances)-1)
@@ -221,6 +225,9 @@ def _reconstruct_edge_attributes(extracted_graph, edges, edge_kinds, edge_kind_k
 
     for edge_dist_idx in pdb_to_edges[pdb_idx]:
         edge_pair = edge_distances[edge_dist_idx]
+
+        edge_pair = struct.unpack("ld", edge_pair)
+
         edge = edge_to_id.inverse[edge_pair[0]]
         extracted_graph.edges[edge]["distace"] = edge_pair[1]
 
@@ -248,6 +255,7 @@ def _reconstruct_and_validate_graphs(protein_graphs,
 
             def get_edge_id(edge_distances_idx):
                 edge_pair = edge_distances[edge_distances_idx]
+                edge_pair = struct.unpack("ld", edge_pair)
                 edge_id = edge_pair[0]
                 return edge_id
             

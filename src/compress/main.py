@@ -301,12 +301,12 @@ def experimento_1():
             print(msg)
 
             try:
-                assert nx.utils.nodes_equal(g.nodes.data(), protein_graph_with_metadata_dict[pdb_code][0].nodes.data())
-                assert nx.utils.edges_equal(g.edges.data(), protein_graph_with_metadata_dict[pdb_code][0].edges.data())
+                assert nx.utils.nodes_equal(g.nodes.data(), protein_graph_with_metadata_dict[pdb_code][0].nodes(data=True))
+                assert nx.utils.edges_equal(g.edges.data(), protein_graph_with_metadata_dict[pdb_code][0].edges(data=True))
 
-                # for u, v in g.edges:
-                #     print(f'original graph edge data: {g.edges[(u,v)]}')
-                #     print(f'extracted graph edge data: {protein_graph_with_metadata_dict[pdb_code][0].edges[(u,v)]}')
+                for u, v in g.edges:
+                    print(f'original graph edge data: {g.edges[(u,v)]}')
+                    print(f'extracted graph edge data: {protein_graph_with_metadata_dict[pdb_code][0].edges[(u,v)]}')
             
             except AssertionError as e:
                 msg = f'\n\
