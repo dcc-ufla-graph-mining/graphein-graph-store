@@ -1,6 +1,6 @@
 Result log for metals
 Average number of nodes: 835.6727780687969         
 Average number of edges: 6266.4396717304     
-Time to construct graphs: 839.9985373020172
+Time to construct graphs: 841.2871544361115
 Number of graphs: 5727
-Time to compress: 884.3319833278656
+Time to compress: 924.3693177700043

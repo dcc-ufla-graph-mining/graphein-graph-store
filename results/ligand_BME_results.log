@@ -1,30 +1,30 @@
 Result log for ligand_BME
 Average number of nodes: 561.0695187165776         
 Average number of edges: 4144.347593582887     
-Time to construct graphs: 15.46238899230957
+Time to construct graphs: 15.377068281173706
 Number of graphs: 187
-Time to compress: 16.56627345085144
+Time to compress: 16.929285287857056
         
-Mean time to extract: 0.04628592251456357         
-Uncompressed complete graph size: 499.9954071044922        
-Uncompressed structure graph size: 135.84607696533203        
+Mean time to extract: 0.03182065423159676         
+Uncompressed complete graph size: 499.99546813964844        
+Uncompressed structure graph size: 135.84613800048828        
 Uncompressed edge size: 0.8127822875976562        
 Uncompressed node size: 0.20865631103515625        
 Uncompressed complete graph serialized: 56.543243408203125        
 Uncompressed edge serialized: 0.0694732666015625        
 Uncompressed node serialized: 0.02642059326171875        
         
-Compressed graph complete size: 581.3276977539062        
+Compressed graph complete size: 535.0160751342773        
 Compressed complete node size: 29.723312377929688         
-Compressed complete edge size: 551.6043853759766         
+Compressed complete edge size: 505.29276275634766         
 Compressed node attributes size: 11.582908630371094        
-Compressed edge attributes size: 398.6239700317383        
+Compressed edge attributes size: 352.3122863769531        
 Compressed node attributes keys size: 11.586952209472656        
 Compressed edge attributes keys size: 0.00331878662109375        
 Compressed pdb to nodes size: 0.21848297119140625        
 Compressed pdb to edges size: 1.0544586181640625        
 Compressed node to id size: 6.334968566894531        
-Compressed edge to id size: 151.92263793945312        
+Compressed edge to id size: 151.92269897460938        
         
-Compressed graph object size: 504.2814407348633        
-Compressed graph complete size serialized: 51.964752197265625    
+Compressed graph object size: 480.6305923461914        
+Compressed graph complete size serialized: 42.49275207519531    

@@ -1,30 +1,30 @@
 Result log for nucleotides_FAD
 Average number of nodes: 1090.2440476190477         
 Average number of edges: 8224.67857142857     
-Time to construct graphs: 30.637719869613647
+Time to construct graphs: 30.366993188858032
 Number of graphs: 168
-Time to compress: 31.456952810287476
+Time to compress: 32.15381574630737
         
-Mean time to extract: 0.07226378719011943         
-Uncompressed complete graph size: 886.8714981079102        
-Uncompressed structure graph size: 238.76321411132812        
+Mean time to extract: 0.09278292741094317         
+Uncompressed complete graph size: 886.8713150024414        
+Uncompressed structure graph size: 238.76303100585938        
 Uncompressed edge size: 5.9033660888671875        
 Uncompressed node size: 1.0635910034179688        
-Uncompressed complete graph serialized: 100.39037322998047        
+Uncompressed complete graph serialized: 100.39035034179688        
 Uncompressed edge serialized: 0.5148696899414062        
 Uncompressed node serialized: 0.145416259765625        
         
-Compressed graph complete size: 934.5238189697266        
+Compressed graph complete size: 852.2915420532227        
 Compressed complete node size: 51.73480224609375         
-Compressed complete edge size: 882.7890167236328         
+Compressed complete edge size: 800.5567398071289         
 Compressed node attributes size: 21.201278686523438        
-Compressed edge attributes size: 674.7637710571289        
+Compressed edge attributes size: 592.5316162109375        
 Compressed node attributes keys size: 18.395042419433594        
 Compressed edge attributes keys size: 0.00331878662109375        
 Compressed pdb to nodes size: 0.35773468017578125        
 Compressed pdb to edges size: 1.3579635620117188        
 Compressed node to id size: 11.780746459960938        
-Compressed edge to id size: 206.6639633178711        
+Compressed edge to id size: 206.6638412475586        
         
-Compressed graph object size: 798.8100357055664        
-Compressed graph complete size serialized: 91.93718719482422    
+Compressed graph object size: 756.6423721313477        
+Compressed graph complete size serialized: 74.94035339355469    
