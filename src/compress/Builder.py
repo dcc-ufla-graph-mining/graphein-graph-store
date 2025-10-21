@@ -7,6 +7,8 @@ import pandas as pd
 import edge_functions_Model as edgeModel
 import struct
 
+from Indexed_set import IndexedSet
+
 edge_functions_func_list = []
 edge_functions_str_list = []
 
@@ -31,7 +33,7 @@ def _extract_attribute_keys():
     node_attr_keys = {}
 
     for key in node_attr_keys_list:
-        node_attr_keys[key] = []
+        node_attr_keys[key] = IndexedSet()
 
     edge_kind_keys = SortedSet(set(edge_functions_str_list))
 
@@ -50,11 +52,7 @@ def _process_node_attributes(node, graph, node_attr_keys):
         if i == 5: ##attr: coords; type: np.array
             attr_value = tuple([tuple(attr_value)])
 
-        if attr_value not in node_attr_keys[value]:
-            node_attr_keys[value].append(attr_value)
-            idx = len(node_attr_keys[value])-1
-        else:
-            idx = node_attr_keys[value].index(attr_value)
+        idx = node_attr_keys[value].add(attr_value)
 
         if i in [0, 1, 3, 4, 7]:
             attr_indexes_global.append(idx)
@@ -207,15 +205,15 @@ def _reconstruct_node_attributes(extracted_graph, node_attr_keys, node_attrs_glo
         coords_idx = node_pair[2]          # unique_attrs[1]
         b_factor_idx = node_pair[3]        # unique_attrs[2]
         
-        extracted_graph.nodes[node]["chain_id"] = node_attr_keys["chain_id"][chain_id_idx]
-        extracted_graph.nodes[node]["residue_name"] = node_attr_keys["residue_name"][residue_name_idx]
-        extracted_graph.nodes[node]["residue_number"] = node_attr_keys["residue_number"][residue_number_idx]
-        extracted_graph.nodes[node]["atom_type"] = node_attr_keys["atom_type"][atom_type_idx]
-        extracted_graph.nodes[node]["element_symbol"] = node_attr_keys["element_symbol"][element_symbol_idx]
-        extracted_graph.nodes[node]["coords"] = np.array(node_attr_keys["coords"][coords_idx])
-        extracted_graph.nodes[node]["b_factor"] = node_attr_keys["b_factor"][b_factor_idx]
+        extracted_graph.nodes[node]["chain_id"] = node_attr_keys["chain_id"].get(chain_id_idx)
+        extracted_graph.nodes[node]["residue_name"] = node_attr_keys["residue_name"].get(residue_name_idx)
+        extracted_graph.nodes[node]["residue_number"] = node_attr_keys["residue_number"].get(residue_number_idx)
+        extracted_graph.nodes[node]["atom_type"] = node_attr_keys["atom_type"].get(atom_type_idx)
+        extracted_graph.nodes[node]["element_symbol"] = node_attr_keys["element_symbol"].get(element_symbol_idx)
+        extracted_graph.nodes[node]["coords"] = np.array(node_attr_keys["coords"].get(coords_idx))
+        extracted_graph.nodes[node]["b_factor"] = node_attr_keys["b_factor"].get(b_factor_idx)
         
-        meiler_value = node_attr_keys["meiler"][meiler_idx]
+        meiler_value = node_attr_keys["meiler"].get(meiler_idx)
         extracted_graph.nodes[node]["meiler"] = pd.Series(
             meiler_value[0], 
             name=''.join(list(meiler_value[1])), 

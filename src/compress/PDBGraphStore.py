@@ -7,6 +7,7 @@ from sortedcontainers import SortedSet
 import pandas as pd
 import edge_functions_Model as edgeModel
 import struct
+from Indexed_set import IndexedSet
 
 class PDBGraphStore:
     def __init__(self, body_parts):
@@ -40,15 +41,15 @@ class PDBGraphStore:
             coords_idx = node_pair[2]
             b_factor_idx = node_pair[3]
             
-            extracted_graph.nodes[node]["chain_id"] = self.__body_parts["node_attr_keys"]["chain_id"][chain_id_idx]
-            extracted_graph.nodes[node]["residue_name"] = self.__body_parts["node_attr_keys"]["residue_name"][residue_name_idx]
-            extracted_graph.nodes[node]["residue_number"] = self.__body_parts["node_attr_keys"]["residue_number"][residue_number_idx]
-            extracted_graph.nodes[node]["atom_type"] = self.__body_parts["node_attr_keys"]["atom_type"][atom_type_idx]
-            extracted_graph.nodes[node]["element_symbol"] = self.__body_parts["node_attr_keys"]["element_symbol"][element_symbol_idx]
-            extracted_graph.nodes[node]["coords"] = np.array(self.__body_parts["node_attr_keys"]["coords"][coords_idx])
-            extracted_graph.nodes[node]["b_factor"] = self.__body_parts["node_attr_keys"]["b_factor"][b_factor_idx]
+            extracted_graph.nodes[node]["chain_id"] = self.__body_parts["node_attr_keys"]["chain_id"].get(chain_id_idx)
+            extracted_graph.nodes[node]["residue_name"] = self.__body_parts["node_attr_keys"]["residue_name"].get(residue_name_idx)
+            extracted_graph.nodes[node]["residue_number"] = self.__body_parts["node_attr_keys"]["residue_number"].get(residue_number_idx)
+            extracted_graph.nodes[node]["atom_type"] = self.__body_parts["node_attr_keys"]["atom_type"].get(atom_type_idx)
+            extracted_graph.nodes[node]["element_symbol"] = self.__body_parts["node_attr_keys"]["element_symbol"].get(element_symbol_idx)
+            extracted_graph.nodes[node]["coords"] = np.array(self.__body_parts["node_attr_keys"]["coords"].get(coords_idx))
+            extracted_graph.nodes[node]["b_factor"] = self.__body_parts["node_attr_keys"]["b_factor"].get(b_factor_idx)
             
-            meiler_value = self.__body_parts["node_attr_keys"]["meiler"][meiler_idx]
+            meiler_value = self.__body_parts["node_attr_keys"]["meiler"].get(meiler_idx)
             extracted_graph.nodes[node]["meiler"] = pd.Series(
                 meiler_value[0], 
                 name=''.join(list(meiler_value[1])), 

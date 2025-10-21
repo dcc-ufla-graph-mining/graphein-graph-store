@@ -348,11 +348,11 @@ def experimento_1():
             try:
                 assert nx.utils.nodes_equal(g.nodes, extracted_graph[0].nodes)
 
-                # g1 = g
-                # g2 = extracted_graph[0]
-                # for n in g.nodes:
-                #     print(f'original: {g1.nodes[n]}')
-                #     print(f'extracted: {g2.nodes[n]}')
+                g1 = g
+                g2 = extracted_graph[0]
+                for n in g.nodes:
+                    print(f'original: {g1.nodes[n]}')
+                    print(f'extracted: {g2.nodes[n]}')
 
             except AssertionError as e:
                 msg = f'\n\
