@@ -9,86 +9,67 @@ import edge_functions_Model as edgeModel
 import struct
 
 class PDBGraphStore:
-    def __init__(
-            self, 
-            node_to_id={},
-            edge_to_id={},
-            pdb_to_nodes={},
-            pdb_to_edges={},
-            node_attrs={},
-            edge_kinds={},
-            node_attr_keys={},
-            edge_kind_keys={},
-            edge_distances={},
-            all_pdb_codes={},
-            ):
-        self.node_to_id = node_to_id 
-        self.edge_to_id = edge_to_id 
-        self.pdb_to_nodes = pdb_to_nodes 
-        self.pdb_to_edges = pdb_to_edges 
-        self.node_attrs = node_attrs
-        self.edge_kinds = edge_kinds 
-        self.node_attr_keys = node_attr_keys 
-        self.edge_kind_keys = edge_kind_keys 
-        self.edge_distances = edge_distances
-        self.all_pdb_codes = all_pdb_codes
-
-        if len(node_to_id) == 0:
-            self.init_attribute_keys()
+    def __init__(self, body_parts):
+        if body_parts:
+            self.__body_parts = body_parts
+        else:
+            raise ValueError("'body_parts' should not be None")
 
     def __str__(self):
-        return f'PDBGraphStore with {len(self.get_pdb_list())} pdbs'
+        return f'PDBGraphStore with {len(self.get_pdb_code_list())} pdbs'
 
-    def init_attribute_keys(self):
-        node_attr_keys_list = ["chain_id", "residue_name", "residue_number", "atom_type", "element_symbol", "coords", "b_factor", "meiler"]
+    def get_pdb_code_list(self):
+        return list(self.__body_parts["all_pdb_codes"])
 
-        for k in node_attr_keys_list:
-            self.node_attr_keys[k] = SortedSet()
+    def __reconstruct_node_attributes(self, extracted_graph, pdb_code):
+        pdb_idx = self.__body_parts["all_pdb_codes"].index(pdb_code)
         
-        self.edge_kind_keys = SortedSet(set([k for k, _ in edgeModel.edge_functions_dict.items()]))
+        for node_attr_idx in self.__body_parts["pdb_to_nodes"][pdb_idx]:
 
-    def get_len_edges(self):
-        return len(self.edge_to_id.keys())
-    
-    def get_len_nodes(self):
-        return len(self.node_to_id.keys())
+            node_pair = struct.unpack("llll", self.__body_parts["node_attrs_unique"][node_attr_idx])
+            node_id = node_pair[0]
+            node = self.__body_parts["node_to_id"].inverse[node_id]
+            
+            chain_id_idx = self.__body_parts["node_attrs_global"][node][0]
+            residue_name_idx = self.__body_parts["node_attrs_global"][node][1]
+            atom_type_idx = self.__body_parts["node_attrs_global"][node][2]
+            element_symbol_idx = self.__body_parts["node_attrs_global"][node][3]
+            meiler_idx = self.__body_parts["node_attrs_global"][node][4]
 
-    def get_pdb_list(self):
-        return [pdb_code for pdb_code in self.all_pdb_codes]
+            residue_number_idx = node_pair[1]
+            coords_idx = node_pair[2]
+            b_factor_idx = node_pair[3]
+            
+            extracted_graph.nodes[node]["chain_id"] = self.__body_parts["node_attr_keys"]["chain_id"][chain_id_idx]
+            extracted_graph.nodes[node]["residue_name"] = self.__body_parts["node_attr_keys"]["residue_name"][residue_name_idx]
+            extracted_graph.nodes[node]["residue_number"] = self.__body_parts["node_attr_keys"]["residue_number"][residue_number_idx]
+            extracted_graph.nodes[node]["atom_type"] = self.__body_parts["node_attr_keys"]["atom_type"][atom_type_idx]
+            extracted_graph.nodes[node]["element_symbol"] = self.__body_parts["node_attr_keys"]["element_symbol"][element_symbol_idx]
+            extracted_graph.nodes[node]["coords"] = np.array(self.__body_parts["node_attr_keys"]["coords"][coords_idx])
+            extracted_graph.nodes[node]["b_factor"] = self.__body_parts["node_attr_keys"]["b_factor"][b_factor_idx]
+            
+            meiler_value = self.__body_parts["node_attr_keys"]["meiler"][meiler_idx]
+            extracted_graph.nodes[node]["meiler"] = pd.Series(
+                meiler_value[0], 
+                name=''.join(list(meiler_value[1])), 
+                index=[f'dim_{x}' for x in [1, 2, 3, 4, 5, 6, 7]]
+            )
+            
 
-    def _reconstruct_node_attributes(self, extracted_graph, nodes):
-        for node in nodes:
-            if node in self.node_attrs:
-                for i, key in enumerate(self.node_attr_keys):
-                    index = self.node_attrs[node][i]
-                    value = self.node_attr_keys[key][index]
 
-                    if isinstance(value, tuple) and len(value) == 1:
-                        value = np.array(value[0])
+    def __reconstruct_edge_attributes(self, extracted_graph, extracted_edges, pdb_idx, edge_funcs):
 
-                    if isinstance(value, tuple) and len(value) == 3:
-                        value = pd.Series(value[0], name=value[1], index=value[2])
-
-                    extracted_graph.nodes[node][key] = value
-
-    def _reconstruct_edge_attributes(self, extracted_graph, edges, edge_kinds, edge_kind_keys, 
-                                 edge_funcs, pdb_to_edges, pdb_code, edge_distances, 
-                                 edge_to_id, all_pdb_codes):
-        
-        pdb_idx = all_pdb_codes.index(pdb_code)
-        
-        for u, v in edges:
+        for u, v in extracted_edges:
             edge = (u, v)
             
-            if edge not in edge_kinds:
+            if edge not in self.__body_parts["edge_kinds"]:
                 continue
             
-            kind_indexes_list = edge_kinds[edge]
+            kind_indexes = self.__body_parts["edge_kinds"][edge]
             
-            if len(kind_indexes_list) > 0:
-                kind_indexes = kind_indexes_list[0]
-                kind_names = [edge_kind_keys[k] for k in kind_indexes]
-                kind_names = list(filter(lambda x: edgeModel.edge_functions_dict[x] in edge_funcs, kind_names))
+            if len(kind_indexes) > 0:
+                kind_names = [self.__body_parts["edge_kind_keys"][k] for k in kind_indexes]
+                kind_names = list(filter(lambda x: x in edge_funcs, kind_names))
                 
                 if len(kind_names) > 0:
                     if not extracted_graph.has_edge(*edge):
@@ -98,134 +79,154 @@ class PDBGraphStore:
                     
                     for kind in kind_names:
                         extracted_graph.edges[edge]["kind"].add(kind)
-        
-        for edge_dist_idx in pdb_to_edges[pdb_idx]:
-            edge_pair = edge_distances[edge_dist_idx]
 
+        for edge_dist_idx in self.__body_parts["pdb_to_edges"][pdb_idx]:
+            edge_pair = self.__body_parts["edge_distances"][edge_dist_idx]
             edge_pair = struct.unpack("ld", edge_pair)
-
-            edge = edge_to_id.inverse[edge_pair[0]]
+            
+            edge = self.__body_parts["edge_to_id"].inverse[edge_pair[0]]
+            
+            if not extracted_graph.has_edge(*edge):
+                continue
+            
             extracted_graph.edges[edge]["distance"] = edge_pair[1]
 
-    def extract_pdb_graphs(self, pdb_codes=[], edge_construction_functions=[]):
-        extracted_graphs = []
-        edge_funcs = [edgeModel.edge_functions_dict[x] for x in edge_construction_functions]
-        print(f"dentro de extract_pdb. pdb_code={pdb_codes}, {edge_funcs}")
+    def __extract_nodes(self, pdb_idx):
+
+        def get_node_id(node_attr_unique_idx):
+            node_pair = self.__body_parts["node_attrs_unique"][node_attr_unique_idx]
+            node_pair = struct.unpack("llll", node_pair)
+            return node_pair[0]
         
+        return [self.__body_parts["node_to_id"].inverse[get_node_id(node_id)] 
+                for node_id in self.__body_parts["pdb_to_nodes"][pdb_idx]]
+
+    def __extract_edges(self, pdb_idx):
+
+        def get_edge_id(edge_distances_idx):
+            edge_pair = self.__body_parts["edge_distances"][edge_distances_idx]
+            edge_pair = struct.unpack("ld", edge_pair)
+            return edge_pair[0]
+        
+        return [self.__body_parts["edge_to_id"].inverse[get_edge_id(edge_distances_idx)] 
+                for edge_distances_idx in self.__body_parts["pdb_to_edges"][pdb_idx]]
+    
+    def extract_pdb_graphs(self, pdb_codes=[], edge_construction_functions=[]):
+
+        if not pdb_codes:
+            raise ValueError("pdb_codes should not be empty")
+
+        if not edge_construction_functions:
+            raise ValueError("edge_construction_functions should not be empty")
+
+        extracted_graphs = []
+
         for pdb_code in pdb_codes:
-            pdb_idx = self.all_pdb_codes.index(pdb_code)
+            pdb_idx = self.__body_parts["all_pdb_codes"].index(pdb_code)
             extracted_graph = nx.Graph()
-            
-            # Extract nodes
-            extracted_nodes = [self.node_to_id.inverse[node_id] for node_id in self.pdb_to_nodes[pdb_idx]]
-            
-            # Extract edges 
-            def get_edge_id(edge_distances_idx):
-                edge_pair = self.edge_distances[edge_distances_idx]
-                edge_pair = struct.unpack("ld", edge_pair)
-                edge_id = edge_pair[0]
-                return edge_id
-            
-            extracted_edges = [self.edge_to_id.inverse[get_edge_id(edge_distances_idx)] 
-                              for edge_distances_idx in self.pdb_to_edges[pdb_idx]]
-            
             extracted_graph.graph["pdb_code"] = pdb_code
+
+            extracted_nodes = self.__extract_nodes(pdb_idx)
+            extracted_edges = self.__extract_edges(pdb_idx)
             extracted_graph.update(nodes=extracted_nodes)
             
-            self._reconstruct_node_attributes(extracted_graph, extracted_nodes)
-            
-            self._reconstruct_edge_attributes(extracted_graph, extracted_edges, 
-                                             self.edge_kinds, self.edge_kind_keys,
-                                             edge_funcs,
-                                             self.pdb_to_edges, pdb_code,
-                                             self.edge_distances, self.edge_to_id,
-                                             self.all_pdb_codes)
+            self.__reconstruct_node_attributes(extracted_graph, pdb_code)
+            self.__reconstruct_edge_attributes(extracted_graph, extracted_edges, pdb_idx, edge_construction_functions)
             
             extracted_graphs.append(extracted_graph)
         
         return extracted_graphs
 
+    def __insert_node_attrs(self, node_to_insert):
+        attr_indexes = []
+
+        for value in self.__body_parts["node_attr_keys"]:
+            attr_value = node_to_insert[value]
+                        
+            if isinstance(attr_value, pd.Series):
+                attr_value = tuple([tuple(attr_value.tolist()), attr_value.name, tuple(attr_value.index)])
+            elif isinstance(attr_value, np.ndarray):
+                attr_value = tuple([tuple(attr_value)])
+                            
+            self.__body_parts["node_attr_keys"][value].add(attr_value)
+            idx = self.__body_parts["node_attr_keys"][value].index(attr_value)
+            attr_indexes.append(idx)
+
+        return attr_indexes
+
+    def __insert_nodes(self, pdb_idx, graph):
+        if pdb_idx not in self.__body_parts["pdb_to_nodes"]:
+            self.__body_parts["pdb_to_nodes"][pdb_idx] = BitMap64()
+        
+        for node in graph.nodes():
+            if node not in self.__body_parts["node_to_id"]:
+                new_node_id = len(self.__body_parts["node_to_id"])
+                self.__body_parts["node_to_id"][node] = new_node_id
+
+                self.__body_parts["node_attrs"][node] = self.__insert_node_attrs(node)
+
+            node_id = self.__body_parts["node_to_id"][node]
+            self.__body_parts["pdb_to_nodes"][pdb_idx].add(node_id)
+
+    def __insert_edge_kinds(self, edge_to_insert, kinds_to_insert):
+        kind_indexes = set()
+        attr_indexes = []
+
+        for kind in kinds_to_insert:
+            if kind not in list(edgeModel.edge_functions_dict.values()):
+                raise ValueError(f"edge_kind should be in the kind list, based on edge_construction_funcs. Error at \
+                                     {edge_to_insert}: {kinds_to_insert}. kind {kind} not in edge_construction funcs")
+
+            kind_indexes.add(self.__body_parts["edge_kind_keys"].index(kind))
+
+        attr_indexes.append(kind_indexes)
+                
+        self.__body_parts["edge_kinds"][edge_to_insert] = attr_indexes
+
+    def __handle_with_existent_edge_insertion(self, edge_to_insert, kinds_to_insert):
+        idx = set([self.__body_parts["edge_kind_keys"].index(k) for k in kinds_to_insert])
+        if idx:
+            for i in idx:
+                self.__body_parts["edge_kinds"][edge_to_insert].add(i)
+
+    def __insert_edge_distances(self, edge_to_insert, distance, pdb_idx):
+        edge_id = self.__body_parts["edge_to_id"][edge_to_insert]
+        edge_pair = tuple([edge_id, distance])
+        edge_pair = struct.pack("ld", *edge_pair)
+
+        self.__body_parts["edge_distances"].append(edge_pair)
+        self.__body_parts["pdb_to_edges"][pdb_idx].add(len(self.__body_parts["edge_distances"])-1)
+
+    def __insert_edges(self, pdb_idx, graph):
+        if pdb_idx not in self.__body_parts["pdb_to_edges"]:
+            self.__body_parts["pdb_to_edges"][pdb_idx] = BitMap64()
+
+        for u, v, data in graph.edges.data():
+            edge = (u, v)
+            if edge not in self.__body_parts["edge_to_id"]:
+                new_edge_id = len(self.__body_parts["edge_to_id"])
+                self.__body_parts["edge_to_id"][edge] = new_edge_id
+
+                self.__insert_edge_kinds(edge, list(data["kind"]))
+
+            else:
+                self.__handle_with_existent_edge_insertion(edge, set(data["kind"]))
+
+            self.__insert_edge_distances(edge, list(data["distance"]), pdb_idx)
+
     def insert_pdbs(self, graphs={}):
         if not graphs:
-            return
-        
+            raise ValueError("'graph' should not be empty")
+
         for pdb_code, graph_list in graphs.items():
-            
-            
-            if pdb_code not in self.all_pdb_codes:
-                self.all_pdb_codes.add(pdb_code)
+            if pdb_code not in self.__body_parts["all_pdb_codes"]:
+                self.__body_parts["all_pdb_codes"].add(pdb_code)
 
-            pdb_idx = self.all_pdb_codes.index(pdb_code)
-            
-            if pdb_idx not in self.pdb_to_nodes:
-                self.pdb_to_nodes[pdb_idx] = BitMap64()
-            if pdb_idx not in self.pdb_to_edges:
-                self.pdb_to_edges[pdb_idx] = BitMap64()
-            
+            pdb_idx = self.__body_parts["all_pdb_codes"].index(pdb_code)
+
             for graph in graph_list:
-                for node in graph.nodes():
-                    if node not in self.node_to_id:
-                        new_node_id = len(self.node_to_id)
-                        self.node_to_id[node] = new_node_id
-                        
-                        attr_indexes = []
-                        for key in self.node_attr_keys:
-                            attr_value = graph.nodes[node][key]
-                            
-                            if isinstance(attr_value, pd.Series):
-                                attr_value = tuple([tuple(attr_value.tolist()), attr_value.name, tuple(attr_value.index)])
-                            elif isinstance(attr_value, np.ndarray):
-                                attr_value = tuple([tuple(attr_value)])
-                            
-                            attr_index = self.node_attr_keys[key].add(attr_value)
-                            attr_indexes.append(attr_index)
-                        
-                        self.node_attrs[node] = attr_indexes
-
-                    node_id = self.node_to_id[node]
-                    self.pdb_to_nodes[pdb_idx].add(node_id)
-                
-                for u, v, data in graph.edges.data():
-                    edge = (u, v)
-                    
-                    if edge not in self.edge_to_id:
-                        new_edge_id = len(self.edge_to_id)
-                        self.edge_to_id[edge] = new_edge_id
-                        
-                        attr_kind_value = list(data["kind"]) if "kind" in data else []
-                        kind_indexes = set()
-                        
-                        for kind in attr_kind_value:
-                            if kind in [k for k, _ in edgeModel.edge_functions_dict.items()]:
-                                kind_index = self.edge_kind_keys.add(kind)
-                                kind_indexes.add(kind_index)
-                        
-                        self.edge_kinds[edge] = [kind_indexes]
-                        
-                        if "distance" in data and data["distance"] is not None:
-                            if new_edge_id not in self.edge_distances:
-                                self.edge_distances[new_edge_id] = {}
-                            self.edge_distances[new_edge_id][pdb_idx] = data["distance"]
-                    
-                    else:
-                        if "kind" in data:
-                            kinds = set(filter(lambda x: x, data["kind"]))
-                            for kind in kinds:
-                                if kind in [k for k, _ in edgeModel.edge_functions_dict.items()]:
-                                    kind_index = self.edge_kind_keys.add(kind)
-                                    self.edge_kinds[edge][0].add(kind_index)
-
-                        if "distance" in data and data["distance"] is not None:
-                            edge_id = self.edge_to_id[edge]
-                            if edge_id not in self.edge_distances:
-                                self.edge_distances[edge_id] = {}
-                            self.edge_distances[edge_id][pdb_idx] = data["distance"]
-                    
-                    edge_id = self.edge_to_id[edge]
-                    self.pdb_to_edges[pdb_idx].add(edge_id)
-                    print(f'edge {edge} added')
-        
-        self.pdb_list = [k for k in self.pdb_to_nodes.keys()]
+                self.__insert_nodes(pdb_idx, graph)
+                self.__insert_edges(pdb_idx, graph)
         
         print(f"Inseridos {len(graphs)} novos PDBs no supergrafo.")
         print(f"Total de nós únicos: {len(self.node_to_id)}")
@@ -433,47 +434,58 @@ class PDBGraphStore:
         return combined_stats
 
     def node_to_id_size(self):
-        return asizeof.asizeof(self.node_to_id) / 1024 / 1024
-    
+        return asizeof.asizeof(self.__body_parts["node_to_id"]) / 1024 / 1024
+
     def edge_to_id_size(self):
-        return asizeof.asizeof(self.edge_to_id) / 1024 / 1024
-    
+        return asizeof.asizeof(self.__body_parts["edge_to_id"]) / 1024 / 1024
+
     def pdb_to_nodes_size(self):
-        return asizeof.asizeof(self.pdb_to_nodes) / 1024 / 1024
-    
+        return asizeof.asizeof(self.__body_parts["pdb_to_nodes"]) / 1024 / 1024
+
     def pdb_to_edges_size(self):
-        return asizeof.asizeof(self.pdb_to_edges) / 1024 / 1024
-    
+        return asizeof.asizeof(self.__body_parts["pdb_to_edges"]) / 1024 / 1024
+
     def node_attrs_size(self):
-        return asizeof.asizeof(self.node_attrs) / 1024 / 1024
-    
+        return asizeof.asizeof(self.__body_parts["node_attrs_global"]) / 1024 / 1024 + \
+                asizeof.asizeof(self.__body_parts["node_attrs_unique"]) / 1024 / 1024
+
     def edge_attrs_size(self):
-        return (asizeof.asizeof(self.edge_distances) / 1024 / 1024) + (asizeof.asizeof(self.edge_kinds) /1024/1024)
-    
+        return (
+            asizeof.asizeof(self.__body_parts["edge_distances"]) / 1024 / 1024
+            + asizeof.asizeof(self.__body_parts["edge_kinds"]) / 1024 / 1024
+        )
+
     def node_attr_keys_size(self):
-        return asizeof.asizeof(self.node_attr_keys) / 1024 / 1024
-    
+        return asizeof.asizeof(self.__body_parts["node_attr_keys"]) / 1024 / 1024
+
     def edge_kind_keys_size(self):
-        return asizeof.asizeof(self.edge_kind_keys) / 1024 / 1024
-    
+        return asizeof.asizeof(self.__body_parts["edge_kind_keys"]) / 1024 / 1024
+
     def calculate_graph_complete_space_size(self):
-        return self.node_to_id_size() + \
-            self.edge_to_id_size() + \
-            self.pdb_to_nodes_size() + \
-            self.pdb_to_edges_size() + \
-            self.node_attrs_size() + \
-            self.edge_attrs_size() + \
-            self.node_attr_keys_size() + \
-            self.edge_kind_keys_size()
-    
+        return (
+            self.node_to_id_size()
+            + self.edge_to_id_size()
+            + self.pdb_to_nodes_size()
+            + self.pdb_to_edges_size()
+            + self.node_attrs_size()
+            + self.edge_attrs_size()
+            + self.node_attr_keys_size()
+            + self.edge_kind_keys_size()
+        )
+
     def calculate_total_nodes_size(self):
-        return self.node_to_id_size() + \
-            self.pdb_to_nodes_size() + \
-            self.node_attrs_size() + \
-            self.node_attr_keys_size()
-    
+        return (
+            self.node_to_id_size()
+            + self.pdb_to_nodes_size()
+            + self.node_attrs_size()
+            + self.node_attr_keys_size()
+        )
+
     def calculate_total_edges_size(self):
-        return self.edge_to_id_size() + \
-            self.pdb_to_edges_size() + \
-            self.edge_attrs_size() + \
-            self.edge_kind_keys_size()
+        return (
+            self.edge_to_id_size()
+            + self.pdb_to_edges_size()
+            + self.edge_attrs_size()
+            + self.edge_kind_keys_size()
+        )
+

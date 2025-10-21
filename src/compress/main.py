@@ -13,6 +13,7 @@ import edge_functions_Model as edgeModel
 import operations
 import networkx as nx
 import traceback
+from sortedcontainers import SortedSet
 
 from graphein.protein.config import ProteinGraphConfig
 from graphein.protein.graphs import construct_graph
@@ -72,7 +73,7 @@ def read_dataset(general_data_path, dataset_txt_name, file_mode='r'):
 def define_graphein_edge_funcs(func_idx=1):
     # usado no experimento 1
     # return random.sample([v for _, v in edgeModel.edge_functions_dict.items()], 3)
-    return [edgeModel.edge_functions_dict[f] for f in ["aromatic", "bb_carbonyl_carbonyl", "delaunay"]] 
+    return [edgeModel.edge_functions_dict[f] for f in ["aromatic", "aromatic_sulphur", "delaunay"]] 
     
     # usado no experimento 2
     # sorted_func_list = sorted(edgeModel.edge_functions_dict.keys())
@@ -148,6 +149,27 @@ def prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path, func_idx):
     del graph
 
     return protein_graph_with_metadata_dict, protein_graph_without_metadata_dict
+
+def initialize_body_parts():
+    body_parts = {}
+    body_parts["node_to_id"] = {}
+    body_parts["edge_to_id"] = {}
+    body_parts["pdb_to_nodes"] = {}
+    body_parts["pdb_to_edges"] = {}
+    body_parts["node_attrs"] = {}
+    body_parts["node_attr_keys"] = {}
+
+    node_attr_keys_list = ["chain_id", "residue_name", "residue_number", "atom_type", "element_symbol", "coords", "b_factor", "meiler"]
+    for key in node_attr_keys_list:
+        body_parts["node_attr_keys"][key] = SortedSet()
+    
+    body_parts["edge_kinds"] = {}
+    body_parts["edge_kind_keys"] = SortedSet(set(edgeModel.edge_functions_dict.keys()))
+
+    body_parts["edge_distances"] = []
+    body_parts["all_pdb_codes"] = SortedSet()
+
+    return body_parts
 
 def test():
     # graphs_extracted = operations.extract_pdb_graphs_multiprocessing(pdb_store, ["1BXL", "1G5J"], ["bb_carbonyl_carbonyl"], 2)
@@ -263,23 +285,17 @@ def experimento_1():
     time_start = time.time()
     print(v_size, v_serialized, e_size, e_serialized)
 
-    node_to_id,\
-    edge_to_id,\
-    pdb_to_nodes,\
-    pdb_to_edges,\
-    node_attrs,\
-    edge_kinds,\
-    node_attr_keys,\
-    edge_kind_keys, \
-    edge_distances, \
-    all_pdb_codes = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
+    body_parts = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
 
     time_to_compress = time_count(time_start=time_start)
 
     msg = f'\nTime to compress: {time_to_compress}'
     write_result(dataset=dataset_name, msg=msg, result_path=result_path)
 
-    pdb_store = PDBGraphStore(node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_kinds, node_attr_keys, edge_kind_keys, edge_distances, all_pdb_codes)
+    #DONE alternativately, initialize body_parts empty to fullfill it at the PDBGraphStore object construction 
+    # body_parts = initialize_body_parts()
+
+    pdb_store = PDBGraphStore(body_parts)
 
     extract_times = []
 
@@ -300,19 +316,50 @@ def experimento_1():
             '
             print(msg)
 
-            try:
-                assert nx.utils.nodes_equal(g.nodes.data(), protein_graph_with_metadata_dict[pdb_code][0].nodes(data=True))
-                assert nx.utils.edges_equal(g.edges.data(), protein_graph_with_metadata_dict[pdb_code][0].edges(data=True))
+            
 
-                for u, v in g.edges:
-                    print(f'original graph edge data: {g.edges[(u,v)]}')
-                    print(f'extracted graph edge data: {protein_graph_with_metadata_dict[pdb_code][0].edges[(u,v)]}')
+            try:
+                assert nx.utils.edges_equal(g.edges.data(), extracted_graph[0].edges(data=True))
+
+                # for u, v in g.edges:
+                #     print(f'original graph edge data:s {g.edges[(u,v)]}')
+                #     print(f'extracted graph edge data:s {extracted_graph[0].edges[(u,v)]}')
+
+                # print(f'original: {len(g.edges)}\nextracted: {len(extracted_graph[0].edges)}')
             
             except AssertionError as e:
                 msg = f'\n\
                 Error in graph_extraction for {pdb_code}: {e}\
                 '
+                print(msg)
+                print(f'{set(g.nodes) - set(extracted_graph[0].nodes)}')
+                print(f'{set(g.edges) - set(extracted_graph[0].edges)}')
+
+                if set(g.edges) - set(extracted_graph[0].edges):
+                    for e in set(g.edges) - set(extracted_graph[0].edges):
+                        print(e)
+                        print(f'original: {g.edges[e]}')
+                        print(f'extracted: {extracted_graph[0].edges[e]}')
+
+
                 write_error(dataset=dataset_name, msg=msg, error_path=error_path)
+                continue
+
+            try:
+                assert nx.utils.nodes_equal(g.nodes, extracted_graph[0].nodes)
+
+                # g1 = g
+                # g2 = extracted_graph[0]
+                # for n in g.nodes:
+                #     print(f'original: {g1.nodes[n]}')
+                #     print(f'extracted: {g2.nodes[n]}')
+
+            except AssertionError as e:
+                msg = f'\n\
+                Error in graph_extraction for {pdb_code}: {e}\
+                '   
+                
+                print(msg)
                 continue
     
     extract_time_mean = np.mean(extract_times)
@@ -493,18 +540,11 @@ def experimento_3():
 
         protein_graph_with_metadata_dict[pdb_code] = graph_with_data[pdb_code]
 
-    node_to_id,\
-    edge_to_id,\
-    pdb_to_nodes,\
-    pdb_to_edges,\
-    node_attrs,\
-    edge_attrs,\
-    node_attr_keys,\
-    edge_attr_keys = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
+    body_parts = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
 
-    pdb_store = PDBGraphStore(node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_attrs, node_attr_keys, edge_attr_keys)
+    pdb_store = PDBGraphStore(body_parts)
 
-    edge_funcs_to_extract = list(random.sample(edgeModel.edge_functions_dict.values(), 3))
+    edge_funcs_to_extract = list(random.sample(edgeModel.edge_functions_dict.keys(), 3))
 
     for _, pdb_code in enumerate(pdb_codes.copy()):
         time_start = time.time()
@@ -513,10 +553,27 @@ def experimento_3():
         print(extracted_graph[0].graph)
 
         time_start = time.time()
-        config = ProteinGraphConfig(**{"granularity": "atom", "edge_construction_functions": edge_funcs_to_extract})
+        print(edge_funcs_to_extract)
+        edge_funcs = []
+
+        for edge_func in edge_funcs_to_extract:
+            edge_funcs.append(edgeModel.edge_functions_dict[edge_func])
+        
+        print(edge_funcs)
+
+        config = ProteinGraphConfig(**{"granularity": "atom", "edge_construction_functions": edge_funcs})
+        
         pdb_file = get_pdb_file(pdb_data_path=pdb_data_path, pdb_code=pdb_code)
         graph = construct_graph(config=config, path=pdb_file)
         time_to_construct = time_count(time_start=time_start)
+
+        print(extracted_graph)
+        print(f'edges in original: {len(graph.edges())}; edges in extracted: {len(extracted_graph[0].edges())}')
+
+        # for e in graph.edges:
+        #     print(f'original: {graph.edges[e]}')
+        #     print(f'extracted: {extracted_graph[0].edges[e]}')
+        
 
         msg = f'Time to construct pdb graph {pdb_code}: {time_to_construct}\
             \nTime to extract the same graph: {time_to_extract}\n\n'

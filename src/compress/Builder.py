@@ -1,8 +1,7 @@
 import networkx as nx
 import numpy as np
 from bidict import bidict
-from pympler import asizeof
-from pyroaring import BitMap, BitMap64
+from pyroaring import BitMap64
 from sortedcontainers import SortedSet
 import pandas as pd
 import edge_functions_Model as edgeModel
@@ -15,52 +14,57 @@ def _initialize_structs():
     edge_to_pdbs = {}
     node_to_pdbs = {}
     edge_kinds = {}
-    node_attrs = {}
+    node_attrs_global = {}
     pdb_to_nodes = {}
     pdb_to_edges = {}
     pdb_codes_config = {}
+    node_attrs_unique_temp = {}
     all_pdb_codes = SortedSet()
 
     edge_distances_temp = {}
 
-    return edge_to_pdbs,node_to_pdbs,edge_kinds,node_attrs,pdb_to_nodes,pdb_to_edges,pdb_codes_config, all_pdb_codes,edge_distances_temp
+    return edge_to_pdbs,node_to_pdbs,edge_kinds,node_attrs_global,pdb_to_nodes,pdb_to_edges,pdb_codes_config, all_pdb_codes, node_attrs_unique_temp, edge_distances_temp
 
 def _extract_attribute_keys():
-    edge_attr_keys_list = ["kind", "distance"]
     node_attr_keys_list = ["chain_id", "residue_name", "residue_number", "atom_type", "element_symbol", "coords", "b_factor", "meiler"]
 
     node_attr_keys = {}
 
     for key in node_attr_keys_list:
-        node_attr_keys[key] = SortedSet()
+        node_attr_keys[key] = []
 
     edge_kind_keys = SortedSet(set(edge_functions_str_list))
 
     return edge_kind_keys, node_attr_keys
 
 def _process_node_attributes(node, graph, node_attr_keys):
-    attr_indexes = []
+    attr_indexes_global = []
+    attr_indexes_unique = []
 
-    for value in node_attr_keys:
+    for i, value in enumerate(node_attr_keys):
         attr_value = graph.nodes[node][value]
 
-        if isinstance(attr_value, pd.Series):
-            attr_value = tuple([tuple(attr_value.tolist()), attr_value.name, tuple(attr_value.index)])
+        if i == 7: #attr: meiler; type: pd.Series
+            attr_value = tuple([tuple(attr_value.tolist()), tuple(attr_value.name)])
         
-        if isinstance(attr_value, np.ndarray):
+        if i == 5: ##attr: coords; type: np.array
             attr_value = tuple([tuple(attr_value)])
 
-        node_attr_keys[value].add(attr_value)
-        idx = node_attr_keys[value].index(attr_value)
+        if attr_value not in node_attr_keys[value]:
+            node_attr_keys[value].append(attr_value)
+            idx = len(node_attr_keys[value])-1
+        else:
+            idx = node_attr_keys[value].index(attr_value)
 
-        attr_indexes.append(idx)
+        if i in [0, 1, 3, 4, 7]:
+            attr_indexes_global.append(idx)
+        else:
+            attr_indexes_unique.append(idx)
 
-    return attr_indexes
+    return attr_indexes_global, attr_indexes_unique
 
-#Todo: implement all_pdb_code logic for edge distances
+
 def _process_edge_kinds(edge_data, edge_kind_keys):
-    attr_indexes = []
-
     attr_kind_value = list(edge_data["kind"]) 
 
     if attr_kind_value is None:
@@ -69,43 +73,39 @@ def _process_edge_kinds(edge_data, edge_kind_keys):
     kind_indexes = set()
 
     for kind in attr_kind_value:
-        if kind not in edge_functions_func_list:
-            kind_indexes.add(edge_kind_keys.index(kind))
+        kind_indexes.add(edge_kind_keys.index(kind))
 
-    attr_indexes.append(kind_indexes)
+    return kind_indexes
 
-    # distance_indexes = {}
-    # distance_indexes[pdb_code] = process_edge_distances(edge_data, edge_kind_keys, pdb_code)
-
-    # attr_indexes.append(distance_indexes)
-
-    return attr_indexes
-
-#todo: implement all_pdb_codes index logic for distance
 def _check_if_edge_attr_matches(edge, data, edge_kinds, edge_kind_keys):
     kinds = set(filter(lambda x: x , data["kind"]))
     for k in kinds:
         edge_kind_keys.add(k)
-    idx = set([edge_kind_keys.index(k) for k in kinds])
-    if len(idx) > 0:
+    idx = [edge_kind_keys.index(k) for k in kinds]
+    if idx:
         for i in idx:
-            edge_kinds[edge].append(i)
+            edge_kinds[edge].add(i)
 
-def _process_nodes(protein_graphs, node_to_pdbs, node_attrs, node_attr_keys, pdb_to_nodes, all_pdb_codes):
+def _process_nodes(protein_graphs, node_to_pdbs, node_attrs_global, node_attrs_unique_temp, node_attr_keys, pdb_to_nodes, all_pdb_codes):
     for pdb_code, graphs in protein_graphs.items():
         all_pdb_codes.add(pdb_code)
         pdb_idx = all_pdb_codes.index(pdb_code)
+        
+        if pdb_idx not in pdb_to_nodes:
+            pdb_to_nodes[pdb_idx] = BitMap64()
 
         for g in graphs:
-            pdb_to_nodes[pdb_idx] = BitMap64()
             for node in g.nodes():
+                attr_indexes_global, attr_indexes_unique = _process_node_attributes(node, g, node_attr_keys)
                 if node not in node_to_pdbs:
                     node_to_pdbs[node] = []
-                    attr_indexes = _process_node_attributes(node, g, node_attr_keys)
-                    node_attrs[node] = attr_indexes
+                    node_attrs_global[node] = attr_indexes_global
+                    node_attrs_unique_temp.setdefault(node, {})
+
+                node_attrs_unique_temp[node][pdb_code] = attr_indexes_unique
 
                 if pdb_code not in node_to_pdbs[node]:
-                    node_to_pdbs[node].append(pdb_code)    
+                    node_to_pdbs[node].append(pdb_code)
 
 def _process_edges(protein_graphs, edge_to_pdbs, edge_kinds, edge_kind_keys, pdb_to_edges, all_pdb_codes, edge_distances_temp):
     for pdb_code, graphs in protein_graphs.items():
@@ -134,12 +134,12 @@ def _process_edges(protein_graphs, edge_to_pdbs, edge_kinds, edge_kind_keys, pdb
                 if pdb_code not in edge_to_pdbs[edge]:
                     edge_to_pdbs[edge].append(pdb_code)
                     edge_distances_temp.setdefault(edge, {})[pdb_code] = data["distance"]
-                
-                #ao inves de append somente o pdb_code, apeend uma tupla (pdb_code, distance)
 
-def _create_id_mappings(edge_to_pdbs, node_to_pdbs, pdb_to_edges, pdb_to_nodes, all_pdb_codes, edge_distances_temp):
+
+def _create_id_mappings(edge_to_pdbs, node_to_pdbs, pdb_to_edges, pdb_to_nodes, all_pdb_codes, edge_distances_temp, node_attrs_unique_temp):
     edge_to_id = {}
     edge_distances = []
+    node_attrs_unique = []
 
     for edge_id, e in enumerate(edge_to_pdbs):
         edge_to_id[e] = edge_id
@@ -148,11 +148,9 @@ def _create_id_mappings(edge_to_pdbs, node_to_pdbs, pdb_to_edges, pdb_to_nodes, 
             pdb_idx = all_pdb_codes.index(pdb_code)
 
             edge_pair = tuple([edge_id, edge_distances_temp[e][pdb_code]])
-
             edge_pair = struct.pack("ld", *edge_pair)
 
             edge_distances.append(edge_pair)
-
             pdb_to_edges[pdb_idx].add(len(edge_distances)-1)
 
     node_to_id = {}
@@ -162,12 +160,18 @@ def _create_id_mappings(edge_to_pdbs, node_to_pdbs, pdb_to_edges, pdb_to_nodes, 
         pdbs = node_to_pdbs[u]
         for pdb_code in pdbs:
             pdb_idx = all_pdb_codes.index(pdb_code)
-            pdb_to_nodes[pdb_idx].add(node_id)
+            # node_id, residue_number_idx, coords_idx, b_factor_idx 
+            unique_attrs = node_attrs_unique_temp[u][pdb_code]
+            node_pair = tuple([node_id, unique_attrs[0], unique_attrs[1], unique_attrs[2]])
+            node_pair = struct.pack("llll", *node_pair)
+
+            node_attrs_unique.append(node_pair)
+            pdb_to_nodes[pdb_idx].add(len(node_attrs_unique)-1)
 
     node_to_id = bidict(node_to_id)
     edge_to_id = bidict(edge_to_id)
 
-    return node_to_id, edge_to_id, edge_distances
+    return node_to_id, edge_to_id, node_attrs_unique, edge_distances
 
 def _process_pdb_codes_config(protein_graphs, pdb_codes_config):
     def add_edge_construction_function(fun):
@@ -185,22 +189,44 @@ def _process_pdb_codes_config(protein_graphs, pdb_codes_config):
                 if fun in edge_functions_func_list:
                     add_edge_construction_function(fun.__name__)    
 
-def _reconstruct_node_attributes(extracted_graph, nodes, node_attrs, node_attr_keys):
-    for node in nodes:
-        if node in node_attrs:
-            for i, key in enumerate(node_attr_keys):
-                index = node_attrs[node][i]
-                value = node_attr_keys[key][index]
+def _reconstruct_node_attributes(extracted_graph, node_attr_keys, node_attrs_global, node_attrs_unique, node_to_id, pdb_to_nodes, all_pdb_codes, pdb_code):
+    pdb_idx = all_pdb_codes.index(pdb_code)
+    
+    for node_attr_idx in pdb_to_nodes[pdb_idx]:
+        node_pair = struct.unpack("llll", node_attrs_unique[node_attr_idx])
+        node_id = node_pair[0]
+        node = node_to_id.inverse[node_id]
+        
+        chain_id_idx = node_attrs_global[node][0]
+        residue_name_idx = node_attrs_global[node][1]
+        atom_type_idx = node_attrs_global[node][2]
+        element_symbol_idx = node_attrs_global[node][3]
+        meiler_idx = node_attrs_global[node][4]
 
-                if isinstance(value, tuple) and len(value) == 1:
-                    value = np.array(value[0])
-                if isinstance(value, tuple) and len(value) == 3:
-                    value = pd.Series(value[0], name=value[1], index=value[2])
-
-                extracted_graph.nodes[node][key] = value
+        residue_number_idx = node_pair[1]  # unique_attrs[0]
+        coords_idx = node_pair[2]          # unique_attrs[1]
+        b_factor_idx = node_pair[3]        # unique_attrs[2]
+        
+        extracted_graph.nodes[node]["chain_id"] = node_attr_keys["chain_id"][chain_id_idx]
+        extracted_graph.nodes[node]["residue_name"] = node_attr_keys["residue_name"][residue_name_idx]
+        extracted_graph.nodes[node]["residue_number"] = node_attr_keys["residue_number"][residue_number_idx]
+        extracted_graph.nodes[node]["atom_type"] = node_attr_keys["atom_type"][atom_type_idx]
+        extracted_graph.nodes[node]["element_symbol"] = node_attr_keys["element_symbol"][element_symbol_idx]
+        extracted_graph.nodes[node]["coords"] = np.array(node_attr_keys["coords"][coords_idx])
+        extracted_graph.nodes[node]["b_factor"] = node_attr_keys["b_factor"][b_factor_idx]
+        
+        meiler_value = node_attr_keys["meiler"][meiler_idx]
+        extracted_graph.nodes[node]["meiler"] = pd.Series(
+            meiler_value[0], 
+            name=''.join(list(meiler_value[1])), 
+            index=[f'dim_{x}' for x in [1,2,3,4,5,6,7]]
+        )
+        
+        
 
 def _reconstruct_edge_attributes(extracted_graph, edges, edge_kinds, edge_kind_keys, edge_funcs, pdb_to_edges, pdb_code, edge_distances, edge_to_id, all_pdb_codes):
     pdb_idx = all_pdb_codes.index(pdb_code)
+
     for u, v in edges:
         edge = (u, v)
         
@@ -210,7 +236,7 @@ def _reconstruct_edge_attributes(extracted_graph, edges, edge_kinds, edge_kind_k
         kind_indexes_list = edge_kinds[edge]
         
         if len(kind_indexes_list) > 0:
-            kind_indexes = kind_indexes_list[0]  
+            kind_indexes = kind_indexes_list 
             kind_names = [edge_kind_keys[k] for k in kind_indexes]
             kind_names = list(filter(lambda x: edgeModel.edge_functions_dict[x] in edge_funcs, kind_names))
             
@@ -229,19 +255,25 @@ def _reconstruct_edge_attributes(extracted_graph, edges, edge_kinds, edge_kind_k
         edge_pair = struct.unpack("ld", edge_pair)
 
         edge = edge_to_id.inverse[edge_pair[0]]
-        extracted_graph.edges[edge]["distace"] = edge_pair[1]
+        distance = edge_pair[1]
+        extracted_graph.edges[edge]["distance"] = edge_pair[1]
+
+        # if "bb_carbonyl_carbonyl" in extracted_graph.edges[edge]["kind"] and distance >=3.20:
+        #     extracted_graph.edges[edge]["kind"].remove("bb_carbonyl_carbonyl")
+
 
 def _reconstruct_and_validate_graphs(protein_graphs,
                                     node_to_id,
                                     edge_to_id,
                                     pdb_to_nodes,
                                     pdb_to_edges,
-                                    node_attrs,
+                                    node_attrs_global,
                                     edge_kinds,
                                     node_attr_keys,
                                     edge_kind_keys,
                                     edge_distances,
-                                    all_pdb_codes):
+                                    all_pdb_codes,
+                                    node_attrs_unique):
 
     for pdb_code in protein_graphs:
         pdb_graphs = protein_graphs[pdb_code]
@@ -251,7 +283,13 @@ def _reconstruct_and_validate_graphs(protein_graphs,
         for graph in pdb_graphs:
             original_graph = graph.copy()
 
-            nodes = [node_to_id.inverse[node_id] for node_id in pdb_to_nodes[pdb_idx]]
+            def get_node_id(node_attr_unique_idx):
+                node_pair = node_attrs_unique[node_attr_unique_idx]
+                node_pair = struct.unpack("llll", node_pair)
+                node_id = node_pair[0]
+                return node_id
+
+            nodes = [node_to_id.inverse[get_node_id(node_id)] for node_id in pdb_to_nodes[pdb_idx]]
 
             def get_edge_id(edge_distances_idx):
                 edge_pair = edge_distances[edge_distances_idx]
@@ -265,7 +303,7 @@ def _reconstruct_and_validate_graphs(protein_graphs,
             extracted_graph.graph["pdb_code"] = pdb_code
             extracted_graph.update(nodes=nodes)
 
-            _reconstruct_node_attributes(extracted_graph, nodes, node_attrs, node_attr_keys)
+            _reconstruct_node_attributes(extracted_graph, node_attr_keys,node_attrs_global,node_attrs_unique,node_to_id,pdb_to_nodes, all_pdb_codes, pdb_code)
             _reconstruct_edge_attributes(extracted_graph, edges, edge_kinds, edge_kind_keys, original_graph.graph["config"].edge_construction_functions, pdb_to_edges, pdb_code, edge_distances, edge_to_id, all_pdb_codes)
 
             print(f"original {pdb_code} graph edge funcs: {original_graph.graph['config'].edge_construction_functions}")
@@ -275,20 +313,36 @@ def _reconstruct_and_validate_graphs(protein_graphs,
             print(f"number of edges in original graph: {len(original_graph.edges())}")
             print(f"number of edges in extracted graph: {len(extracted_graph.edges())}")
 
-            for e in original_graph.edges:
-                print(f"original: {original_graph.edges[e]}")
-                print(f"extracted: {extracted_graph.edges[e]}")
+            # for n in original_graph.nodes:
+            #     print(f"original: {original_graph.nodes[n]}")
+            #     print(f"extracted: {extracted_graph.nodes[n]}")
+
+            # # diff = set(original_graph.edges) - set(extracted_graph.edges)
+            # g1 = original_graph
+            # g2 = extracted_graph
+            # print(original_graph.graph["config"].edge_construction_functions)
+
+            # for e in set(g1.edges).intersection(g2.edges):
+            #     attrs1 = g1.edges[e]
+            #     attrs2 = g2.edges[e]
+
+            #     for k in set(attrs1.keys()).union(attrs2.keys()):
+            #         if attrs1.get(k) != attrs2.get(k):
+            #             print(f"({pdb_code})Edge {e} differs in '{k}': {attrs1.get(k)} != {attrs2.get(k)}")
+            #             print(original_graph.edges[e])
+            #             print(extracted_graph.edges[e])
 
 def compress_pdb_graphs(protein_graphs):
     print("reached compress")
     edge_to_pdbs, \
     node_to_pdbs, \
     edge_kinds,   \
-    node_attrs,   \
+    node_attrs_global,\
     pdb_to_nodes, \
     pdb_to_edges, \
     pdb_codes_config, \
     all_pdb_codes, \
+    node_attrs_unique_temp, \
     edge_distances_temp = _initialize_structs()
 
     global edge_functions_func_list
@@ -299,29 +353,45 @@ def compress_pdb_graphs(protein_graphs):
 
     edge_kind_keys, node_attr_keys = _extract_attribute_keys()
 
-    _process_nodes(protein_graphs, node_to_pdbs, node_attrs, node_attr_keys, pdb_to_nodes, all_pdb_codes)
+    _process_nodes(protein_graphs, node_to_pdbs, node_attrs_global, node_attrs_unique_temp, node_attr_keys, pdb_to_nodes, all_pdb_codes)
     _process_edges(protein_graphs, edge_to_pdbs, edge_kinds, edge_kind_keys, pdb_to_edges, all_pdb_codes, edge_distances_temp)
 
     print(all_pdb_codes)
 
-    node_to_id, edge_to_id, edge_distances = _create_id_mappings(edge_to_pdbs, node_to_pdbs, pdb_to_edges, pdb_to_nodes, all_pdb_codes, edge_distances_temp)
+    node_to_id, edge_to_id, node_attrs_unique, edge_distances = _create_id_mappings(edge_to_pdbs, node_to_pdbs, pdb_to_edges, pdb_to_nodes, all_pdb_codes, edge_distances_temp, node_attrs_unique_temp)
 
     _process_pdb_codes_config(protein_graphs, pdb_codes_config)
 
     del edge_to_pdbs
     del node_to_pdbs
     del edge_distances_temp
+    del node_attrs_unique_temp
 
     _reconstruct_and_validate_graphs(protein_graphs,
                                     node_to_id,
                                     edge_to_id,
                                     pdb_to_nodes,
                                     pdb_to_edges,
-                                    node_attrs,
+                                    node_attrs_global,
                                     edge_kinds,
                                     node_attr_keys,
                                     edge_kind_keys,
                                     edge_distances,
-                                    all_pdb_codes)
+                                    all_pdb_codes,
+                                    node_attrs_unique)
+    
+    body_parts = {}
 
-    return node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_kinds, node_attr_keys, edge_kind_keys, edge_distances,all_pdb_codes
+    body_parts["node_to_id"] = node_to_id
+    body_parts["edge_to_id"] = edge_to_id
+    body_parts["pdb_to_nodes"] = pdb_to_nodes
+    body_parts["pdb_to_edges"] = pdb_to_edges
+    body_parts["node_attrs_global"] = node_attrs_global
+    body_parts["node_attr_keys"] = node_attr_keys
+    body_parts["edge_kinds"] = edge_kinds
+    body_parts["edge_kind_keys"] = edge_kind_keys
+    body_parts["edge_distances"] = edge_distances
+    body_parts["all_pdb_codes"] = all_pdb_codes
+    body_parts["node_attrs_unique"] = node_attrs_unique
+
+    return body_parts
