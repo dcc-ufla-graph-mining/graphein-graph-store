@@ -1,30 +1,5 @@
 Result log for metals_ZN
 Average number of nodes: 816.4399752475248         
-Average number of edges: 6130.159034653465     
-Time to construct graphs: 250.019305229187
+Average number of edges: 6130.130569306931     
+Time to construct graphs: 260.1134190559387
 Number of graphs: 1616
-Time to compress: 237.9486804008484
-        
-Mean time to extract: 0.08345606790320707         
-Uncompressed complete graph size: 6392.740409851074        
-Uncompressed structure graph size: 1724.4731521606445        
-Uncompressed edge size: 0.3860931396484375        
-Uncompressed node size: 0.131805419921875        
-Uncompressed complete graph serialized: 722.8734741210938        
-Uncompressed edge serialized: 0.032379150390625        
-Uncompressed node serialized: 0.015380859375        
-        
-Compressed graph complete size: 5298.331726074219        
-Compressed complete node size: 189.943115234375         
-Compressed complete edge size: 5108.388610839844         
-Compressed node attributes size: 76.89735412597656        
-Compressed edge attributes size: 3703.0796661376953        
-Compressed node attributes keys size: 66.06360626220703        
-Compressed edge attributes keys size: 0.00331878662109375        
-Compressed pdb to nodes size: 2.6666946411132812        
-Compressed pdb to edges size: 12.295486450195312        
-Compressed node to id size: 44.315460205078125        
-Compressed edge to id size: 1393.010139465332        
-        
-Compressed graph object size: 4749.465667724609        
-Compressed graph complete size serialized: 467.58082580566406    

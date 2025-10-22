@@ -1,30 +1,5 @@
 Result log for nucleotides_ATP
 Average number of nodes: 1130.3163265306123         
-Average number of edges: 8540.241496598639     
-Time to construct graphs: 62.5177116394043
+Average number of edges: 8540.173469387755     
+Time to construct graphs: 59.1302227973938
 Number of graphs: 294
-Time to compress: 59.746989250183105
-        
-Mean time to extract: 0.09670144441176434         
-Uncompressed complete graph size: 1613.6836624145508        
-Uncompressed structure graph size: 435.91393280029297        
-Uncompressed edge size: 1.2990646362304688        
-Uncompressed node size: 0.28853607177734375        
-Uncompressed complete graph serialized: 182.54448699951172        
-Uncompressed edge serialized: 0.111541748046875        
-Uncompressed node serialized: 0.0378265380859375        
-        
-Compressed graph complete size: 1551.5270919799805        
-Compressed complete node size: 96.11548614501953         
-Compressed complete edge size: 1455.411605834961         
-Compressed node attributes size: 38.49333190917969        
-Compressed edge attributes size: 1067.0054397583008        
-Compressed node attributes keys size: 34.852745056152344        
-Compressed edge attributes keys size: 0.00331878662109375        
-Compressed pdb to nodes size: 0.6349639892578125        
-Compressed pdb to edges size: 2.369537353515625        
-Compressed node to id size: 22.134445190429688        
-Compressed edge to id size: 386.03330993652344        
-        
-Compressed graph object size: 1380.6130981445312        
-Compressed graph complete size serialized: 134.87294006347656    

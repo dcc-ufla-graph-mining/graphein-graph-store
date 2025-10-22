@@ -1,30 +1,5 @@
 Result log for metals_MN
 Average number of nodes: 870.4096385542168         
-Average number of edges: 6524.943775100402     
-Time to construct graphs: 71.80512976646423
+Average number of edges: 6524.931726907631     
+Time to construct graphs: 78.57962965965271
 Number of graphs: 498
-Time to compress: 73.5962073802948
-        
-Mean time to extract: 0.06833290431394155         
-Uncompressed complete graph size: 2092.9150924682617        
-Uncompressed structure graph size: 565.7388458251953        
-Uncompressed edge size: 21.643661499023438        
-Uncompressed node size: 3.522430419921875        
-Uncompressed complete graph serialized: 236.78693389892578        
-Uncompressed edge serialized: 1.8873138427734375        
-Uncompressed node serialized: 0.5207366943359375        
-        
-Compressed graph complete size: 2091.9714431762695        
-Compressed complete node size: 86.49954986572266         
-Compressed complete edge size: 2005.4718933105469         
-Compressed node attributes size: 34.905479431152344        
-Compressed edge attributes size: 1399.428695678711        
-Compressed node attributes keys size: 29.81114959716797        
-Compressed edge attributes keys size: 0.00331878662109375        
-Compressed pdb to nodes size: 0.8574905395507812        
-Compressed pdb to edges size: 3.7419281005859375        
-Compressed node to id size: 20.925430297851562        
-Compressed edge to id size: 602.2979507446289        
-        
-Compressed graph object size: 1884.1999588012695        
-Compressed graph complete size serialized: 166.8390121459961    

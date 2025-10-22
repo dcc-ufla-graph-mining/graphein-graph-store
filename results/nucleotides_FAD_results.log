@@ -1,30 +1,30 @@
 Result log for nucleotides_FAD
 Average number of nodes: 1090.2440476190477         
-Average number of edges: 8224.67857142857     
-Time to construct graphs: 30.366993188858032
+Average number of edges: 8224.666666666666     
+Time to construct graphs: 33.00520968437195
 Number of graphs: 168
-Time to compress: 32.15381574630737
+Time to compress: 28.066258192062378
         
-Mean time to extract: 0.09278292741094317         
-Uncompressed complete graph size: 886.8713150024414        
-Uncompressed structure graph size: 238.76303100585938        
-Uncompressed edge size: 5.9033660888671875        
+Mean time to extract: 0.0836649409362248         
+Uncompressed complete graph size: 881.2988586425781        
+Uncompressed structure graph size: 233.19143676757812        
+Uncompressed edge size: 5.846168518066406        
 Uncompressed node size: 1.0635910034179688        
-Uncompressed complete graph serialized: 100.39035034179688        
-Uncompressed edge serialized: 0.5148696899414062        
+Uncompressed complete graph serialized: 99.35621643066406        
+Uncompressed edge serialized: 0.5041961669921875        
 Uncompressed node serialized: 0.145416259765625        
         
-Compressed graph complete size: 852.2915420532227        
-Compressed complete node size: 51.73480224609375         
-Compressed complete edge size: 800.5567398071289         
-Compressed node attributes size: 21.201278686523438        
-Compressed edge attributes size: 592.5316162109375        
-Compressed node attributes keys size: 18.395042419433594        
+Compressed graph complete size: 777.3244400024414        
+Compressed complete node size: 96.78047943115234         
+Compressed complete edge size: 680.5439605712891         
+Compressed node attributes size: 29.627731323242188        
+Compressed edge attributes size: 477.40897369384766        
+Compressed node attributes keys size: 55.01078796386719        
 Compressed edge attributes keys size: 0.00331878662109375        
-Compressed pdb to nodes size: 0.35773468017578125        
+Compressed pdb to nodes size: 0.36121368408203125        
 Compressed pdb to edges size: 1.3579635620117188        
 Compressed node to id size: 11.780746459960938        
-Compressed edge to id size: 206.6638412475586        
+Compressed edge to id size: 201.7737045288086        
         
-Compressed graph object size: 756.6423721313477        
-Compressed graph complete size serialized: 74.94035339355469    
+Compressed graph object size: 686.5743103027344        
+Compressed graph complete size serialized: 84.56611633300781    

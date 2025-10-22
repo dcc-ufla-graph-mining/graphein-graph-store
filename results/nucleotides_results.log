@@ -1,30 +1,5 @@
 Result log for nucleotides
 Average number of nodes: 1008.8729915837796         
-Average number of edges: 7599.853863810253     
-Time to construct graphs: 231.28899908065796
+Average number of edges: 7599.826319816373     
+Time to construct graphs: 239.24573278427124
 Number of graphs: 1307
-Time to compress: 236.40619945526123
-        
-Mean time to extract: 0.08671200430475307         
-Uncompressed complete graph size: 6392.663368225098        
-Uncompressed structure graph size: 1726.2954025268555        
-Uncompressed edge size: 1.2990646362304688        
-Uncompressed node size: 0.28853607177734375        
-Uncompressed complete graph serialized: 723.0052185058594        
-Uncompressed edge serialized: 0.111541748046875        
-Uncompressed node serialized: 0.0378265380859375        
-        
-Compressed graph complete size: 5355.727874755859        
-Compressed complete node size: 179.60733032226562         
-Compressed complete edge size: 5176.120544433594         
-Compressed node attributes size: 72.6014633178711        
-Compressed edge attributes size: 3756.762924194336        
-Compressed node attributes keys size: 62.04889678955078        
-Compressed edge attributes keys size: 0.00331878662109375        
-Compressed pdb to nodes size: 2.6193695068359375        
-Compressed pdb to edges size: 12.261474609375        
-Compressed node to id size: 42.33760070800781        
-Compressed edge to id size: 1407.0928268432617        
-        
-Compressed graph object size: 4800.041313171387        
-Compressed graph complete size serialized: 470.5303726196289    
