@@ -328,19 +328,22 @@ def experimento_1():
                 # print(f'original: {len(g.edges)}\nextracted: {len(extracted_graph[0].edges)}')
 
             except AssertionError as e:
-                msg = f'\n\
-                Error in graph_extraction for {pdb_code}: {e}\
-                '
+                msg = f'\nError in graph_extraction for {pdb_code}: {e}'
                 print(msg)
-                print(f'{set(g.nodes) - set(extracted_graph[0].nodes)}')
+                # print(f'{set(g.nodes) - set(extracted_graph[0].nodes)}')
                 print(f'{set(g.edges) - set(extracted_graph[0].edges)}')
 
                 if set(g.edges) - set(extracted_graph[0].edges):
+                    msg+=f"\n\nedges unique at original:\n\n"
                     for e in set(g.edges) - set(extracted_graph[0].edges):
-                        print(e)
-                        print(f'original: {g.edges[e]}')
-                        print(f'extracted: {extracted_graph[0].edges[e]}')
-
+                        msg+=f"\n{e}\noriginal: {g.edges[e]}\nextracted: {extracted_graph[0].edges[e]}"
+                        print(msg)
+                
+                if set(extracted_graph[0].edges) - set(g.edges):
+                    msg+=f"\n\nedges unique at extracted:\n\n"
+                    for e in set(extracted_graph[0].edges) - set(g.edges):
+                        msg+=f"\n{e}\noriginal: {g.edges[e]}\nextracted: {extracted_graph[0].edges[e]}"
+                        print(msg)
 
                 write_error(dataset=dataset_name, msg=msg, error_path=error_path)
                 continue
@@ -355,9 +358,7 @@ def experimento_1():
                 #     print(f'extracted: {g2.nodes[n]}')
 
             except AssertionError as e:
-                msg = f'\n\
-                Error in graph_extraction for {pdb_code}: {e}\
-                '
+                msg = f'Error in graph_extraction for {pdb_code}: {e}'
 
                 print(msg)
                 continue
