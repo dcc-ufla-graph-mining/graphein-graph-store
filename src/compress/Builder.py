@@ -146,7 +146,6 @@ def _create_id_mappings(edge_to_pdbs, node_to_pdbs, pdb_to_edges, pdb_to_nodes, 
             pdb_idx = all_pdb_codes.index(pdb_code)
 
             edge_pair = tuple([edge_id, edge_distances_temp[e][pdb_code]])
-            edge_pair = struct.pack("ld", *edge_pair)
 
             edge_distances.append(edge_pair)
             pdb_to_edges[pdb_idx].add(len(edge_distances)-1)
@@ -161,7 +160,6 @@ def _create_id_mappings(edge_to_pdbs, node_to_pdbs, pdb_to_edges, pdb_to_nodes, 
             # node_id, residue_number_idx, coords_idx, b_factor_idx 
             unique_attrs = node_attrs_unique_temp[u][pdb_code]
             node_pair = tuple([node_id, unique_attrs[0], unique_attrs[1], unique_attrs[2]])
-            node_pair = struct.pack("llll", *node_pair)
 
             node_attrs_unique.append(node_pair)
             pdb_to_nodes[pdb_idx].add(len(node_attrs_unique)-1)
@@ -191,7 +189,7 @@ def _reconstruct_node_attributes(extracted_graph, node_attr_keys, node_attrs_glo
     pdb_idx = all_pdb_codes.index(pdb_code)
     
     for node_attr_idx in pdb_to_nodes[pdb_idx]:
-        node_pair = struct.unpack("llll", node_attrs_unique[node_attr_idx])
+        node_pair = node_attrs_unique[node_attr_idx]
         node_id = node_pair[0]
         node = node_to_id.inverse[node_id]
         
@@ -250,8 +248,6 @@ def _reconstruct_edge_attributes(extracted_graph, edges, edge_kinds, edge_kind_k
     for edge_dist_idx in pdb_to_edges[pdb_idx]:
         edge_pair = edge_distances[edge_dist_idx]
 
-        edge_pair = struct.unpack("ld", edge_pair)
-
         edge = edge_to_id.inverse[edge_pair[0]]
         distance = edge_pair[1]
         extracted_graph.edges[edge]["distance"] = edge_pair[1]
@@ -283,7 +279,6 @@ def _reconstruct_and_validate_graphs(protein_graphs,
 
             def get_node_id(node_attr_unique_idx):
                 node_pair = node_attrs_unique[node_attr_unique_idx]
-                node_pair = struct.unpack("llll", node_pair)
                 node_id = node_pair[0]
                 return node_id
 
@@ -291,7 +286,6 @@ def _reconstruct_and_validate_graphs(protein_graphs,
 
             def get_edge_id(edge_distances_idx):
                 edge_pair = edge_distances[edge_distances_idx]
-                edge_pair = struct.unpack("ld", edge_pair)
                 edge_id = edge_pair[0]
                 return edge_id
             

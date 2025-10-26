@@ -27,7 +27,7 @@ class PDBGraphStore:
         
         for node_attr_idx in self.__body_parts["pdb_to_nodes"][pdb_idx]:
 
-            node_pair = struct.unpack("llll", self.__body_parts["node_attrs_unique"][node_attr_idx])
+            node_pair = self.__body_parts["node_attrs_unique"][node_attr_idx]
             node_id = node_pair[0]
             node = self.__body_parts["node_to_id"].inverse[node_id]
             
@@ -83,7 +83,6 @@ class PDBGraphStore:
 
         for edge_dist_idx in self.__body_parts["pdb_to_edges"][pdb_idx]:
             edge_pair = self.__body_parts["edge_distances"][edge_dist_idx]
-            edge_pair = struct.unpack("ld", edge_pair)
             
             edge = self.__body_parts["edge_to_id"].inverse[edge_pair[0]]
             
@@ -96,7 +95,6 @@ class PDBGraphStore:
 
         def get_node_id(node_attr_unique_idx):
             node_pair = self.__body_parts["node_attrs_unique"][node_attr_unique_idx]
-            node_pair = struct.unpack("llll", node_pair)
             return node_pair[0]
         
         return [self.__body_parts["node_to_id"].inverse[get_node_id(node_id)] 
@@ -106,7 +104,6 @@ class PDBGraphStore:
 
         def get_edge_id(edge_distances_idx):
             edge_pair = self.__body_parts["edge_distances"][edge_distances_idx]
-            edge_pair = struct.unpack("ld", edge_pair)
             return edge_pair[0]
         
         return [self.__body_parts["edge_to_id"].inverse[get_edge_id(edge_distances_idx)] 
@@ -193,7 +190,6 @@ class PDBGraphStore:
     def __insert_edge_distances(self, edge_to_insert, distance, pdb_idx):
         edge_id = self.__body_parts["edge_to_id"][edge_to_insert]
         edge_pair = tuple([edge_id, distance])
-        edge_pair = struct.pack("ld", *edge_pair)
 
         self.__body_parts["edge_distances"].append(edge_pair)
         self.__body_parts["pdb_to_edges"][pdb_idx].add(len(self.__body_parts["edge_distances"])-1)

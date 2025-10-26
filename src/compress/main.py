@@ -73,17 +73,17 @@ def read_dataset(general_data_path, dataset_txt_name, file_mode='r'):
 def define_graphein_edge_funcs(func_idx=1):
     # usado no experimento 1
     # return random.sample([v for _, v in edgeModel.edge_functions_dict.items()], 3)
-    return [edgeModel.edge_functions_dict[f] for f in ["aromatic", "aromatic_sulphur", "delaunay"]] 
-    
+    return [edgeModel.edge_functions_dict[f] for f in ["aromatic", "aromatic_sulphur", "delaunay"]]
+
     # usado no experimento 2
     # sorted_func_list = sorted(edgeModel.edge_functions_dict.keys())
     # print(f'returning {sorted_func_list[func_idx]}')
     # print(f'returning {[edgeModel.edge_functions_dict[sorted_func_list[func_idx]]]}')
     # return [edgeModel.edge_functions_dict[sorted_func_list[func_idx]]]
-    
+
     #usado no experimento 3
     # print(list(edgeModel.edge_functions_dict.values()))
-    # return list(edgeModel.edge_functions_dict.values()) 
+    # return list(edgeModel.edge_functions_dict.values())
 
 
 def define_configuration(edge_construction_funcs):
@@ -106,7 +106,7 @@ def get_pdb_file(pdb_data_path, pdb_code):
             pdb_file = download_pdb(pdb_code, f"{pdb_data_path}/")
         except Exception as e:
             raise e
-        
+
     if pdb_file == None:
         raise Exception("Error reading the pdb file")
 
@@ -122,8 +122,8 @@ def prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path, func_idx):
 
     try:
         pdb_file = get_pdb_file(pdb_data_path=pdb_data_path, pdb_code=pdb_code)
-    except Exception as e:     
-        raise e    
+    except Exception as e:
+        raise e
 
     graph = construct_graph(config=config, path=pdb_file)
     graph.graph["pdb_code"] = pdb_code
@@ -139,7 +139,7 @@ def prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path, func_idx):
 
     for node in graph.nodes():
         graph.nodes[node].clear()
-        
+
     for u, v in graph.edges():
         graph.edges[u, v].clear()
 
@@ -162,7 +162,7 @@ def initialize_body_parts():
     node_attr_keys_list = ["chain_id", "residue_name", "residue_number", "atom_type", "element_symbol", "coords", "b_factor", "meiler"]
     for key in node_attr_keys_list:
         body_parts["node_attr_keys"][key] = SortedSet()
-    
+
     body_parts["edge_kinds"] = {}
     body_parts["edge_kind_keys"] = SortedSet(set(edgeModel.edge_functions_dict.keys()))
 
@@ -185,9 +185,9 @@ def test():
     # graph_to_insert, _ = prepare_graph(pdb_data_path, "2NL9", dataset_name, error_path)
 
     # pdb_store.insert_pdbs(graph_to_insert)
-    
+
     # #remove pdb from the pdb_store
-    # # print(pdb_store.remove_multiple_pdbs(["2NL9"]))    
+    # # print(pdb_store.remove_multiple_pdbs(["2NL9"]))
 
     # #merge 2 pdb_stores
     # pdb_store2 = PDBGraphStore(node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_attrs, node_attr_keys, edge_attr_keys)
@@ -197,7 +197,7 @@ def test():
     # print(pdb_store)
     # #operation split graph store into 2
     # gs1, gs2 = operations.split_graph_store(pdb_store, ["2NL9"])
-    
+
     # print(gs1, gs2)
     pass
 
@@ -208,12 +208,12 @@ def experimento_1():
     #edge_construction_funcs: ["aromatic", "bb_carbonyl_carbonyl", "delaunay"]
 
     #datasets usados: todos (porem, alguns nao foram possiveis terminar a execucao por causa de estouro da memoria)
-    
+
     current_file_path = os.path.dirname(os.path.realpath(metadata.__file__))
     general_data_path = os.environ.get("DATA_DIR") if os.environ.get("DATA_DIR") is not None else os.path.abspath(f"{current_file_path}/../../data/")
     dataset_txt_file_name = os.environ.get("DATASET")
     dataset_name = dataset_txt_file_name.split(".")[0]
-    
+
     error_path = initialize_errors_directory(current_file_path=current_file_path)
     result_path = initialize_results_directory(current_file_path=current_file_path)
     pdb_data_path = initialize_pdb_data_path(general_data_path=general_data_path)
@@ -259,12 +259,12 @@ def experimento_1():
     '
     print(msg)
 
-    write_result(dataset=dataset_name, msg=msg, result_path=result_path)        
-        
+    write_result(dataset=dataset_name, msg=msg, result_path=result_path)
+
     del number_of_edges_in_which_graph
     del number_of_nodes_in_which_graph
-    
-    time_to_construct = time_count(time_start=time_start)            
+
+    time_to_construct = time_count(time_start=time_start)
 
     msg = f'\nTime to construct graphs: {time_to_construct}\nNumber of graphs: {len(protein_graph_with_metadata_dict)}'
 
@@ -292,7 +292,7 @@ def experimento_1():
     msg = f'\nTime to compress: {time_to_compress}'
     write_result(dataset=dataset_name, msg=msg, result_path=result_path)
 
-    #DONE alternativately, initialize body_parts empty to fullfill it at the PDBGraphStore object construction 
+    #DONE alternativately, initialize body_parts empty to fullfill it at the PDBGraphStore object construction
     # body_parts = initialize_body_parts()
 
     pdb_store = PDBGraphStore(body_parts)
@@ -304,9 +304,9 @@ def experimento_1():
             time_start = time.time()
             extracted_graph = pdb_store.extract_pdb_graphs([pdb_code], [edgeModel.edge_functions_dict.inverse[func] for func in g.graph["config"].edge_construction_functions])
             time_to_extract = time_count(time_start=time_start)
-            
+
             extract_times.append(time_to_extract)
-            
+
             msg = f' \
                 \nNumber of edges in original graph: {len(g.edges())} \
                 \nNumber of nodes in original graph: {len(g.nodes())} \
@@ -316,7 +316,7 @@ def experimento_1():
             '
             print(msg)
 
-            
+
 
             try:
                 assert nx.utils.edges_equal(g.edges.data(), extracted_graph[0].edges(data=True))
@@ -326,7 +326,7 @@ def experimento_1():
                 #     print(f'extracted graph edge data:s {extracted_graph[0].edges[(u,v)]}')
 
                 # print(f'original: {len(g.edges)}\nextracted: {len(extracted_graph[0].edges)}')
-            
+
             except AssertionError as e:
                 msg = f'\n\
                 Error in graph_extraction for {pdb_code}: {e}\
@@ -348,20 +348,20 @@ def experimento_1():
             try:
                 assert nx.utils.nodes_equal(g.nodes, extracted_graph[0].nodes)
 
-                g1 = g
-                g2 = extracted_graph[0]
-                for n in g.nodes:
-                    print(f'original: {g1.nodes[n]}')
-                    print(f'extracted: {g2.nodes[n]}')
+                # g1 = g
+                # g2 = extracted_graph[0]
+                # for n in g.nodes:
+                #     print(f'original: {g1.nodes[n]}')
+                #     print(f'extracted: {g2.nodes[n]}')
 
             except AssertionError as e:
                 msg = f'\n\
                 Error in graph_extraction for {pdb_code}: {e}\
-                '   
-                
+                '
+
                 print(msg)
                 continue
-    
+
     extract_time_mean = np.mean(extract_times)
 
     msg = f'\n\
@@ -394,11 +394,11 @@ def experimento_1():
 
 def experimento_2():
     '''
-    Avaliar a sobreposição de arestas entre as funções de arestas. 
-    Por exemplo, será que existem funções de aresta que geram muitas 
-    arestas iguais no grafo de uma determinada granularidade? Para isso, 
-    podemos construir o PDB store incrementalmente, adicionando funções 
-    de aresta uma a uma, e determinando se o tamanho do PDBStore está 
+    Avaliar a sobreposição de arestas entre as funções de arestas.
+    Por exemplo, será que existem funções de aresta que geram muitas
+    arestas iguais no grafo de uma determinada granularidade? Para isso,
+    podemos construir o PDB store incrementalmente, adicionando funções
+    de aresta uma a uma, e determinando se o tamanho do PDBStore está
     aumentando significativamente quando incluímos uma nova função de aresta.
 
     obs: executado somente com o bcl_ppigremlin dataset
@@ -408,17 +408,17 @@ def experimento_2():
 
     '''
 
-    #config usada: 
+    #config usada:
     #granularity: atom
     #edge_construction_funcs: todas, menos fully_connected, pois ela adiciona todas as arestas possiveis entre os nodes
-    
+
     #dataset usado: bcl (a principio apenas ele)
 
     current_file_path = os.path.dirname(os.path.realpath(metadata.__file__))
     general_data_path = os.environ.get("DATA_DIR") if os.environ.get("DATA_DIR") is not None else os.path.abspath(f"{current_file_path}/../../data/")
     dataset_txt_file_name = os.environ.get("DATASET")
     dataset_name = dataset_txt_file_name.split(".")[0]
-    
+
     error_path = initialize_errors_directory(current_file_path=current_file_path)
     result_path = initialize_results_directory(current_file_path=current_file_path)
     pdb_data_path = initialize_pdb_data_path(general_data_path=general_data_path)
@@ -478,7 +478,7 @@ def experimento_2():
             try:
                 print(f'pdb_code: {pdb_code}')
                 graph_to_insert, _ = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path, i)
-                
+
             except:
                 msg = traceback.format_exc()
                 print(msg)
@@ -495,7 +495,7 @@ def experimento_2():
 
 def experimento_3():
 
-    #config usada: 
+    #config usada:
     #granularity: atom
     #edge_construction_funcs: todas, menos fully_connected
     #dataset usado: bcl (a principio apenas ele)
@@ -504,7 +504,7 @@ def experimento_3():
     general_data_path = os.environ.get("DATA_DIR") if os.environ.get("DATA_DIR") is not None else os.path.abspath(f"{current_file_path}/../../data/")
     dataset_txt_file_name = os.environ.get("DATASET")
     dataset_name = dataset_txt_file_name.split(".")[0]
-    
+
     error_path = initialize_errors_directory(current_file_path=current_file_path)
     result_path = initialize_results_directory(current_file_path=current_file_path)
     pdb_data_path = initialize_pdb_data_path(general_data_path=general_data_path)
@@ -558,11 +558,11 @@ def experimento_3():
 
         for edge_func in edge_funcs_to_extract:
             edge_funcs.append(edgeModel.edge_functions_dict[edge_func])
-        
+
         print(edge_funcs)
 
         config = ProteinGraphConfig(**{"granularity": "atom", "edge_construction_functions": edge_funcs})
-        
+
         pdb_file = get_pdb_file(pdb_data_path=pdb_data_path, pdb_code=pdb_code)
         graph = construct_graph(config=config, path=pdb_file)
         time_to_construct = time_count(time_start=time_start)
@@ -573,7 +573,7 @@ def experimento_3():
         # for e in graph.edges:
         #     print(f'original: {graph.edges[e]}')
         #     print(f'extracted: {extracted_graph[0].edges[e]}')
-        
+
 
         msg = f'Time to construct pdb graph {pdb_code}: {time_to_construct}\
             \nTime to extract the same graph: {time_to_extract}\n\n'
