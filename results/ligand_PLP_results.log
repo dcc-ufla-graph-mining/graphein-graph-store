@@ -1,11 +1,11 @@
 Result log for ligand_PLP
 Average number of nodes: 1076.2380952380952         
 Average number of edges: 8107.523809523809     
-Time to construct graphs: 12.006905317306519
+Time to construct graphs: 12.002543449401855
 Number of graphs: 63
-Time to compress: 9.47729229927063
+Time to compress: 9.240566492080688
         
-Mean time to extract: 0.1006274942367796         
+Mean time to extract: 0.08937496230715797         
 Uncompressed complete graph size: 326.20899200439453        
 Uncompressed structure graph size: 86.68944549560547        
 Uncompressed edge size: 2.9994964599609375        
@@ -14,11 +14,11 @@ Uncompressed complete graph serialized: 36.73413848876953
 Uncompressed edge serialized: 0.25731658935546875        
 Uncompressed node serialized: 0.07927703857421875        
         
-Compressed graph complete size: 310.27513122558594        
-Compressed complete node size: 37.99739074707031         
-Compressed complete edge size: 272.2777404785156         
-Compressed node attributes size: 12.695365905761719        
-Compressed edge attributes size: 185.43848419189453        
+Compressed graph complete size: 344.5426483154297        
+Compressed complete node size: 41.39704132080078         
+Compressed complete edge size: 303.1456069946289         
+Compressed node attributes size: 16.095016479492188        
+Compressed edge attributes size: 216.3063507080078        
 Compressed node attributes keys size: 19.405487060546875        
 Compressed edge attributes keys size: 0.00331878662109375        
 Compressed pdb to nodes size: 0.13531494140625        
@@ -26,5 +26,5 @@ Compressed pdb to edges size: 0.5109786987304688
 Compressed node to id size: 5.761222839355469        
 Compressed edge to id size: 86.32495880126953        
         
-Compressed graph object size: 274.8740234375        
-Compressed graph complete size serialized: 31.80223846435547    
+Compressed graph object size: 290.46160888671875        
+Compressed graph complete size serialized: 36.67186737060547    

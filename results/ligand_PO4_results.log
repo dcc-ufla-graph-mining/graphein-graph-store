@@ -1,11 +1,11 @@
 Result log for ligand_PO4
 Average number of nodes: 750.6584590945195         
 Average number of edges: 5603.30420969023     
-Time to construct graphs: 169.37871265411377
+Time to construct graphs: 169.6955647468567
 Number of graphs: 1259
-Time to compress: 148.36285257339478
+Time to compress: 145.8574161529541
         
-Mean time to extract: 0.06640830884574424         
+Mean time to extract: 0.060885532589731374         
 Uncompressed complete graph size: 4512.629997253418        
 Uncompressed structure graph size: 1202.4604797363281        
 Uncompressed edge size: 1.911712646484375        
@@ -14,11 +14,11 @@ Uncompressed complete graph serialized: 508.1581726074219
 Uncompressed edge serialized: 0.16407012939453125        
 Uncompressed node serialized: 0.05304718017578125        
         
-Compressed graph complete size: 4001.401512145996        
-Compressed complete node size: 401.96949005126953         
-Compressed complete edge size: 3599.4320220947266         
-Compressed node attributes size: 107.87811279296875        
-Compressed edge attributes size: 2383.109794616699        
+Compressed graph complete size: 4435.7480392456055        
+Compressed complete node size: 436.6827697753906         
+Compressed complete edge size: 3999.065269470215         
+Compressed node attributes size: 142.59139251708984        
+Compressed edge attributes size: 2782.7430419921875        
 Compressed node attributes keys size: 266.46827697753906        
 Compressed edge attributes keys size: 0.00331878662109375        
 Compressed pdb to nodes size: 2.016998291015625        
@@ -26,5 +26,5 @@ Compressed pdb to edges size: 9.622779846191406
 Compressed node to id size: 25.606101989746094        
 Compressed edge to id size: 1206.6961288452148        
         
-Compressed graph object size: 3598.428581237793        
-Compressed graph complete size serialized: 412.8494338989258    
+Compressed graph object size: 3813.716667175293        
+Compressed graph complete size serialized: 483.8812026977539    

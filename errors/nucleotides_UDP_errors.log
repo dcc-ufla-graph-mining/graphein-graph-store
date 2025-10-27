@@ -1,16 +1,83 @@
 Errors log for nucleotides_UDP
-                Error in graph_extraction for 4II9:                 
-                Error in graph_extraction for 1ON8:                 
-                Error in graph_extraction for 2Z86:                 
-                Error in graph_extraction for 3HBN:                 
-                Error in graph_extraction for 3MBO:                 
-                Error in graph_extraction for 2V0K:                 
-                Error in graph_extraction for 4PQG:                 
-                Error in graph_extraction for 4WMB:                 
-                Error in graph_extraction for 5HUU:                 
-                Error in graph_extraction for 1QGQ:                 
-                Error in graph_extraction for 1GY8:                 
-                Error in graph_extraction for 2IER:                 
-                Error in graph_extraction for 2CVV:                 
-                Error in graph_extraction for 2Q6V:                 
-                Error in graph_extraction for 5BXC:                 
+Error in graph_extraction for 2V0K: 
+Different attributes in edge ('A:TYR:196', 'A:TYR:197'):
+original:  {'kind': {'delaunay'}, 'distance': 3.818707149111091}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 3.818707149111091}
+
+Error in graph_extraction for 5HUU: 
+Different attributes in edge ('A:TYR:103', 'B:TYR:103'):
+original:  {'kind': {'delaunay'}, 'distance': 8.535579634705867}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 8.535579634705867}
+
+Error in graph_extraction for 5BXC: 
+Different attributes in edge ('A:PHE:216', 'A:PHE:341'):
+original:  {'kind': {'delaunay'}, 'distance': 4.306123661964937}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 4.306123661964937}
+
+Different attributes in edge ('A:HIS:305', 'A:TYR:309'):
+original:  {'kind': {'delaunay'}, 'distance': 6.217479905740459}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 6.217479905740459}
+
+Error in graph_extraction for 4PQG: 
+Different attributes in edge ('B:TYR:141', 'B:PHE:142'):
+original:  {'kind': {'delaunay'}, 'distance': 3.7998913765202524}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 3.7998913765202524}
+
+Different attributes in edge ('A:TYR:141', 'A:PHE:142'):
+original:  {'kind': {'delaunay'}, 'distance': 3.8484469588707415}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 3.8484469588707415}
+
+Error in graph_extraction for 1GY8: 
+Different attributes in edge ('B:TYR:200', 'B:PHE:201'):
+original:  {'kind': {'delaunay'}, 'distance': 3.778825434100274}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 3.778825434100274}
+
+Different attributes in edge ('A:TYR:200', 'A:PHE:201'):
+original:  {'kind': {'delaunay'}, 'distance': 3.7508881789667545}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 3.7508881789667545}
+
+Error in graph_extraction for 2IER: 
+Different attributes in edge ('A:PHE:192', 'A:PHE:194'):
+original:  {'kind': {'aromatic'}, 'distance': 6.979308660898826}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 6.979308660898826}
+
+Error in graph_extraction for 3MBO: 
+Different attributes in edge ('A:TYR:103', 'B:TYR:103'):
+original:  {'kind': {'aromatic'}, 'distance': 12.078961098960882}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 12.078961098960882}
+
+Error in graph_extraction for 4WMB: 
+Different attributes in edge ('A:PHE:204', 'A:PHE:205'):
+original:  {'kind': {'delaunay'}, 'distance': 3.8066396284727406}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 3.8066396284727406}
+
+Error in graph_extraction for 2CVV: 
+Error in graph_extraction for 1QGQ: 
+Different attributes in edge ('A:PHE:194', 'A:TRP:196'):
+original:  {'kind': {'delaunay'}, 'distance': 5.347987149904777}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 5.347987149904777}
+
+Error in graph_extraction for 3HBN: 
+Different attributes in edge ('A:HIS:280', 'A:HIS:281'):
+original:  {'kind': {'delaunay'}, 'distance': 3.8347341997626376}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 3.8347341997626376}
+
+Error in graph_extraction for 2Z86: 
+Error in graph_extraction for 2Q6V: 
+Different attributes in edge ('A:PHE:130', 'A:PHE:138'):
+original:  {'kind': {'delaunay'}, 'distance': 8.206128146025248}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 8.206128146025248}
+
+Error in graph_extraction for 1ON8: 
+Different attributes in edge ('A:TYR:223', 'A:PHE:227'):
+original:  {'kind': {'delaunay'}, 'distance': 5.670866261248211}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 5.670866261248211}
+
+Different attributes in edge ('B:TYR:223', 'B:PHE:227'):
+original:  {'kind': {'delaunay'}, 'distance': 5.933535661267334}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 5.933535661267334}
+
+Error in graph_extraction for 4II9: 
+Different attributes in edge ('A:TYR:14', 'A:PHE:17'):
+original:  {'kind': {'delaunay'}, 'distance': 5.261271597635439}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 5.261271597635439}

@@ -1,17 +1,28 @@
 Errors log for ligand_NAGTraceback (most recent call last):
-  File "/app/src/compress/main.py", line 245, in experimento_1
-    graph_with_data, graph_without_data = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path,1)
-  File "/app/src/compress/main.py", line 126, in prepare_graph
-    raise e
-  File "/app/src/compress/main.py", line 124, in prepare_graph
-    pdb_file = get_pdb_file(pdb_data_path=pdb_data_path, pdb_code=pdb_code)
-  File "/app/src/compress/main.py", line 108, in get_pdb_file
-    raise e
-  File "/app/src/compress/main.py", line 106, in get_pdb_file
-    pdb_file = download_pdb(pdb_code, f"{pdb_data_path}/")
-  File "/usr/local/lib/python3.10/site-packages/graphein/protein/utils.py", line 266, in download_pdb
-    assert os.path.exists(
-AssertionError: 5fuu download failed. Not found in /app/data/pdb_files
+  File "/usr/local/lib/python3.10/urllib/request.py", line 1348, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "/usr/local/lib/python3.10/http/client.py", line 1283, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/local/lib/python3.10/http/client.py", line 1329, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/local/lib/python3.10/http/client.py", line 1278, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/local/lib/python3.10/http/client.py", line 1038, in _send_output
+    self.send(msg)
+  File "/usr/local/lib/python3.10/http/client.py", line 976, in send
+    self.connect()
+  File "/usr/local/lib/python3.10/http/client.py", line 1448, in connect
+    super().connect()
+  File "/usr/local/lib/python3.10/http/client.py", line 942, in connect
+    self.sock = self._create_connection(
+  File "/usr/local/lib/python3.10/socket.py", line 857, in create_connection
+    raise err
+  File "/usr/local/lib/python3.10/socket.py", line 845, in create_connection
+    sock.connect(sa)
+TimeoutError: [Errno 110] Connection timed out
+
+During handling of the above exception, another exception occurred:
+
 Traceback (most recent call last):
   File "/app/src/compress/main.py", line 245, in experimento_1
     graph_with_data, graph_without_data = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path,1)
@@ -23,6 +34,77 @@ Traceback (most recent call last):
     raise e
   File "/app/src/compress/main.py", line 106, in get_pdb_file
     pdb_file = download_pdb(pdb_code, f"{pdb_data_path}/")
-  File "/usr/local/lib/python3.10/site-packages/graphein/protein/utils.py", line 266, in download_pdb
-    assert os.path.exists(
-AssertionError: 5szs download failed. Not found in /app/data/pdb_files
+  File "/usr/local/lib/python3.10/site-packages/graphein/protein/utils.py", line 256, in download_pdb
+    wget.download(
+  File "/usr/local/lib/python3.10/site-packages/wget.py", line 526, in download
+    (tmpfile, headers) = ulib.urlretrieve(binurl, tmpfile, callback)
+  File "/usr/local/lib/python3.10/urllib/request.py", line 241, in urlretrieve
+    with contextlib.closing(urlopen(url, data)) as fp:
+  File "/usr/local/lib/python3.10/urllib/request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/local/lib/python3.10/urllib/request.py", line 519, in open
+    response = self._open(req, data)
+  File "/usr/local/lib/python3.10/urllib/request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "/usr/local/lib/python3.10/urllib/request.py", line 496, in _call_chain
+    result = func(*args)
+  File "/usr/local/lib/python3.10/urllib/request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "/usr/local/lib/python3.10/urllib/request.py", line 1351, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [Errno 110] Connection timed out>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/urllib/request.py", line 1348, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "/usr/local/lib/python3.10/http/client.py", line 1283, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/local/lib/python3.10/http/client.py", line 1329, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/local/lib/python3.10/http/client.py", line 1278, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/local/lib/python3.10/http/client.py", line 1038, in _send_output
+    self.send(msg)
+  File "/usr/local/lib/python3.10/http/client.py", line 976, in send
+    self.connect()
+  File "/usr/local/lib/python3.10/http/client.py", line 1448, in connect
+    super().connect()
+  File "/usr/local/lib/python3.10/http/client.py", line 942, in connect
+    self.sock = self._create_connection(
+  File "/usr/local/lib/python3.10/socket.py", line 857, in create_connection
+    raise err
+  File "/usr/local/lib/python3.10/socket.py", line 845, in create_connection
+    sock.connect(sa)
+TimeoutError: [Errno 110] Connection timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/app/src/compress/main.py", line 245, in experimento_1
+    graph_with_data, graph_without_data = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path,1)
+  File "/app/src/compress/main.py", line 126, in prepare_graph
+    raise e
+  File "/app/src/compress/main.py", line 124, in prepare_graph
+    pdb_file = get_pdb_file(pdb_data_path=pdb_data_path, pdb_code=pdb_code)
+  File "/app/src/compress/main.py", line 108, in get_pdb_file
+    raise e
+  File "/app/src/compress/main.py", line 106, in get_pdb_file
+    pdb_file = download_pdb(pdb_code, f"{pdb_data_path}/")
+  File "/usr/local/lib/python3.10/site-packages/graphein/protein/utils.py", line 256, in download_pdb
+    wget.download(
+  File "/usr/local/lib/python3.10/site-packages/wget.py", line 526, in download
+    (tmpfile, headers) = ulib.urlretrieve(binurl, tmpfile, callback)
+  File "/usr/local/lib/python3.10/urllib/request.py", line 241, in urlretrieve
+    with contextlib.closing(urlopen(url, data)) as fp:
+  File "/usr/local/lib/python3.10/urllib/request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/local/lib/python3.10/urllib/request.py", line 519, in open
+    response = self._open(req, data)
+  File "/usr/local/lib/python3.10/urllib/request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "/usr/local/lib/python3.10/urllib/request.py", line 496, in _call_chain
+    result = func(*args)
+  File "/usr/local/lib/python3.10/urllib/request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "/usr/local/lib/python3.10/urllib/request.py", line 1351, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [Errno 110] Connection timed out>
