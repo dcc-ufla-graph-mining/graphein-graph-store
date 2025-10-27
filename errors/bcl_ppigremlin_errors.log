@@ -1,1 +1,27 @@
 Errors log for bcl_ppigremlin
+Error in graph_extraction for 2A5Y: 
+Different attributes in edge ('A:TYR:201', 'A:PHE:205'):
+original:  {'kind': {'delaunay'}, 'distance': 5.875330092251985}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 5.875330092251985}
+
+Different attributes in edge ('A:PHE:123', 'A:HIS:127'):
+original:  {'kind': {'delaunay'}, 'distance': 5.485079738575514}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 5.485079738575514}
+
+Different attributes in edge ('A:PHE:131', 'A:PHE:134'):
+original:  {'kind': {'delaunay'}, 'distance': 5.522362834147477}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 5.522362834147477}
+
+Different attributes in edge ('A:PHE:177', 'A:PHE:180'):
+original:  {'kind': {'delaunay'}, 'distance': 5.000969443801984}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 5.000969443801984}
+
+Error in graph_extraction for 1TY4: 
+Different attributes in edge ('A:TYR:149', 'A:TYR:201'):
+original:  {'kind': {'aromatic'}, 'distance': 9.849314610055043}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 9.849314610055043}
+
+Error in graph_extraction for 1ZY3: 
+Different attributes in edge ('A:PHE:16', 'A:TYR:19'):
+original:  {'kind': {'delaunay'}, 'distance': 4.9600684076014465}
+extracted: {'kind': {'delaunay', 'aromatic'}, 'distance': 4.9600684076014465}

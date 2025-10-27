@@ -330,20 +330,25 @@ def experimento_1():
             except AssertionError as e:
                 msg = f'\nError in graph_extraction for {pdb_code}: {e}'
                 print(msg)
-                # print(f'{set(g.nodes) - set(extracted_graph[0].nodes)}')
-                print(f'{set(g.edges) - set(extracted_graph[0].edges)}')
+                def canonical_edges(G):
+                    return {(min(u, v), max(u, v)) for u, v in G.edges}
 
-                if set(g.edges) - set(extracted_graph[0].edges):
-                    msg+=f"\n\nedges unique at original:\n\n"
-                    for e in set(g.edges) - set(extracted_graph[0].edges):
-                        msg+=f"\n{e}\noriginal: {g.edges[e]}\nextracted: {extracted_graph[0].edges[e]}"
-                        print(msg)
-                
-                if set(extracted_graph[0].edges) - set(g.edges):
-                    msg+=f"\n\nedges unique at extracted:\n\n"
-                    for e in set(extracted_graph[0].edges) - set(g.edges):
-                        msg+=f"\n{e}\noriginal: {g.edges[e]}\nextracted: {extracted_graph[0].edges[e]}"
-                        print(msg)
+                for e in set(canonical_edges(g)) - set(canonical_edges(extracted_graph[0])):
+                    msg += f"\n{e}\n"
+                    msg += f"original: {g.edges[e]}\n"
+                    msg += f"extracted: {extracted_graph[0].edges.get(e, 'NOT FOUND')}\n"
+
+                for e in set(canonical_edges(extracted_graph[0])) - set(canonical_edges(g)):
+                    msg += f"\n{e}\n"
+                    msg += f"original: {g.edges.get(e, 'NOT FOUND')}\n"
+                    msg += f"extracted: {extracted_graph[0].edges[e]}\n"
+                    
+
+                for e in set(g.edges) & set(extracted_graph[0].edges):
+                    if g.edges[e] != extracted_graph[0].edges[e]:
+                        msg += f"\nDifferent attributes in edge {e}:\n"
+                        msg += f"original:  {g.edges[e]}\n"
+                        msg += f"extracted: {extracted_graph[0].edges[e]}\n"
 
                 write_error(dataset=dataset_name, msg=msg, error_path=error_path)
                 continue
