@@ -274,12 +274,32 @@ def experimento_1():
     e_size = 0
     v_serialized = 0
     e_serialized = 0
+    incompressible_edge_size = 0
+    incompressible_node_size = 0
+    compressible_edge_size = 0
+    compressible_node_size = 0
+
+    flag = 0
 
     for _, v in protein_graph_with_metadata_dict.items():
+        if flag ==0:
+            flag = 1
+            print(v[0].nodes["A:MET:-3"])
         v_size = np.sum([asizeof.asizeof(g._node)/1024/1024 for g in v])
         e_size = np.sum([asizeof.asizeof(g._adj)/1024/1024 for g in v])
         v_serialized = np.sum([asizeof.asizeof(pickle.dumps(g._node))/1024/1024 for g in v])
         e_serialized = np.sum([asizeof.asizeof(pickle.dumps(g._adj))/1024/1024 for g in v])
+
+        compressible_node_size += sum(asizeof.asizeof(g.nodes[n]["chain_id"]) for g in v for n in g.nodes) / 1024 / 1024
+        compressible_node_size += sum(asizeof.asizeof(g.nodes[n]["residue_name"]) for g in v for n in g.nodes) / 1024 / 1024
+        compressible_node_size += sum(asizeof.asizeof(g.nodes[n]["atom_type"]) for g in v for n in g.nodes) / 1024 / 1024
+        compressible_node_size += sum(asizeof.asizeof(g.nodes[n]["element_symbol"]) for g in v for n in g.nodes) / 1024 / 1024
+        compressible_edge_size += sum(asizeof.asizeof(g.edges[e]["kind"]) + asizeof.asizeof(g.edges[e]["distance"]) for g in v for e in g.edges) / 1024 / 1024
+
+        incompressible_node_size += sum(asizeof.asizeof(g.nodes[n]["meiler"]) for g in v for n in g.nodes) / 1024 / 1024
+        incompressible_node_size += sum(asizeof.asizeof(g.nodes[n]["b_factor"]) for g in v for n in g.nodes) / 1024 / 1024
+        incompressible_node_size += sum(asizeof.asizeof(g.nodes[n]["coords"]) for g in v for n in g.nodes) / 1024 / 1024
+        incompressible_node_size += sum(asizeof.asizeof(g.nodes[n]["residue_name"]) for g in v for n in g.nodes) / 1024 / 1024
 
 
     time_start = time.time()
@@ -379,6 +399,10 @@ def experimento_1():
         \nUncompressed complete graph serialized: {asizeof.asizeof(pickle.dumps(protein_graph_with_metadata_dict)) / 1024 / 1024}\
         \nUncompressed edge serialized: {e_serialized}\
         \nUncompressed node serialized: {v_serialized}\
+        \
+        \nUncompressed node parts that are compressible: {compressible_node_size} \
+        \nUncompressed edge parts that are compressible: {compressible_edge_size} \
+        \nUncompressed node parts that are not compressible: {incompressible_node_size}  \
         \n\
         \nCompressed graph complete size: {pdb_store.calculate_graph_complete_space_size()}\
         \nCompressed complete node size: {pdb_store.calculate_total_nodes_size()} \
@@ -391,6 +415,10 @@ def experimento_1():
         \nCompressed pdb to edges size: {pdb_store.pdb_to_edges_size()}\
         \nCompressed node to id size: {pdb_store.node_to_id_size()}\
         \nCompressed edge to id size: {pdb_store.edge_to_id_size()}\
+        \
+        \nCompressed edge parts that are compressible: {pdb_store.compressible_edge_parts_size()} \
+        \nCompressed node parts that are compressible: {pdb_store.compressible_node_parts_size()} \
+        \nCompressed node parts that are not compressible: {pdb_store.incompressible_node_parts_size()} \
         \n\
         \nCompressed graph object size: {asizeof.asizeof(pdb_store)/1024/1024}\
         \nCompressed graph complete size serialized: {asizeof.asizeof(pickle.dumps(pdb_store))/1024/1024}\

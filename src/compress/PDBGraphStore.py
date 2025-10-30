@@ -13,6 +13,7 @@ class PDBGraphStore:
     def __init__(self, body_parts):
         if body_parts:
             self.__body_parts = body_parts
+            print(self.__body_parts.keys())
         else:
             raise ValueError("'body_parts' should not be None")
 
@@ -26,7 +27,6 @@ class PDBGraphStore:
         pdb_idx = self.__body_parts["all_pdb_codes"].index(pdb_code)
         
         for node_attr_idx in self.__body_parts["pdb_to_nodes"][pdb_idx]:
-
             node_pair = self.__body_parts["node_attrs_unique"][node_attr_idx]
             node_id = node_pair[0]
             node = self.__body_parts["node_to_id"].inverse[node_id]
@@ -55,44 +55,37 @@ class PDBGraphStore:
                 name=''.join(list(meiler_value[1])), 
                 index=[f'dim_{x}' for x in [1, 2, 3, 4, 5, 6, 7]]
             )
-            
 
-
-    def __reconstruct_edge_attributes(self, extracted_graph, extracted_edges, pdb_idx, edge_funcs):
-
-        for u, v in extracted_edges:
-            edge = (u, v)
-            
-            if edge not in self.__body_parts["edge_kinds"]:
-                continue
-            
-            kind_indexes = self.__body_parts["edge_kinds"][edge]
-            
-            if len(kind_indexes) > 0:
-                kind_names = [self.__body_parts["edge_kind_keys"][k] for k in kind_indexes]
-                kind_names = list(filter(lambda x: x in edge_funcs, kind_names))
-                
-                if len(kind_names) > 0:
-                    if not extracted_graph.has_edge(*edge):
-                        extracted_graph.add_edge(*edge)
-                    
-                    extracted_graph.edges[edge].setdefault("kind", set())
-                    
-                    for kind in kind_names:
-                        extracted_graph.edges[edge]["kind"].add(kind)
-
+    def __reconstruct_edge_attributes(self, extracted_graph, edges, pdb_idx, edge_funcs):
         for edge_dist_idx in self.__body_parts["pdb_to_edges"][pdb_idx]:
-            edge_pair = self.__body_parts["edge_distances"][edge_dist_idx]
+            edge_pair = self.__body_parts["edge_attrs"][edge_dist_idx]
             
-            edge = self.__body_parts["edge_to_id"].inverse[edge_pair[0]]
+            edge_id = edge_pair[0]
+            distance = edge_pair[1]
+            kind_indexes = edge_pair[2]
+            
+            edge = self.__body_parts["edge_to_id"].inverse[edge_id]
+            
+            if edge not in edges:
+                continue
+
+            kinds = [self.__body_parts["edge_kind_keys"].get(k) for k in kind_indexes]
+            
+            kinds = [k for k in kinds if k in edge_funcs]
+            
+            if not kinds:
+                continue
             
             if not extracted_graph.has_edge(*edge):
-                continue
-            
-            extracted_graph.edges[edge]["distance"] = edge_pair[1]
+                extracted_graph.add_edge(*edge)
+
+            extracted_graph.edges[edge].setdefault("kind", set())
+            for k in kinds:
+                extracted_graph.edges[edge]["kind"].add(k)
+                
+            extracted_graph.edges[edge]["distance"] = distance
 
     def __extract_nodes(self, pdb_idx):
-
         def get_node_id(node_attr_unique_idx):
             node_pair = self.__body_parts["node_attrs_unique"][node_attr_unique_idx]
             return node_pair[0]
@@ -101,16 +94,14 @@ class PDBGraphStore:
                 for node_id in self.__body_parts["pdb_to_nodes"][pdb_idx]]
 
     def __extract_edges(self, pdb_idx):
-
-        def get_edge_id(edge_distances_idx):
-            edge_pair = self.__body_parts["edge_distances"][edge_distances_idx]
+        def get_edge_id(edge_attrs_idx):
+            edge_pair = self.__body_parts["edge_attrs"][edge_attrs_idx]
             return edge_pair[0]
         
-        return [self.__body_parts["edge_to_id"].inverse[get_edge_id(edge_distances_idx)] 
-                for edge_distances_idx in self.__body_parts["pdb_to_edges"][pdb_idx]]
+        return [self.__body_parts["edge_to_id"].inverse[get_edge_id(edge_attrs_idx)] 
+                for edge_attrs_idx in self.__body_parts["pdb_to_edges"][pdb_idx]]
     
     def extract_pdb_graphs(self, pdb_codes=[], edge_construction_functions=[]):
-
         if not pdb_codes:
             raise ValueError("pdb_codes should not be empty")
 
@@ -121,13 +112,18 @@ class PDBGraphStore:
 
         for pdb_code in pdb_codes:
             pdb_idx = self.__body_parts["all_pdb_codes"].index(pdb_code)
+            
             extracted_graph = nx.Graph()
             extracted_graph.graph["pdb_code"] = pdb_code
 
+            # Extrai nós e arestas
             extracted_nodes = self.__extract_nodes(pdb_idx)
             extracted_edges = self.__extract_edges(pdb_idx)
+            
+            # Adiciona os nós ao grafo
             extracted_graph.update(nodes=extracted_nodes)
             
+            # Reconstrói os atributos dos nós e arestas
             self.__reconstruct_node_attributes(extracted_graph, pdb_code)
             self.__reconstruct_edge_attributes(extracted_graph, extracted_edges, pdb_idx, edge_construction_functions)
             
@@ -447,16 +443,32 @@ class PDBGraphStore:
                 asizeof.asizeof(self.__body_parts["node_attrs_unique"]) / 1024 / 1024
 
     def edge_attrs_size(self):
-        return (
-            asizeof.asizeof(self.__body_parts["edge_distances"]) / 1024 / 1024
-            + asizeof.asizeof(self.__body_parts["edge_kinds"]) / 1024 / 1024
-        )
+        return asizeof.asizeof(self.__body_parts["edge_attrs"]) / 1024 / 1024
 
     def node_attr_keys_size(self):
         return asizeof.asizeof(self.__body_parts["node_attr_keys"]) / 1024 / 1024
 
     def edge_kind_keys_size(self):
         return asizeof.asizeof(self.__body_parts["edge_kind_keys"]) / 1024 / 1024
+    
+    def compressible_edge_parts_size(self):
+        return asizeof.asizeof(self.__body_parts["edge_kind_keys"]) / 1024 / 1024
+
+    def compressible_node_parts_size(self):
+        return ((asizeof.asizeof(self.__body_parts["node_attrs_global"]) 
+                +asizeof.asizeof(self.__body_parts["node_attr_keys"]["chain_id"])
+                +asizeof.asizeof(self.__body_parts["node_attr_keys"]["residue_name"])
+                +asizeof.asizeof(self.__body_parts["node_attr_keys"]["atom_type"])
+                +asizeof.asizeof(self.__body_parts["node_attr_keys"]["element_symbol"])
+                )/1024 / 1024)    
+    
+    def incompressible_node_parts_size(self):
+        return ((asizeof.asizeof(self.__body_parts["node_attrs_unique"]) 
+                 +asizeof.asizeof(self.__body_parts["node_attr_keys"]["residue_name"])
+                 +asizeof.asizeof(self.__body_parts["node_attr_keys"]["coords"])
+                 +asizeof.asizeof(self.__body_parts["node_attr_keys"]["b_factor"])
+                 +asizeof.asizeof(self.__body_parts["node_attr_keys"]["meiler"])
+                 )/ 1024 / 1024)
 
     def calculate_graph_complete_space_size(self):
         return (

@@ -1,7 +1,11 @@
 class IndexedSet:
-    def __init__(self):
+    def __init__(self, list=None):
         self._list = []
         self._index = {}
+
+        if list:
+            for element in list:
+                self.add(element)
 
     def add(self, value):
         if value not in self._index:
