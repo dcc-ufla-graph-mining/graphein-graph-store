@@ -1,30 +1,5 @@
 Result log for ligand_BME
 Average number of nodes: 561.0695187165776         
 Average number of edges: 4144.3422459893045     
-Time to construct graphs: 18.565120458602905
+Time to construct graphs: 18.446823596954346
 Number of graphs: 187
-Time to compress: 14.81457805633545
-        
-Mean time to extract: 0.04535860556332185         
-Uncompressed complete graph size: 496.70460510253906        
-Uncompressed structure graph size: 132.5557403564453        
-Uncompressed edge size: 0.808990478515625        
-Uncompressed node size: 0.20865631103515625        
-Uncompressed complete graph serialized: 55.938201904296875        
-Uncompressed edge serialized: 0.06874847412109375        
-Uncompressed node serialized: 0.02642059326171875        
-        
-Compressed graph complete size: 542.262825012207        
-Compressed complete node size: 58.83625030517578         
-Compressed complete edge size: 483.42657470703125         
-Compressed node attributes size: 21.43225860595703        
-Compressed edge attributes size: 333.3673553466797        
-Compressed node attributes keys size: 30.849464416503906        
-Compressed edge attributes keys size: 0.00331878662109375        
-Compressed pdb to nodes size: 0.2195587158203125        
-Compressed pdb to edges size: 1.0544586181640625        
-Compressed node to id size: 6.334968566894531        
-Compressed edge to id size: 149.0014419555664        
-        
-Compressed graph object size: 463.38220977783203        
-Compressed graph complete size serialized: 55.57185363769531    

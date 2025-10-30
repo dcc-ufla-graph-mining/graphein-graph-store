@@ -1,30 +1,5 @@
 Result log for nucleotides_NAD
 Average number of nodes: 989.9064748201439         
 Average number of edges: 7438.985611510791     
-Time to construct graphs: 23.177014350891113
+Time to construct graphs: 23.365373373031616
 Number of graphs: 139
-Time to compress: 19.64216136932373
-        
-Mean time to extract: 0.07454291179025774         
-Uncompressed complete graph size: 660.6888427734375        
-Uncompressed structure graph size: 175.8024139404297        
-Uncompressed edge size: 2.3603973388671875        
-Uncompressed node size: 0.47069549560546875        
-Uncompressed complete graph serialized: 74.37174224853516        
-Uncompressed edge serialized: 0.20269012451171875        
-Uncompressed node serialized: 0.0634765625        
-        
-Compressed graph complete size: 682.3365783691406        
-Compressed complete node size: 78.20287322998047         
-Compressed complete edge size: 604.1337051391602         
-Compressed node attributes size: 29.137596130371094        
-Compressed edge attributes size: 431.1007995605469        
-Compressed node attributes keys size: 38.65480041503906        
-Compressed edge attributes keys size: 0.00331878662109375        
-Compressed pdb to nodes size: 0.27111053466796875        
-Compressed pdb to edges size: 1.1181869506835938        
-Compressed node to id size: 10.139366149902344        
-Compressed edge to id size: 171.9113998413086        
-        
-Compressed graph object size: 577.3254547119141        
-Compressed graph complete size serialized: 73.74493408203125    

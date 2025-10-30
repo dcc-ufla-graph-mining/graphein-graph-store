@@ -1,30 +1,5 @@
 Result log for nucleotides_FAD
 Average number of nodes: 1090.2440476190477         
 Average number of edges: 8224.666666666666     
-Time to construct graphs: 33.30320143699646
+Time to construct graphs: 33.210960149765015
 Number of graphs: 168
-Time to compress: 27.291269779205322
-        
-Mean time to extract: 0.08151190621512276         
-Uncompressed complete graph size: 881.2988586425781        
-Uncompressed structure graph size: 233.19143676757812        
-Uncompressed edge size: 5.846168518066406        
-Uncompressed node size: 1.0635910034179688        
-Uncompressed complete graph serialized: 99.35621643066406        
-Uncompressed edge serialized: 0.5041961669921875        
-Uncompressed node serialized: 0.145416259765625        
-        
-Compressed graph complete size: 867.8312759399414        
-Compressed complete node size: 105.05540466308594         
-Compressed complete edge size: 762.7758712768555         
-Compressed node attributes size: 37.90265655517578        
-Compressed edge attributes size: 559.6408843994141        
-Compressed node attributes keys size: 55.01078796386719        
-Compressed edge attributes keys size: 0.00331878662109375        
-Compressed pdb to nodes size: 0.36121368408203125        
-Compressed pdb to edges size: 1.3579635620117188        
-Compressed node to id size: 11.780746459960938        
-Compressed edge to id size: 201.7737045288086        
-        
-Compressed graph object size: 728.7417907714844        
-Compressed graph complete size serialized: 98.2107925415039    

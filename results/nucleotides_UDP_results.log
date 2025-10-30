@@ -1,30 +1,5 @@
 Result log for nucleotides_UDP
 Average number of nodes: 960.8382352941177         
 Average number of edges: 7228.044117647059     
-Time to construct graphs: 12.173137426376343
+Time to construct graphs: 11.916719913482666
 Number of graphs: 68
-Time to compress: 9.35801649093628
-        
-Mean time to extract: 0.06431137814241297         
-Uncompressed complete graph size: 314.1547622680664        
-Uncompressed structure graph size: 83.62293243408203        
-Uncompressed edge size: 2.5416488647460938        
-Uncompressed node size: 0.48906707763671875        
-Uncompressed complete graph serialized: 35.374107360839844        
-Uncompressed edge serialized: 0.218658447265625        
-Uncompressed node serialized: 0.06769561767578125        
-        
-Compressed graph complete size: 337.0324172973633        
-Compressed complete node size: 41.98588562011719         
-Compressed complete edge size: 295.0465316772461         
-Compressed node attributes size: 16.695022583007812        
-Compressed edge attributes size: 209.734130859375        
-Compressed node attributes keys size: 19.071243286132812        
-Compressed edge attributes keys size: 0.00331878662109375        
-Compressed pdb to nodes size: 0.1264190673828125        
-Compressed pdb to edges size: 0.49703216552734375        
-Compressed node to id size: 6.09320068359375        
-Compressed edge to id size: 84.81204986572266        
-        
-Compressed graph object size: 283.88995361328125        
-Compressed graph complete size serialized: 35.541961669921875    
