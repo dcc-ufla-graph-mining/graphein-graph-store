@@ -282,9 +282,7 @@ def experimento_1():
     flag = 0
 
     for _, v in protein_graph_with_metadata_dict.items():
-        if flag ==0:
-            flag = 1
-            print(v[0].nodes["A:MET:-3"])
+
         v_size = np.sum([asizeof.asizeof(g._node)/1024/1024 for g in v])
         e_size = np.sum([asizeof.asizeof(g._adj)/1024/1024 for g in v])
         v_serialized = np.sum([asizeof.asizeof(pickle.dumps(g._node))/1024/1024 for g in v])
