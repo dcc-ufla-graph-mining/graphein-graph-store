@@ -1,5 +1,36 @@
 Result log for nucleotides_NAD
 Average number of nodes: 989.9064748201439         
 Average number of edges: 7438.985611510791     
-Time to construct graphs: 23.365373373031616
+Time to construct graphs: 23.08444380760193
 Number of graphs: 139
+Time to compress: 75.86353087425232
+        
+Mean time to extract: 0.4264480089969772         
+Uncompressed complete graph size: 660.6888427734375        
+Uncompressed structure graph size: 175.8024139404297        
+Uncompressed edge size: 2.3603973388671875        
+Uncompressed node size: 0.47069549560546875        
+Uncompressed complete graph serialized: 74.37174224853516        
+Uncompressed edge serialized: 0.20269012451171875        
+Uncompressed node serialized: 0.0634765625                
+Uncompressed node parts that are compressible: 29.393890380859375         
+Uncompressed edge parts that are compressible: 323.7444076538086         
+Uncompressed node parts that are not compressible: 10625.114715576172          
+        
+Compressed graph complete size: 597.13525390625        
+Compressed complete node size: 78.20188903808594         
+Compressed complete edge size: 518.9333648681641         
+Compressed node attributes size: 29.137596130371094        
+Compressed edge attributes size: 346.0006790161133        
+Compressed node attributes keys size: 38.65480041503906        
+Compressed edge attributes keys size: 0.0020294189453125        
+Compressed pdb to nodes size: 0.2701263427734375        
+Compressed pdb to edges size: 1.019256591796875        
+Compressed node to id size: 10.139366149902344        
+Compressed edge to id size: 171.9113998413086                
+Compressed edge parts that are compressible: 0.0020294189453125         
+Compressed node parts that are compressible: 12.361747741699219         
+Compressed node parts that are not compressible: 55.27739715576172         
+        
+Compressed graph object size: 553.7554397583008        
+Compressed graph complete size serialized: 69.1532211303711    

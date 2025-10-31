@@ -1,5 +1,36 @@
 Result log for ligand_PO4
 Average number of nodes: 750.6584590945195         
 Average number of edges: 5603.30420969023     
-Time to construct graphs: 169.91265606880188
+Time to construct graphs: 169.0683798789978
 Number of graphs: 1259
+Time to compress: 529.6662418842316
+        
+Mean time to extract: 0.3421378408375953         
+Uncompressed complete graph size: 4512.629997253418        
+Uncompressed structure graph size: 1202.4604797363281        
+Uncompressed edge size: 1.911712646484375        
+Uncompressed node size: 0.39306640625        
+Uncompressed complete graph serialized: 508.1581726074219        
+Uncompressed edge serialized: 0.16407012939453125        
+Uncompressed node serialized: 0.05304718017578125                
+Uncompressed node parts that are compressible: 201.89065551757812         
+Uncompressed edge parts that are compressible: 2209.2805786132812         
+Uncompressed node parts that are not compressible: 70628.91890716553          
+        
+Compressed graph complete size: 3994.332206726074        
+Compressed complete node size: 436.53204345703125         
+Compressed complete edge size: 3557.800163269043         
+Compressed node attributes size: 142.59139251708984        
+Compressed edge attributes size: 2343.0794982910156        
+Compressed node attributes keys size: 266.46827697753906        
+Compressed edge attributes keys size: 0.0020294189453125        
+Compressed pdb to nodes size: 1.86627197265625        
+Compressed pdb to edges size: 8.022506713867188        
+Compressed node to id size: 25.606101989746094        
+Compressed edge to id size: 1206.6961288452148                
+Compressed edge parts that are compressible: 0.0020294189453125         
+Compressed node parts that are compressible: 34.935569763183594         
+Compressed node parts that are not compressible: 373.77813720703125         
+        
+Compressed graph object size: 3754.529426574707        
+Compressed graph complete size serialized: 459.12371826171875    

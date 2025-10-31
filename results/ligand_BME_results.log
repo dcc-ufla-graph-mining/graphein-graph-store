@@ -1,5 +1,36 @@
 Result log for ligand_BME
 Average number of nodes: 561.0695187165776         
 Average number of edges: 4144.3422459893045     
-Time to construct graphs: 18.446823596954346
+Time to construct graphs: 18.495530366897583
 Number of graphs: 187
+Time to compress: 41.7118821144104
+        
+Mean time to extract: 0.1625889941332812         
+Uncompressed complete graph size: 496.70460510253906        
+Uncompressed structure graph size: 132.5557403564453        
+Uncompressed edge size: 0.808990478515625        
+Uncompressed node size: 0.20865631103515625        
+Uncompressed complete graph serialized: 55.938201904296875        
+Uncompressed edge serialized: 0.06874847412109375        
+Uncompressed node serialized: 0.02642059326171875                
+Uncompressed node parts that are compressible: 22.413330078125         
+Uncompressed edge parts that are compressible: 242.76373291015625         
+Uncompressed node parts that are not compressible: 7229.510406494141          
+        
+Compressed graph complete size: 468.51536560058594        
+Compressed complete node size: 58.835182189941406         
+Compressed complete edge size: 409.68018341064453         
+Compressed node attributes size: 21.43225860595703        
+Compressed edge attributes size: 259.62310791015625        
+Compressed node attributes keys size: 30.849464416503906        
+Compressed edge attributes keys size: 0.0020294189453125        
+Compressed pdb to nodes size: 0.2184906005859375        
+Compressed pdb to edges size: 1.0536041259765625        
+Compressed node to id size: 6.334968566894531        
+Compressed edge to id size: 149.0014419555664                
+Compressed edge parts that are compressible: 0.0020294189453125         
+Compressed node parts that are compressible: 8.611831665039062         
+Compressed node parts that are not compressible: 43.52362060546875         
+        
+Compressed graph object size: 435.97442626953125        
+Compressed graph complete size serialized: 52.214271545410156    
