@@ -311,7 +311,7 @@ def compress_pdb_graphs(protein_graphs):
         distance = edge_pair[1]
 
         with open(edge_distances_file, "a") as f:
-            f.write(distance)
+            f.write(str(distance))
     
     body_parts = {
         "node_to_id": node_to_id,
