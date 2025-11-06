@@ -451,8 +451,11 @@ class PDBGraphStore:
     def edge_kind_keys_size(self):
         return asizeof.asizeof(self.__body_parts["edge_kind_keys"]) / 1024 / 1024
     
+    #TODO consertar essa mediçao
     def compressible_edge_parts_size(self):
-        return asizeof.asizeof(self.__body_parts["edge_kind_keys"]) / 1024 / 1024
+        return (asizeof.asizeof(self.__body_parts["edge_kind_keys"])
+        + asizeof.asizeof(self.__body_parts["edge_attrs"]) 
+        )/ 1024 / 1024
 
     def compressible_node_parts_size(self):
         return ((asizeof.asizeof(self.__body_parts["node_attrs_global"]) 

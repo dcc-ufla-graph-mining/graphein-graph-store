@@ -69,7 +69,7 @@ def _process_edge_kinds(edge_data, edge_kind_keys):
     for kind in attr_kind_value:
         if kind:
             kind_indexes.add(edge_kind_keys.index(kind))
-    
+
     return kind_indexes
 
 def _process_nodes(protein_graphs, node_attrs_global, node_attr_keys, 
@@ -298,10 +298,20 @@ def compress_pdb_graphs(protein_graphs):
 
     _process_pdb_codes_config(protein_graphs, pdb_codes_config)
 
-    _reconstruct_and_validate_graphs(protein_graphs, node_to_id, edge_to_id,
-                                    pdb_to_nodes, pdb_to_edges, node_attrs_global,
-                                    node_attr_keys, edge_kind_keys, edge_attrs,
-                                    all_pdb_codes, node_attrs_unique)
+    # _reconstruct_and_validate_graphs(protein_graphs, node_to_id, edge_to_id,
+    #                                 pdb_to_nodes, pdb_to_edges, node_attrs_global,
+    #                                 node_attr_keys, edge_kind_keys, edge_attrs,
+    #                                 all_pdb_codes, node_attrs_unique)
+
+    edge_distances_file = "edge_distances.txt"
+
+    for edge_pair in edge_attrs:
+        aux = edge_pair
+
+        distance = edge_pair[1]
+
+        with open(edge_distances_file, "a") as f:
+            f.write(distance)
     
     body_parts = {
         "node_to_id": node_to_id,

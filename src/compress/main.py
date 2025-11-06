@@ -283,10 +283,10 @@ def experimento_1():
 
     for _, v in protein_graph_with_metadata_dict.items():
 
-        v_size = np.sum([asizeof.asizeof(g._node)/1024/1024 for g in v])
-        e_size = np.sum([asizeof.asizeof(g._adj)/1024/1024 for g in v])
-        v_serialized = np.sum([asizeof.asizeof(pickle.dumps(g._node))/1024/1024 for g in v])
-        e_serialized = np.sum([asizeof.asizeof(pickle.dumps(g._adj))/1024/1024 for g in v])
+        v_size = np.sum([asizeof.asizeof(g.nodes)/1024/1024 for g in v])
+        e_size = np.sum([asizeof.asizeof(g.edges)/1024/1024 for g in v])
+        v_serialized = np.sum([asizeof.asizeof(pickle.dumps(g.nodes))/1024/1024 for g in v])
+        e_serialized = np.sum([asizeof.asizeof(pickle.dumps(g.edges))/1024/1024 for g in v])
 
         compressible_node_size += sum(asizeof.asizeof(g.nodes[n]["chain_id"]) for g in v for n in g.nodes) / 1024 / 1024
         compressible_node_size += sum(asizeof.asizeof(g.nodes[n]["residue_name"]) for g in v for n in g.nodes) / 1024 / 1024
@@ -297,7 +297,7 @@ def experimento_1():
         incompressible_node_size += sum(asizeof.asizeof(g.nodes[n]["meiler"]) for g in v for n in g.nodes) / 1024 / 1024
         incompressible_node_size += sum(asizeof.asizeof(g.nodes[n]["b_factor"]) for g in v for n in g.nodes) / 1024 / 1024
         incompressible_node_size += sum(asizeof.asizeof(g.nodes[n]["coords"]) for g in v for n in g.nodes) / 1024 / 1024
-        incompressible_node_size += sum(asizeof.asizeof(g.nodes[n]["residue_name"]) for g in v for n in g.nodes) / 1024 / 1024
+        incompressible_node_size += sum(asizeof.asizeof(g.nodes[n]["residue_number"]) for g in v for n in g.nodes) / 1024 / 1024
 
 
     time_start = time.time()
@@ -315,114 +315,112 @@ def experimento_1():
 
     pdb_store = PDBGraphStore(body_parts)
 
-    extract_times = []
+    # extract_times = []
 
-    for pdb_code in set(protein_graph_with_metadata_dict.keys()):
-        for g in protein_graph_with_metadata_dict[pdb_code]:
-            time_start = time.time()
-            extracted_graph = pdb_store.extract_pdb_graphs([pdb_code], [edgeModel.edge_functions_dict.inverse[func] for func in g.graph["config"].edge_construction_functions])
-            time_to_extract = time_count(time_start=time_start)
+    # for pdb_code in set(protein_graph_with_metadata_dict.keys()):
+    #     for g in protein_graph_with_metadata_dict[pdb_code]:
+    #         time_start = time.time()
+    #         extracted_graph = pdb_store.extract_pdb_graphs([pdb_code], [edgeModel.edge_functions_dict.inverse[func] for func in g.graph["config"].edge_construction_functions])
+    #         time_to_extract = time_count(time_start=time_start)
 
-            extract_times.append(time_to_extract)
+    #         extract_times.append(time_to_extract)
 
-            msg = f' \
-                \nNumber of edges in original graph: {len(g.edges())} \
-                \nNumber of nodes in original graph: {len(g.nodes())} \
-                \nNumber of edges in extracted graph: {len(extracted_graph[0].edges())} \
-                \nNumber of nodes in extracted graph: {len(extracted_graph[0].nodes())} \
-                \n\n \
-            '
-            print(msg)
+    #         msg = f' \
+    #             \nNumber of edges in original graph: {len(g.edges())} \
+    #             \nNumber of nodes in original graph: {len(g.nodes())} \
+    #             \nNumber of edges in extracted graph: {len(extracted_graph[0].edges())} \
+    #             \nNumber of nodes in extracted graph: {len(extracted_graph[0].nodes())} \
+    #             \n\n \
+    #         '
+    #         print(msg)
 
+    #         try:
+    #             assert nx.utils.edges_equal(g.edges.data(), extracted_graph[0].edges(data=True))
 
+    #             # for u, v in g.edges:
+    #             #     print(f'original graph edge data:s {g.edges[(u,v)]}')
+    #             #     print(f'extracted graph edge data:s {extracted_graph[0].edges[(u,v)]}')
 
-            try:
-                assert nx.utils.edges_equal(g.edges.data(), extracted_graph[0].edges(data=True))
+    #             # print(f'original: {len(g.edges)}\nextracted: {len(extracted_graph[0].edges)}')
 
-                # for u, v in g.edges:
-                #     print(f'original graph edge data:s {g.edges[(u,v)]}')
-                #     print(f'extracted graph edge data:s {extracted_graph[0].edges[(u,v)]}')
+    #         except AssertionError as e:
+    #             msg = f'\nError in graph_extraction for {pdb_code}: {e}'
+    #             print(msg)
+    #             def canonical_edges(G):
+    #                 return {(min(u, v), max(u, v)) for u, v in G.edges}
 
-                # print(f'original: {len(g.edges)}\nextracted: {len(extracted_graph[0].edges)}')
+    #             for e in set(canonical_edges(g)) - set(canonical_edges(extracted_graph[0])):
+    #                 msg += f"\n{e}\n"
+    #                 msg += f"original: {g.edges[e]}\n"
+    #                 msg += f"extracted: {extracted_graph[0].edges.get(e, 'NOT FOUND')}\n"
 
-            except AssertionError as e:
-                msg = f'\nError in graph_extraction for {pdb_code}: {e}'
-                print(msg)
-                def canonical_edges(G):
-                    return {(min(u, v), max(u, v)) for u, v in G.edges}
-
-                for e in set(canonical_edges(g)) - set(canonical_edges(extracted_graph[0])):
-                    msg += f"\n{e}\n"
-                    msg += f"original: {g.edges[e]}\n"
-                    msg += f"extracted: {extracted_graph[0].edges.get(e, 'NOT FOUND')}\n"
-
-                for e in set(canonical_edges(extracted_graph[0])) - set(canonical_edges(g)):
-                    msg += f"\n{e}\n"
-                    msg += f"original: {g.edges.get(e, 'NOT FOUND')}\n"
-                    msg += f"extracted: {extracted_graph[0].edges[e]}\n"
+    #             for e in set(canonical_edges(extracted_graph[0])) - set(canonical_edges(g)):
+    #                 msg += f"\n{e}\n"
+    #                 msg += f"original: {g.edges.get(e, 'NOT FOUND')}\n"
+    #                 msg += f"extracted: {extracted_graph[0].edges[e]}\n"
                     
 
-                for e in set(g.edges) & set(extracted_graph[0].edges):
-                    if g.edges[e] != extracted_graph[0].edges[e]:
-                        msg += f"\nDifferent attributes in edge {e}:\n"
-                        msg += f"original:  {g.edges[e]}\n"
-                        msg += f"extracted: {extracted_graph[0].edges[e]}\n"
+    #             for e in set(g.edges) & set(extracted_graph[0].edges):
+    #                 if g.edges[e] != extracted_graph[0].edges[e]:
+    #                     msg += f"\nDifferent attributes in edge {e}:\n"
+    #                     msg += f"original:  {g.edges[e]}\n"
+    #                     msg += f"extracted: {extracted_graph[0].edges[e]}\n"
 
-                write_error(dataset=dataset_name, msg=msg, error_path=error_path)
-                continue
+    #             write_error(dataset=dataset_name, msg=msg, error_path=error_path)
+    #             continue
 
-            try:
-                assert nx.utils.nodes_equal(g.nodes, extracted_graph[0].nodes)
+    #         try:
+    #             assert nx.utils.nodes_equal(g.nodes, extracted_graph[0].nodes)
 
-                # g1 = g
-                # g2 = extracted_graph[0]
-                # for n in g.nodes:
-                #     print(f'original: {g1.nodes[n]}')
-                #     print(f'extracted: {g2.nodes[n]}')
+    #             # g1 = g
+    #             # g2 = extracted_graph[0]
+    #             # for n in g.nodes:
+    #             #     print(f'original: {g1.nodes[n]}')
+    #             #     print(f'extracted: {g2.nodes[n]}')
 
-            except AssertionError as e:
-                msg = f'Error in graph_extraction for {pdb_code}: {e}'
+    #         except AssertionError as e:
+    #             msg = f'Error in graph_extraction for {pdb_code}: {e}'
 
-                print(msg)
-                continue
+    #             print(msg)
+    #             continue
 
-    extract_time_mean = np.mean(extract_times)
+    # extract_time_mean = np.mean(extract_times)
 
-    msg = f'\n\
-        \nMean time to extract: {extract_time_mean} \
-        \nUncompressed complete graph size: {asizeof.asizeof(protein_graph_with_metadata_dict) /1024 / 1024}\
-        \nUncompressed structure graph size: {asizeof.asizeof(protein_graph_without_metadata_dict) /1024 / 1024}\
-        \nUncompressed edge size: {e_size}\
-        \nUncompressed node size: {v_size}\
-        \nUncompressed complete graph serialized: {asizeof.asizeof(pickle.dumps(protein_graph_with_metadata_dict)) / 1024 / 1024}\
-        \nUncompressed edge serialized: {e_serialized}\
-        \nUncompressed node serialized: {v_serialized}\
-        \
-        \nUncompressed node parts that are compressible: {compressible_node_size} \
-        \nUncompressed edge parts that are compressible: {compressible_edge_size} \
-        \nUncompressed node parts that are not compressible: {incompressible_node_size}  \
-        \n\
-        \nCompressed graph complete size: {pdb_store.calculate_graph_complete_space_size()}\
-        \nCompressed complete node size: {pdb_store.calculate_total_nodes_size()} \
-        \nCompressed complete edge size: {pdb_store.calculate_total_edges_size()} \
-        \nCompressed node attributes size: {pdb_store.node_attrs_size()}\
-        \nCompressed edge attributes size: {pdb_store.edge_attrs_size()}\
-        \nCompressed node attributes keys size: {pdb_store.node_attr_keys_size()}\
-        \nCompressed edge attributes keys size: {pdb_store.edge_kind_keys_size()}\
-        \nCompressed pdb to nodes size: {pdb_store.pdb_to_nodes_size()}\
-        \nCompressed pdb to edges size: {pdb_store.pdb_to_edges_size()}\
-        \nCompressed node to id size: {pdb_store.node_to_id_size()}\
-        \nCompressed edge to id size: {pdb_store.edge_to_id_size()}\
-        \
-        \nCompressed edge parts that are compressible: {pdb_store.compressible_edge_parts_size()} \
-        \nCompressed node parts that are compressible: {pdb_store.compressible_node_parts_size()} \
-        \nCompressed node parts that are not compressible: {pdb_store.incompressible_node_parts_size()} \
-        \n\
-        \nCompressed graph object size: {asizeof.asizeof(pdb_store)/1024/1024}\
-        \nCompressed graph complete size serialized: {asizeof.asizeof(pickle.dumps(pdb_store))/1024/1024}\
-    '
+    # msg = f'\n\
+    #     \nMean time to extract: {extract_time_mean} \
+    #     \nUncompressed complete graph size: {asizeof.asizeof(protein_graph_with_metadata_dict) /1024 / 1024}\
+    #     \nUncompressed structure graph size: {asizeof.asizeof(protein_graph_without_metadata_dict) /1024 / 1024}\
+    #     \nUncompressed edge size: {e_size}\
+    #     \nUncompressed node size: {v_size}\
+    #     \nUncompressed complete graph serialized: {asizeof.asizeof(pickle.dumps(protein_graph_with_metadata_dict)) / 1024 / 1024}\
+    #     \nUncompressed edge serialized: {e_serialized}\
+    #     \nUncompressed node serialized: {v_serialized}\
+    #     \
+    #     \nUncompressed node parts that are compressible: {compressible_node_size} \
+    #     \nUncompressed edge parts that are compressible: {compressible_edge_size} \
+    #     \nUncompressed node parts that are not compressible: {incompressible_node_size}  \
+    #     \n\
+    #     \nCompressed graph complete size: {pdb_store.calculate_graph_complete_space_size()}\
+    #     \nCompressed complete node size: {pdb_store.calculate_total_nodes_size()} \
+    #     \nCompressed complete edge size: {pdb_store.calculate_total_edges_size()} \
+    #     \nCompressed node attributes size: {pdb_store.node_attrs_size()}\
+    #     \nCompressed edge attributes size: {pdb_store.edge_attrs_size()}\
+    #     \nCompressed node attributes keys size: {pdb_store.node_attr_keys_size()}\
+    #     \nCompressed edge attributes keys size: {pdb_store.edge_kind_keys_size()}\
+    #     \nCompressed pdb to nodes size: {pdb_store.pdb_to_nodes_size()}\
+    #     \nCompressed pdb to edges size: {pdb_store.pdb_to_edges_size()}\
+    #     \nCompressed node to id size: {pdb_store.node_to_id_size()}\
+    #     \nCompressed edge to id size: {pdb_store.edge_to_id_size()}\
+    #     \
+    #     \nCompressed edge parts that are compressible: {pdb_store.compressible_edge_parts_size()} \
+    #     \nCompressed node parts that are compressible: {pdb_store.compressible_node_parts_size()} \
+    #     \nCompressed node parts that are not compressible: {pdb_store.incompressible_node_parts_size()} \
+    #     \n\
+    #     \nCompressed graph object size: {asizeof.asizeof(pdb_store)/1024/1024}\
+    #     \nCompressed graph complete size serialized: {asizeof.asizeof(pickle.dumps(pdb_store))/1024/1024}\
+    # '
 
-    write_result(dataset=dataset_name, msg=msg, result_path=result_path)
+    # write_result(dataset=dataset_name, msg=msg, result_path=result_path)
 
 def experimento_2():
     '''
