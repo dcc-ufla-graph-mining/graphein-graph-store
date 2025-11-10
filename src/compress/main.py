@@ -234,7 +234,7 @@ def experimento_1():
     pdb_codes = read_dataset(general_data_path=general_data_path, dataset_txt_name=dataset_txt_file_name)
 
     protein_graph_with_metadata_dict = {}
-    protein_graph_without_metadata_dict = {}
+    # protein_graph_without_metadata_dict = {}
     number_of_nodes_in_which_graph = list()
     number_of_edges_in_which_graph = list()
 
@@ -242,17 +242,17 @@ def experimento_1():
 
     for i, pdb_code in enumerate(pdb_codes.copy()):
         try:
-            graph_with_data, graph_without_data = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path,1)
+            graph_with_data, _ = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path,1)
         except Exception as e:
             msg = traceback.format_exc()
             print(msg)
             write_error(dataset_name, msg, error_path)
             continue
         protein_graph_with_metadata_dict[pdb_code] = graph_with_data[pdb_code]
-        protein_graph_without_metadata_dict[pdb_code] = graph_without_data[pdb_code]
+        # protein_graph_without_metadata_dict[pdb_code] = graph_without_data[pdb_code]
 
-        number_of_edges_in_which_graph.append(len(protein_graph_without_metadata_dict[pdb_code][-1].edges()))
-        number_of_nodes_in_which_graph.append(len(protein_graph_without_metadata_dict[pdb_code][-1].nodes()))
+        # number_of_edges_in_which_graph.append(len(protein_graph_without_metadata_dict[pdb_code][-1].edges()))
+        # number_of_nodes_in_which_graph.append(len(protein_graph_without_metadata_dict[pdb_code][-1].nodes()))
 
     msg = f'Average number of nodes: {np.mean(number_of_nodes_in_which_graph)} \
         \nAverage number of edges: {np.mean(number_of_edges_in_which_graph)} \
@@ -314,6 +314,15 @@ def experimento_1():
     # body_parts = initialize_body_parts()
 
     pdb_store = PDBGraphStore(body_parts)
+
+    v1 = protein_graph_with_metadata_dict
+    v2 = pdb_store
+
+    with open("v1.pkl", 'wb') as f:
+        pickle.dump(v1, f)
+    
+    with open("v2.pkl", 'wb') as f:
+        pickle.dump(v2, f)
 
     # extract_times = []
 

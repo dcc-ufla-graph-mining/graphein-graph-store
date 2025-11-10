@@ -1,36 +1,6 @@
 Result log for bcl_ppigremlin
-Average number of nodes: 296.0         
-Average number of edges: 2137.0     
-Time to construct graphs: 2.1194725036621094
-Number of graphs: 10
-Time to compress: 1.243906021118164
-        
-Mean time to extract: 0.07352695465087891         
-Uncompressed complete graph size: 13.866752624511719        
-Uncompressed structure graph size: 3.7349319458007812        
-Uncompressed edge size: 0.9818954467773438        
-Uncompressed node size: 0.2025299072265625        
-Uncompressed complete graph serialized: 1.5561676025390625        
-Uncompressed edge serialized: 0.10884857177734375        
-Uncompressed node serialized: 0.02544403076171875                
-Uncompressed node parts that are compressible: 0.63232421875         
-Uncompressed edge parts that are compressible: 6.6962432861328125         
-Uncompressed node parts that are not compressible: 183.1813507080078          
-        
-Compressed graph complete size: 12.491508483886719        
-Compressed complete node size: 2.368896484375         
-Compressed complete edge size: 10.122611999511719         
-Compressed node attributes size: 0.9354705810546875        
-Compressed edge attributes size: 7.1233978271484375        
-Compressed node attributes keys size: 1.06256103515625        
-Compressed edge attributes keys size: 0.0020294189453125        
-Compressed pdb to nodes size: 0.00658416748046875        
-Compressed pdb to edges size: 0.03450775146484375        
-Compressed node to id size: 0.36428070068359375        
-Compressed edge to id size: 2.962677001953125                
-Compressed edge parts that are compressible: 7.12542724609375         
-Compressed node parts that are compressible: 0.5034255981445312         
-Compressed node parts that are not compressible: 1.4669723510742188         
-        
-Compressed graph object size: 11.370628356933594        
-Compressed graph complete size serialized: 1.4173507690429688    
+Average number of nodes: nan         
+Average number of edges: nan     
+Time to construct graphs: 7.233262777328491
+Number of graphs: 50
+Time to compress: 2.802476406097412
