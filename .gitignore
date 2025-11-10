@@ -6,3 +6,5 @@ fractal/
 spark/
 type=docker/
 logs/metadata.log
+v1.pkl
+v2.pkl
