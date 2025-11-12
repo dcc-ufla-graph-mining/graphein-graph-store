@@ -283,10 +283,10 @@ def experimento_1():
 
     for _, v in protein_graph_with_metadata_dict.items():
 
-        v_size = np.sum([asizeof.asizeof(g.nodes)/1024/1024 for g in v])
-        e_size = np.sum([asizeof.asizeof(g.edges)/1024/1024 for g in v])
-        v_serialized = np.sum([asizeof.asizeof(pickle.dumps(g.nodes))/1024/1024 for g in v])
-        e_serialized = np.sum([asizeof.asizeof(pickle.dumps(g.edges))/1024/1024 for g in v])
+        v_size = np.sum([asizeof.asizeof(g._node)/1024/1024 for g in v])
+        e_size = np.sum([asizeof.asizeof(g._adj)/1024/1024 for g in v])
+        v_serialized = np.sum([asizeof.asizeof(pickle.dumps(g._node))/1024/1024 for g in v])
+        e_serialized = np.sum([asizeof.asizeof(pickle.dumps(g._adj))/1024/1024 for g in v])
 
         compressible_node_size += sum(asizeof.asizeof(g.nodes[n]["chain_id"]) for g in v for n in g.nodes) / 1024 / 1024
         compressible_node_size += sum(asizeof.asizeof(g.nodes[n]["residue_name"]) for g in v for n in g.nodes) / 1024 / 1024

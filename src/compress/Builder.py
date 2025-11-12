@@ -320,11 +320,11 @@ def compress_pdb_graphs(protein_graphs):
         "pdb_to_nodes": pdb_to_nodes,
         "pdb_to_edges": pdb_to_edges,
         "node_attrs_global": node_attrs_global,
+        "node_attrs_unique": node_attrs_unique,
         "node_attr_keys": node_attr_keys,
         "edge_kind_keys": edge_kind_keys,
         "edge_attrs": edge_attrs,
-        "all_pdb_codes": all_pdb_codes,
-        "node_attrs_unique": node_attrs_unique
+        "all_pdb_codes": all_pdb_codes
     }
 
     return body_parts
