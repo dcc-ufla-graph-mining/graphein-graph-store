@@ -1,6 +1,6 @@
 Result log for ligand_PO4
-Average number of nodes: 750.6584590945195         
-Average number of edges: 5603.30420969023     
-Time to construct graphs: 174.378901720047
+Average number of nodes: nan         
+Average number of edges: nan     
+Time to construct graphs: 171.24938869476318
 Number of graphs: 1259
-Time to compress: 101.59997248649597
+Time to compress: 100.58707809448242

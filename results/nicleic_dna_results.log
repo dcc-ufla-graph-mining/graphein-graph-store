@@ -1,36 +1,6 @@
 Result log for nicleic_dna
-Average number of nodes: 710.4859287054409         
-Average number of edges: 5309.377110694184     
-Time to construct graphs: 68.9755380153656
+Average number of nodes: nan         
+Average number of edges: nan     
+Time to construct graphs: 70.23716855049133
 Number of graphs: 533
-Time to compress: 203.33662271499634
-        
-Mean time to extract: 0.3077526155153314         
-Uncompressed complete graph size: 1810.9347229003906        
-Uncompressed structure graph size: 482.48755645751953        
-Uncompressed edge size: 0.49517059326171875        
-Uncompressed node size: 0.15160369873046875        
-Uncompressed complete graph serialized: 203.89305114746094        
-Uncompressed edge serialized: 0.0413055419921875        
-Uncompressed node serialized: 0.01825714111328125                
-Uncompressed node parts that are compressible: 80.89669799804688         
-Uncompressed edge parts that are compressible: 886.1797637939453         
-Uncompressed node parts that are not compressible: 28655.65895843506          
-        
-Compressed graph complete size: 1532.6671524047852        
-Compressed complete node size: 206.7206039428711         
-Compressed complete edge size: 1325.946548461914         
-Compressed node attributes size: 71.68898010253906        
-Compressed edge attributes size: 938.5836944580078        
-Compressed node attributes keys size: 113.1435317993164        
-Compressed edge attributes keys size: 0.0020294189453125        
-Compressed pdb to nodes size: 0.7564010620117188        
-Compressed pdb to edges size: 3.11895751953125        
-Compressed node to id size: 21.131690979003906        
-Compressed edge to id size: 384.2418670654297                
-Compressed edge parts that are compressible: 0.0020294189453125         
-Compressed node parts that are compressible: 26.353919982910156         
-Compressed node parts that are not compressible: 158.07089233398438         
-        
-Compressed graph object size: 1428.343994140625        
-Compressed graph complete size serialized: 184.97347259521484    
+Time to compress: 40.32791018486023

@@ -1,36 +1,6 @@
 Result log for soybean_ppigremlin
-Average number of nodes: 339.63440860215053         
-Average number of edges: 2417.7311827956987     
-Time to construct graphs: 5.756636619567871
+Average number of nodes: nan         
+Average number of edges: nan     
+Time to construct graphs: 5.716447830200195
 Number of graphs: 93
-Time to compress: 6.389716625213623
-        
-Mean time to extract: 0.0460563910904751         
-Uncompressed complete graph size: 145.17913818359375        
-Uncompressed structure graph size: 39.08534240722656        
-Uncompressed edge size: 1.0901718139648438        
-Uncompressed node size: 0.2545166015625        
-Uncompressed complete graph serialized: 16.36492919921875        
-Uncompressed edge serialized: 0.09279632568359375        
-Uncompressed node serialized: 0.03319549560546875                
-Uncompressed node parts that are compressible: 6.74749755859375         
-Uncompressed edge parts that are compressible: 70.38739776611328         
-Uncompressed node parts that are not compressible: 1920.5883560180664          
-        
-Compressed graph complete size: 99.3824691772461        
-Compressed complete node size: 15.979019165039062         
-Compressed complete edge size: 83.40345001220703         
-Compressed node attributes size: 5.368400573730469        
-Compressed edge attributes size: 70.85009002685547        
-Compressed node attributes keys size: 9.300605773925781        
-Compressed edge attributes keys size: 0.0020294189453125        
-Compressed pdb to nodes size: 0.07027435302734375        
-Compressed pdb to edges size: 0.41185760498046875        
-Compressed node to id size: 1.2397384643554688        
-Compressed edge to id size: 12.139472961425781                
-Compressed edge parts that are compressible: 0.0020294189453125         
-Compressed node parts that are compressible: 1.5862808227539062         
-Compressed node parts that are not compressible: 13.014396667480469         
-        
-Compressed graph object size: 94.91096496582031        
-Compressed graph complete size serialized: 12.331184387207031    
+Time to compress: 2.2485005855560303
