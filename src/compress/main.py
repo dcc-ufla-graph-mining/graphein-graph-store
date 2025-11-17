@@ -1,4 +1,4 @@
-import Builder
+import new_builder
 from PDBGraphStore import PDBGraphStore
 import os
 import metadata
@@ -73,7 +73,8 @@ def read_dataset(general_data_path, dataset_txt_name, file_mode='r'):
 def define_graphein_edge_funcs(func_idx=1):
     # usado no experimento 1
     # return random.sample([v for _, v in edgeModel.edge_functions_dict.items()], 3)
-    return [edgeModel.edge_functions_dict[f] for f in ["aromatic", "aromatic_sulphur", "delaunay"]]
+    return [edgeModel.edge_functions_dict[f] for f in ["aromatic"]]
+    # , "aromatic_sulphur", "delaunay"
 
     # usado no experimento 2
     # sorted_func_list = sorted(edgeModel.edge_functions_dict.keys())
@@ -299,19 +300,12 @@ def experimento_1():
         incompressible_node_size += sum(asizeof.asizeof(g.nodes[n]["coords"]) for g in v for n in g.nodes) / 1024 / 1024
         incompressible_node_size += sum(asizeof.asizeof(g.nodes[n]["residue_number"]) for g in v for n in g.nodes) / 1024 / 1024
 
-
-    time_start = time.time()
     print(v_size, v_serialized, e_size, e_serialized)
 
-    body_parts = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
-
-    time_to_compress = time_count(time_start=time_start)
+    body_parts, time_to_compress = new_builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
 
     msg = f'\nTime to compress: {time_to_compress}'
     write_result(dataset=dataset_name, msg=msg, result_path=result_path)
-
-    #DONE alternativately, initialize body_parts empty to fullfill it at the PDBGraphStore object construction
-    # body_parts = initialize_body_parts()
 
     pdb_store = PDBGraphStore(body_parts)
 
@@ -323,7 +317,7 @@ def experimento_1():
     
     with open("v2.pkl", 'wb') as f:
         pickle.dump(v2, f)
-
+# ==================================
     # extract_times = []
 
     # for pdb_code in set(protein_graph_with_metadata_dict.keys()):

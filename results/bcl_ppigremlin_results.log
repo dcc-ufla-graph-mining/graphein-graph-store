@@ -1,6 +1,6 @@
 Result log for bcl_ppigremlin
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 8.445081233978271
-Number of graphs: 116
-Time to compress: 2.713897466659546
+Time to construct graphs: 0.7389693260192871
+Number of graphs: 10
+Time to compress: -0.28474903106689453
