@@ -28,7 +28,7 @@ def initialize_body_parts():
 
     return body_parts
 
-def edge_label_undirected(edge_label):
+def edge_label_undirected(edge_label: tuple) -> frozenset:
     return frozenset(edge_label)
 
 def process_edge_attrs(body_parts: dict, pdb_id: int, edge_id: int, edge: dict):
@@ -104,6 +104,7 @@ def construct_edge_structure(g: nx.Graph, body_parts: dict, pdb_id: int):
 def construct_structure_attributes(g: nx.Graph, body_parts: dict, pdb_id: int):
     construct_node_structure(g, body_parts, pdb_id)
     construct_edge_structure(g, body_parts, pdb_id)
+
 
 def initialize_structures(protein_graphs: dict[str, list[nx.Graph]], body_parts: dict):
     for pdb_code, pdb_graph_list in protein_graphs.items():
@@ -263,7 +264,7 @@ def compress_pdb_graphs(protein_graphs: dict[str, list[nx.Graph]]) -> dict:
     process_graphs(protein_graphs, body_parts)
 
     time_to_construct = time_to_construct_start - time.time()
-    
+
     reconstruct_and_validate(protein_graphs, body_parts)
     
     return body_parts, time_to_construct

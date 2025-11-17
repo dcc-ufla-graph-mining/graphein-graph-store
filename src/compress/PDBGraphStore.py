@@ -4,6 +4,7 @@ from pyroaring import BitMap64
 from bidict import bidict
 import pandas as pd
 import pickle as pk
+from pympler import asizeof
 
 class PDBGraphStore:
     def __init__(self, body_parts):
@@ -17,78 +18,74 @@ class PDBGraphStore:
         return f'PDBGraphStore with {len(self.get_pdb_code_list())} pdbs'
 
 
-    def node_to_id_size(self):
-        return asizeof.asizeof(self.__body_parts["node_to_id"]) / 1024 / 1024
+    def pdb_code_to_id_memory(self):
+        return asizeof.asizeof(self.__body_parts["pdb_code_to_id"])/1024/1024
 
-    def edge_to_id_size(self):
-        return asizeof.asizeof(self.__body_parts["edge_to_id"]) / 1024 / 1024
+    def node_label_to_node_id_memory(self):
+        return asizeof.asizeof(self.__body_parts["node_label_to_node_id"])/1024/1024
 
-    def pdb_to_nodes_size(self):
-        return asizeof.asizeof(self.__body_parts["pdb_to_nodes"]) / 1024 / 1024
+    def edge_label_to_edge_id_memory(self):
+        return asizeof.asizeof(self.__body_parts["edge_label_to_edge_id"])/1024/1024
 
-    def pdb_to_edges_size(self):
-        return asizeof.asizeof(self.__body_parts["pdb_to_edges"]) / 1024 / 1024
-
-    def node_attrs_size(self):
-        return asizeof.asizeof(self.__body_parts["node_attrs_global"]) / 1024 / 1024 + \
-                asizeof.asizeof(self.__body_parts["node_attrs_unique"]) / 1024 / 1024
-
-    def edge_attrs_size(self):
-        return asizeof.asizeof(self.__body_parts["edge_attrs"]) / 1024 / 1024
-
-    def node_attr_keys_size(self):
-        return asizeof.asizeof(self.__body_parts["node_attr_keys"]) / 1024 / 1024
-
-    def edge_kind_keys_size(self):
-        return asizeof.asizeof(self.__body_parts["edge_kind_keys"]) / 1024 / 1024
+    def pdb_id_to_nodes_memory(self):
+        return asizeof.asizeof(self.__body_parts["pdb_id_to_nodes"])/1024/1024
     
-    #TODO consertar essa mediçao
-    def compressible_edge_parts_size(self):
-        return (asizeof.asizeof(self.__body_parts["edge_kind_keys"])
-        + asizeof.asizeof(self.__body_parts["edge_attrs"]) 
-        )/ 1024 / 1024
+    def pdb_id_to_edges_memory(self):
+        return asizeof.asizeof(self.__body_parts["pdb_id_to_edges"])/1024/1024
 
-    def compressible_node_parts_size(self):
-        return ((asizeof.asizeof(self.__body_parts["node_attrs_global"]) 
-                +asizeof.asizeof(self.__body_parts["node_attr_keys"]["chain_id"])
-                +asizeof.asizeof(self.__body_parts["node_attr_keys"]["residue_name"])
-                +asizeof.asizeof(self.__body_parts["node_attr_keys"]["atom_type"])
-                +asizeof.asizeof(self.__body_parts["node_attr_keys"]["element_symbol"])
-                )/1024 / 1024)    
-    
-    def incompressible_node_parts_size(self):
-        return ((asizeof.asizeof(self.__body_parts["node_attrs_unique"]) 
-                 +asizeof.asizeof(self.__body_parts["node_attr_keys"]["residue_name"])
-                 +asizeof.asizeof(self.__body_parts["node_attr_keys"]["coords"])
-                 +asizeof.asizeof(self.__body_parts["node_attr_keys"]["b_factor"])
-                 +asizeof.asizeof(self.__body_parts["node_attr_keys"]["meiler"])
-                 )/ 1024 / 1024)
+    def attr_keys_memory(self):
+        return asizeof.asizeof(self.__body_parts["attr_keys"])/1024/1024
 
-    def calculate_graph_complete_space_size(self):
+    def attr_values_memory(self):
+        return asizeof.asizeof(self.__body_parts["attr_values"])/1024/1024
+
+    def node_global_attr_keyvalue_mapping_memory(self):
+        zeros = np.count_nonzero(self.__body_parts["node_global_attr_keyvalue_mapping"] == 0)
+        print(f'zeros in node_global_attr: {zeros}')
+        print(f'nonzeros in node_global_attr: {self.__body_parts["node_global_attr_keyvalue_mapping"].size - zeros}')
+        return self.__body_parts["node_global_attr_keyvalue_mapping"].nbytes/1024/1024
+
+    def node_local_attr_keyvalue_mapping_memory(self):
+        zeros = np.count_nonzero(self.__body_parts["node_local_attr_keyvalue_mapping"] == 0)
+        print(f'zeros in node_local_attr: {zeros}')
+        print(f'nonzeros in node_local_attr: {self.__body_parts["node_local_attr_keyvalue_mapping"].size - zeros}')
+        return self.__body_parts["node_local_attr_keyvalue_mapping"].nbytes/1024/1024
+
+    def edge_local_attr_keyvalue_mapping_memory(self):
+        zeros = np.count_nonzero(self.__body_parts["edge_local_attr_keyvalue_mapping"] == 0)
+        print(f'zeros in edge_local_attr: {zeros}')
+        print(f'nonzeros in edge_local_attr: {self.__body_parts["edge_local_attr_keyvalue_mapping"].size - zeros}')
+        return self.__body_parts["edge_local_attr_keyvalue_mapping"].nbytes/1024/1024
+
+    def graph_structure_memory(self):
         return (
-            self.node_to_id_size()
-            + self.edge_to_id_size()
-            + self.pdb_to_nodes_size()
-            + self.pdb_to_edges_size()
-            + self.node_attrs_size()
-            + self.edge_attrs_size()
-            + self.node_attr_keys_size()
-            + self.edge_kind_keys_size()
+        self.pdb_code_to_id_memory() +
+        self.pdb_id_to_nodes_memory() +
+        self.pdb_id_to_edges_memory() +
+        self.node_label_to_node_id_memory() +
+        self.edge_label_to_edge_id_memory() 
         )
 
-    def calculate_total_nodes_size(self):
+    def dict_attributes_memory(self):
         return (
-            self.node_to_id_size()
-            + self.pdb_to_nodes_size()
-            + self.node_attrs_size()
-            + self.node_attr_keys_size()
+        self.attr_keys_memory() +
+        self.attr_values_memory()
         )
 
-    def calculate_total_edges_size(self):
+    def node_attributes_memory(self):
         return (
-            self.edge_to_id_size()
-            + self.pdb_to_edges_size()
-            + self.edge_attrs_size()
-            + self.edge_kind_keys_size()
+        self.node_global_attr_keyvalue_mapping_memory() +
+        self.node_local_attr_keyvalue_mapping_memory()
+        )
+
+    def edge_attributes_memory(self):
+        return self.edge_local_attr_keyvalue_mapping_memory()
+    
+    def total_memory(self):
+        return (
+            self.graph_structure_memory() +
+            self.dict_attributes_memory() +
+            self.node_attributes_memory() +
+            self.edge_attributes_memory() 
         )
 
