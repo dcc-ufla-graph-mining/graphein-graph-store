@@ -360,6 +360,7 @@ def experimento_1():
 
     msg = f'\n\
         \nUncompressed complete graph size: {asizeof.asizeof(protein_graph_with_metadata_dict) /1024 / 1024}\
+        \nUncompressed complete graph size serialized: {len(pickle.dumps(protein_graph_with_metadata_dict)) /1024 / 1024}\
         \n\
         \nCompressed graph: {pdb_store.total_memory()}\
         \nCompressed graph structure: {pdb_store.graph_structure_memory()} \

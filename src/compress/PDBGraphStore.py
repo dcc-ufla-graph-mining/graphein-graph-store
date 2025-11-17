@@ -1,5 +1,5 @@
 import networkx as nx
-import numpy as np
+import torch
 from pyroaring import BitMap64
 from bidict import bidict
 import pandas as pd
@@ -38,24 +38,32 @@ class PDBGraphStore:
 
     def attr_values_memory(self):
         return asizeof.asizeof(self.__body_parts["attr_values"])/1024/1024
+    
+    def tensor_memory(self, vetor):
+        vetor = self.__body_parts["node_global_attr_keyvalue_mapping"]
+
+        if not vetor.is_sparse:
+            return vetor.element_size()* vetor.numel() /1024/1024
+        
+        memory_idx = vetor._indices().element_size() * vetor._indices().numel()
+        memory_values = vetor._values().element_size()*vetor._values().numel()
+
+        return (memory_idx + memory_values) /1024/1024 
 
     def node_global_attr_keyvalue_mapping_memory(self):
-        zeros = np.count_nonzero(self.__body_parts["node_global_attr_keyvalue_mapping"] == 0)
-        print(f'zeros in node_global_attr: {zeros}')
-        print(f'nonzeros in node_global_attr: {self.__body_parts["node_global_attr_keyvalue_mapping"].size - zeros}')
-        return self.__body_parts["node_global_attr_keyvalue_mapping"].nbytes/1024/1024
+        vetor = self.__body_parts["node_global_attr_keyvalue_mapping"]
+
+        return self.tensor_memory(vetor)
 
     def node_local_attr_keyvalue_mapping_memory(self):
-        zeros = np.count_nonzero(self.__body_parts["node_local_attr_keyvalue_mapping"] == 0)
-        print(f'zeros in node_local_attr: {zeros}')
-        print(f'nonzeros in node_local_attr: {self.__body_parts["node_local_attr_keyvalue_mapping"].size - zeros}')
-        return self.__body_parts["node_local_attr_keyvalue_mapping"].nbytes/1024/1024
+        vetor = self.__body_parts["node_local_attr_keyvalue_mapping"]
+
+        return self.tensor_memory(vetor)
 
     def edge_local_attr_keyvalue_mapping_memory(self):
-        zeros = np.count_nonzero(self.__body_parts["edge_local_attr_keyvalue_mapping"] == 0)
-        print(f'zeros in edge_local_attr: {zeros}')
-        print(f'nonzeros in edge_local_attr: {self.__body_parts["edge_local_attr_keyvalue_mapping"].size - zeros}')
-        return self.__body_parts["edge_local_attr_keyvalue_mapping"].nbytes/1024/1024
+        vetor = self.__body_parts["edge_local_attr_keyvalue_mapping"]
+
+        return self.tensor_memory(vetor)
 
     def graph_structure_memory(self):
         return (

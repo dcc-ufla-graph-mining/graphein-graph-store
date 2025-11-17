@@ -1,11 +1,11 @@
 import networkx as nx
-import numpy as np
 from pyroaring import BitMap64
 from bidict import bidict
+import numpy as np
 import pandas as pd
 import pickle as pk
 import time
-
+import torch
 
 def initialize_body_parts():
     body_parts = {
@@ -16,15 +16,17 @@ def initialize_body_parts():
         "pdb_id_to_edges": {},
         "attr_keys": 
                 [
-                      "chain_id", "residue_name", "residue_number", "atom_type",
-                      "element_symbol", "coords", "b_factor", "meiler", "kind",
-                      "distance"
+                      "empty", "chain_id", "residue_name", "residue_number", 
+                      "atom_type", "element_symbol", "coords", "b_factor", 
+                      "meiler", "kind", "distance"
                 ],
         "attr_values": bidict(),
         "node_global_attr_keyvalue_mapping": '',
         "node_local_attr_keyvalue_mapping": '',
         "edge_local_attr_keyvalue_mapping": ''
     }
+
+    body_parts["attr_values"]["empty"] = 0
 
     return body_parts
 
@@ -122,20 +124,20 @@ def initialize_structures(protein_graphs: dict[str, list[nx.Graph]], body_parts:
         for g in pdb_graph_list:
             construct_structure_attributes(g, body_parts, pdb_id)
 
-    body_parts["node_global_attr_keyvalue_mapping"] = np.zeros((
+    body_parts["node_global_attr_keyvalue_mapping"] = torch.zeros((
                                                                 len(body_parts["node_label_to_node_id"]), 
                                                                 10
-                                                                ), dtype=int)
-    body_parts["node_local_attr_keyvalue_mapping"] = np.zeros((
+                                                                ), dtype=torch.long)
+    body_parts["node_local_attr_keyvalue_mapping"] = torch.zeros((
                                                                 len(body_parts["pdb_code_to_id"]), 
                                                                 len(body_parts["node_label_to_node_id"]), 
                                                                 6
-                                                                ), dtype=int)
-    body_parts["edge_local_attr_keyvalue_mapping"] = np.zeros((
+                                                                ), dtype=torch.long)
+    body_parts["edge_local_attr_keyvalue_mapping"] = torch.zeros((
                                                                 len(body_parts["pdb_code_to_id"]), 
                                                                 len(body_parts["edge_label_to_edge_id"]), 
                                                                 4
-                                                                ), dtype=int)
+                                                                ), dtype=torch.long)
 
 def reconstruct_nodes(body_parts: dict, g: nx.Graph, pdb_id: int):
     for node_label in g.nodes:
@@ -145,8 +147,8 @@ def reconstruct_nodes(body_parts: dict, g: nx.Graph, pdb_id: int):
         local_attributes = body_parts["node_local_attr_keyvalue_mapping"][pdb_id][node_id]
 
         for i in range(0, len(global_attributes), 2):
-            attr_key_id = global_attributes[i]
-            attr_value_id = global_attributes[i+1]
+            attr_key_id = global_attributes[i].item()
+            attr_value_id = global_attributes[i+1].item()
 
             serialized_attr_value = body_parts["attr_values"].inverse[attr_value_id]
             attr_key = body_parts["attr_keys"][attr_key_id]
@@ -155,8 +157,8 @@ def reconstruct_nodes(body_parts: dict, g: nx.Graph, pdb_id: int):
             g.nodes[node_label][attr_key] = attr_value
 
         for i in range(0, len(local_attributes), 2):
-            attr_key_id = local_attributes[i]
-            attr_value_id = local_attributes[i+1]
+            attr_key_id = local_attributes[i].item()
+            attr_value_id = local_attributes[i+1].item()
 
             serialized_attr_value = body_parts["attr_values"].inverse[attr_value_id]
             attr_key = body_parts["attr_keys"][attr_key_id]
@@ -171,8 +173,8 @@ def reconstruct_edges(body_parts: dict, g: nx.Graph, pdb_id: int):
         attributes = body_parts["edge_local_attr_keyvalue_mapping"][pdb_id][edge_id]
 
         for i in range(0, len(attributes), 2):
-            attr_key_id = attributes[i]
-            attr_value_id = attributes[i+1]
+            attr_key_id = attributes[i].item()
+            attr_value_id = attributes[i+1].item()
 
             serialized_attr_value = body_parts["attr_values"].inverse[attr_value_id]
             attr_key = body_parts["attr_keys"][attr_key_id]
@@ -239,7 +241,11 @@ def reconstruct_and_validate(protein_graphs: dict[str, list[nx.Graph]], body_par
                         original_node[k] = tuple([tuple(v.to_list()), tuple(v.name)])
                         extracted_node[k] = tuple([tuple(w.to_list()), tuple(w.name)])
 
-                    if isinstance(v, np.ndarray):
+                    # Suporte para tensors PyTorch
+                    if isinstance(v, torch.Tensor):
+                        original_node[k] = tuple([tuple(v.tolist())])
+                        extracted_node[k] = tuple([tuple(w.tolist())])
+                    elif isinstance(v, np.ndarray):
                         original_node[k] = tuple([tuple(v)])
                         extracted_node[k] = tuple([tuple(w)])
 
@@ -263,8 +269,14 @@ def compress_pdb_graphs(protein_graphs: dict[str, list[nx.Graph]]) -> dict:
     initialize_structures(protein_graphs, body_parts)
     process_graphs(protein_graphs, body_parts)
 
-    time_to_construct = time_to_construct_start - time.time()
+    body_parts["node_global_attr_keyvalue_mapping"] = body_parts["node_global_attr_keyvalue_mapping"].to_sparse()
+    body_parts["node_local_attr_keyvalue_mapping"] = body_parts["node_local_attr_keyvalue_mapping"].to_sparse()
+    body_parts["edge_local_attr_keyvalue_mapping"] = body_parts["edge_local_attr_keyvalue_mapping"].to_sparse() 
+
+    time_to_construct = time.time() - time_to_construct_start
 
     reconstruct_and_validate(protein_graphs, body_parts)
+
+    print(f'number of edges: {len(body_parts["edge_label_to_edge_id"])}')
     
     return body_parts, time_to_construct
