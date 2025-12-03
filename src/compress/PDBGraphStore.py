@@ -62,7 +62,7 @@ class PDBGraphStore:
     def node_global_attr_keyvalue_mapping_memory(self):
         vetor = self.__body_parts["node_global_attr_keyvalue_mapping"]
 
-        return vetor.nbytes/1024/1024
+        return asizeof.asizeof(vetor)/1024/1024
     
     def node_global_attr_keyvalue_mapping_serialized_memory(self):
         return len(pk.dumps(self.__body_parts["node_global_attr_keyvalue_mapping"]))/1024/1024

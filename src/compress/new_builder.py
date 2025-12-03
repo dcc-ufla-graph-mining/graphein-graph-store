@@ -36,13 +36,15 @@ def edge_label_undirected(edge_label: tuple) -> frozenset:
 def process_edge_attrs(body_parts: dict, pdb_id: int, edge_id: int, edge: dict):
     local_attr_list = []
     for attr_key, attr_value in edge.items():
-        serialized_attr_value = pk.dumps(attr_value)
 
-        if serialized_attr_value not in body_parts["attr_values"]:
-            body_parts["attr_values"][serialized_attr_value] = len(body_parts["attr_values"])
+        if isinstance(attr_value, set):
+            attr_value = next(iter(attr_value))
+
+        if attr_value not in body_parts["attr_values"]:
+            body_parts["attr_values"][attr_value] = len(body_parts["attr_values"])
 
         attr_key_id = body_parts["attr_keys"].index(attr_key)
-        attr_value_id = body_parts["attr_values"][serialized_attr_value]
+        attr_value_id = body_parts["attr_values"][attr_value]
 
         local_attr_list.append(attr_key_id)
         local_attr_list.append(attr_value_id)
@@ -64,13 +66,18 @@ def process_node_attrs(body_parts: dict, pdb_id: int, node_id: int, node: dict):
     local_attr_list = []
 
     for attr_key, attr_value in node.items():
-        serialized_attr_value = pk.dumps(attr_value)
 
-        if serialized_attr_value not in body_parts["attr_values"]:
-            body_parts["attr_values"][serialized_attr_value] = len(body_parts["attr_values"])
+        if isinstance(attr_value, pd.Series):
+            attr_value = tuple([tuple(attr_value.tolist()), tuple(attr_value.name)])
+        
+        if isinstance(attr_value, np.ndarray):
+            attr_value = tuple(attr_value)
+
+        if attr_value not in body_parts["attr_values"]:
+            body_parts["attr_values"][attr_value] = len(body_parts["attr_values"])
 
         attr_key_id = body_parts["attr_keys"].index(attr_key)
-        attr_value_id = body_parts["attr_values"][serialized_attr_value]
+        attr_value_id = body_parts["attr_values"][attr_value]
         
         if attr_key in local_node_attributes:
             local_attr_list.append(attr_key_id)
@@ -110,7 +117,6 @@ def construct_structure_attributes(g: nx.Graph, body_parts: dict, pdb_id: int):
     construct_node_structure(g, body_parts, pdb_id)
     construct_edge_structure(g, body_parts, pdb_id)
 
-
 def initialize_structures(protein_graphs: dict[str, list[nx.Graph]], body_parts: dict):
     for pdb_code, pdb_graph_list in protein_graphs.items():
         if pdb_code not in body_parts["pdb_code_to_id"]:
@@ -143,9 +149,15 @@ def reconstruct_nodes(body_parts: dict, g: nx.Graph, pdb_id: int):
             attr_key_id = global_attributes[i]
             attr_value_id = global_attributes[i+1]
 
-            serialized_attr_value = body_parts["attr_values"].inverse[attr_value_id]
+            attr_value = body_parts["attr_values"].inverse[attr_value_id]
             attr_key = body_parts["attr_keys"][attr_key_id]
-            attr_value = pk.loads(serialized_attr_value)
+            
+            if isinstance(attr_value, tuple):
+                attr_value = pd.Series(
+                    attr_value[0],
+                    name=''.join(list(attr_value[1])),
+                    index=[f'dim_{x}' for x in [1,2,3,4,5,6,7]]
+                )
 
             g.nodes[node_label][attr_key] = attr_value
 
@@ -153,9 +165,11 @@ def reconstruct_nodes(body_parts: dict, g: nx.Graph, pdb_id: int):
             attr_key_id = local_attributes[i]
             attr_value_id = local_attributes[i+1]
 
-            serialized_attr_value = body_parts["attr_values"].inverse[attr_value_id]
+            attr_value = body_parts["attr_values"].inverse[attr_value_id]
             attr_key = body_parts["attr_keys"][attr_key_id]
-            attr_value = pk.loads(serialized_attr_value)
+
+            if isinstance(attr_value, tuple):
+                attr_value = np.array(attr_value)
 
             g.nodes[node_label][attr_key] = attr_value
 
@@ -169,9 +183,11 @@ def reconstruct_edges(body_parts: dict, g: nx.Graph, pdb_id: int):
             attr_key_id = attributes[i]
             attr_value_id = attributes[i+1]
 
-            serialized_attr_value = body_parts["attr_values"].inverse[attr_value_id]
+            attr_value = body_parts["attr_values"].inverse[attr_value_id]
             attr_key = body_parts["attr_keys"][attr_key_id]
-            attr_value = pk.loads(serialized_attr_value)
+
+            if attr_key == "kind":
+                attr_value = set([attr_value])
 
             g.edges[edge_label][attr_key] = attr_value
 
@@ -190,10 +206,10 @@ def reconstruct_and_validate(protein_graphs: dict[str, list[nx.Graph]], body_par
             reconstruct_nodes(body_parts, extracted_graph, pdb_id)
             reconstruct_edges(body_parts, extracted_graph, pdb_id)
 
-            print(f"\n Nodes in original graph: {len(original_graph.nodes)}")
-            print(f"\n Nodes in extracted graph: {len(extracted_graph.nodes)}")
-            print(f"\n Edges in original graph: {len(original_graph.edges)}")
-            print(f"\n Edges in extracted graph: {len(extracted_graph.edges)}")
+            # print(f"\n Nodes in original graph: {len(original_graph.nodes)}")
+            # print(f"\n Nodes in extracted graph: {len(extracted_graph.nodes)}")
+            # print(f"\n Edges in original graph: {len(original_graph.edges)}")
+            # print(f"\n Edges in extracted graph: {len(extracted_graph.edges)}")
 
             nodes_equal = nx.utils.nodes_equal(original_graph.nodes, extracted_graph.nodes)
             edges_equal = nx.utils.edges_equal(original_graph.edges, extracted_graph.edges)
@@ -234,16 +250,12 @@ def reconstruct_and_validate(protein_graphs: dict[str, list[nx.Graph]], body_par
                         original_node[k] = tuple([tuple(v.to_list()), tuple(v.name)])
                         extracted_node[k] = tuple([tuple(w.to_list()), tuple(w.name)])
 
-                    # Suporte para tensors PyTorch
-                    if isinstance(v, torch.Tensor):
-                        original_node[k] = tuple([tuple(v.tolist())])
-                        extracted_node[k] = tuple([tuple(w.tolist())])
                     elif isinstance(v, np.ndarray):
                         original_node[k] = tuple([tuple(v)])
                         extracted_node[k] = tuple([tuple(w)])
 
                 if original_node != extracted_node:
-                    print(f"\ndifferent attributes in edges {n}: \n")
+                    print(f"\ndifferent attributes in node {n}: \n")
                     print(f"original: {original_node}")
                     print(f"extracted: {extracted_node}")
 
