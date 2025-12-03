@@ -17,53 +17,71 @@ class PDBGraphStore:
     def __str__(self):
         return f'PDBGraphStore with {len(self.get_pdb_code_list())} pdbs'
 
-
     def pdb_code_to_id_memory(self):
         return asizeof.asizeof(self.__body_parts["pdb_code_to_id"])/1024/1024
+    
+    def pdb_code_to_id_serialized_memory(self):
+        return len(pk.dumps(self.__body_parts["pdb_code_to_id"]))/1024/1024
 
     def node_label_to_node_id_memory(self):
         return asizeof.asizeof(self.__body_parts["node_label_to_node_id"])/1024/1024
+    
+    def node_label_to_node_id_serialized_memory(self):
+        return len(pk.dumps(self.__body_parts["node_label_to_node_id"]))/1024/1024
 
     def edge_label_to_edge_id_memory(self):
         return asizeof.asizeof(self.__body_parts["edge_label_to_edge_id"])/1024/1024
+    
+    def edge_label_to_edge_id_serialized_memory(self):
+        return len(pk.dumps(self.__body_parts["edge_label_to_edge_id"]))/1024/1024
 
     def pdb_id_to_nodes_memory(self):
         return asizeof.asizeof(self.__body_parts["pdb_id_to_nodes"])/1024/1024
     
+    def pdb_id_to_nodes_serialized_memory(self):
+        return len(pk.dumps(self.__body_parts["pdb_id_to_nodes"]))/1024/1024
+    
     def pdb_id_to_edges_memory(self):
         return asizeof.asizeof(self.__body_parts["pdb_id_to_edges"])/1024/1024
+    
+    def pdb_id_to_edges_serialized_memory(self):
+        return len(pk.dumps(self.__body_parts["pdb_id_to_edges"]))/1024/1024
 
     def attr_keys_memory(self):
         return asizeof.asizeof(self.__body_parts["attr_keys"])/1024/1024
+    
+    def attr_keys_serialized_memory(self):
+        return len(pk.dumps(self.__body_parts["attr_keys"]))/1024/1024
 
     def attr_values_memory(self):
         return asizeof.asizeof(self.__body_parts["attr_values"])/1024/1024
     
-    def tensor_memory(self, vetor):
-        vetor = self.__body_parts["node_global_attr_keyvalue_mapping"]
-
-        if not vetor.is_sparse:
-            return vetor.element_size()* vetor.numel() /1024/1024
-        
-        memory_idx = vetor._indices().element_size() * vetor._indices().numel()
-        memory_values = vetor._values().element_size()*vetor._values().numel()
-
-        return (memory_idx + memory_values) /1024/1024 
+    def attr_values_serialized_memory(self):
+        return len(pk.dumps(self.__body_parts["attr_values"]))/1024/1024
 
     def node_global_attr_keyvalue_mapping_memory(self):
         vetor = self.__body_parts["node_global_attr_keyvalue_mapping"]
 
-        return self.tensor_memory(vetor)
+        return vetor.nbytes/1024/1024
+    
+    def node_global_attr_keyvalue_mapping_serialized_memory(self):
+        return len(pk.dumps(self.__body_parts["node_global_attr_keyvalue_mapping"]))/1024/1024
 
     def node_local_attr_keyvalue_mapping_memory(self):
         vetor = self.__body_parts["node_local_attr_keyvalue_mapping"]
 
-        return self.tensor_memory(vetor)
+        return asizeof.asizeof(vetor)/1024/1024
+    
+    def node_local_attr_keyvalue_mapping_serialized_memory(self):
+        return len(pk.dumps(self.__body_parts["node_local_attr_keyvalue_mapping"]))/1024/1024
 
     def edge_local_attr_keyvalue_mapping_memory(self):
         vetor = self.__body_parts["edge_local_attr_keyvalue_mapping"]
 
-        return self.tensor_memory(vetor)
+        return asizeof.asizeof(vetor)/1024/1024
+    
+    def edge_local_attr_keyvalue_mapping_serialized_memory(self):
+        return len(pk.dumps(self.__body_parts["edge_local_attr_keyvalue_mapping"]))/1024/1024
 
     def graph_structure_memory(self):
         return (
@@ -96,4 +114,16 @@ class PDBGraphStore:
             self.node_attributes_memory() +
             self.edge_attributes_memory() 
         )
-
+    
+    def total_serialized_memory(self):
+        return (
+            self.attr_keys_serialized_memory() +
+            self.attr_values_serialized_memory() +
+            self.edge_label_to_edge_id_serialized_memory() +
+            self.edge_local_attr_keyvalue_mapping_serialized_memory() +
+            self.node_global_attr_keyvalue_mapping_serialized_memory() +
+            self.node_local_attr_keyvalue_mapping_serialized_memory() +
+            self.pdb_id_to_edges_serialized_memory() +
+            self.pdb_code_to_id_serialized_memory() +
+            self.pdb_id_to_nodes_serialized_memory()
+        )

@@ -22,8 +22,8 @@ def initialize_body_parts():
                 ],
         "attr_values": bidict(),
         "node_global_attr_keyvalue_mapping": '',
-        "node_local_attr_keyvalue_mapping": '',
-        "edge_local_attr_keyvalue_mapping": ''
+        "node_local_attr_keyvalue_mapping": {},
+        "edge_local_attr_keyvalue_mapping": {}
     }
 
     body_parts["attr_values"]["empty"] = 0
@@ -34,7 +34,7 @@ def edge_label_undirected(edge_label: tuple) -> frozenset:
     return frozenset(edge_label)
 
 def process_edge_attrs(body_parts: dict, pdb_id: int, edge_id: int, edge: dict):
-    idx = 0
+    local_attr_list = []
     for attr_key, attr_value in edge.items():
         serialized_attr_value = pk.dumps(attr_value)
 
@@ -43,11 +43,12 @@ def process_edge_attrs(body_parts: dict, pdb_id: int, edge_id: int, edge: dict):
 
         attr_key_id = body_parts["attr_keys"].index(attr_key)
         attr_value_id = body_parts["attr_values"][serialized_attr_value]
-        
-        body_parts["edge_local_attr_keyvalue_mapping"][pdb_id][edge_id][idx] = attr_key_id
-        body_parts["edge_local_attr_keyvalue_mapping"][pdb_id][edge_id][idx+1] = attr_value_id
 
-        idx+= 2
+        local_attr_list.append(attr_key_id)
+        local_attr_list.append(attr_value_id)
+        
+    body_parts["edge_local_attr_keyvalue_mapping"][(pdb_id, edge_id)] = local_attr_list
+
 
 def process_edges(g: nx.Graph, body_parts: dict, pdb_id: int):
     for e in g.edges:
@@ -55,11 +56,12 @@ def process_edges(g: nx.Graph, body_parts: dict, pdb_id: int):
         process_edge_attrs(body_parts, pdb_id, edge_id, g.edges[e])
 
 def process_node_attrs(body_parts: dict, pdb_id: int, node_id: int, node: dict):
-    local_idx = 0
     global_idx = 0
 
     global_node_attributes= ["chain_id", "residue_name", "atom_type", "element_symbol", "meiler"]
     local_node_attributes = ["residue_number", "coords", "b_factor"]
+
+    local_attr_list = []
 
     for attr_key, attr_value in node.items():
         serialized_attr_value = pk.dumps(attr_value)
@@ -71,14 +73,15 @@ def process_node_attrs(body_parts: dict, pdb_id: int, node_id: int, node: dict):
         attr_value_id = body_parts["attr_values"][serialized_attr_value]
         
         if attr_key in local_node_attributes:
-            body_parts["node_local_attr_keyvalue_mapping"][pdb_id][node_id][local_idx] = attr_key_id
-            body_parts["node_local_attr_keyvalue_mapping"][pdb_id][node_id][local_idx+1] = attr_value_id
-            local_idx+=2
+            local_attr_list.append(attr_key_id)
+            local_attr_list.append(attr_value_id)
 
         if attr_key in global_node_attributes:
             body_parts["node_global_attr_keyvalue_mapping"][node_id][global_idx] = attr_key_id
             body_parts["node_global_attr_keyvalue_mapping"][node_id][global_idx+1] = attr_value_id
             global_idx+=2
+
+    body_parts["node_local_attr_keyvalue_mapping"][(pdb_id, node_id)] = local_attr_list
 
 def process_nodes(g: nx.Graph, body_parts: dict, pdb_id: int):
     for n in g.nodes:
@@ -124,31 +127,21 @@ def initialize_structures(protein_graphs: dict[str, list[nx.Graph]], body_parts:
         for g in pdb_graph_list:
             construct_structure_attributes(g, body_parts, pdb_id)
 
-    body_parts["node_global_attr_keyvalue_mapping"] = torch.zeros((
+    body_parts["node_global_attr_keyvalue_mapping"] = np.zeros((
                                                                 len(body_parts["node_label_to_node_id"]), 
                                                                 10
-                                                                ), dtype=torch.long)
-    body_parts["node_local_attr_keyvalue_mapping"] = torch.zeros((
-                                                                len(body_parts["pdb_code_to_id"]), 
-                                                                len(body_parts["node_label_to_node_id"]), 
-                                                                6
-                                                                ), dtype=torch.long)
-    body_parts["edge_local_attr_keyvalue_mapping"] = torch.zeros((
-                                                                len(body_parts["pdb_code_to_id"]), 
-                                                                len(body_parts["edge_label_to_edge_id"]), 
-                                                                4
-                                                                ), dtype=torch.long)
+                                                                ), dtype=np.int64)
 
 def reconstruct_nodes(body_parts: dict, g: nx.Graph, pdb_id: int):
     for node_label in g.nodes:
         node_id = body_parts["node_label_to_node_id"][node_label]
 
         global_attributes = body_parts["node_global_attr_keyvalue_mapping"][node_id]
-        local_attributes = body_parts["node_local_attr_keyvalue_mapping"][pdb_id][node_id]
+        local_attributes = body_parts["node_local_attr_keyvalue_mapping"][(pdb_id, node_id)]
 
         for i in range(0, len(global_attributes), 2):
-            attr_key_id = global_attributes[i].item()
-            attr_value_id = global_attributes[i+1].item()
+            attr_key_id = global_attributes[i]
+            attr_value_id = global_attributes[i+1]
 
             serialized_attr_value = body_parts["attr_values"].inverse[attr_value_id]
             attr_key = body_parts["attr_keys"][attr_key_id]
@@ -157,8 +150,8 @@ def reconstruct_nodes(body_parts: dict, g: nx.Graph, pdb_id: int):
             g.nodes[node_label][attr_key] = attr_value
 
         for i in range(0, len(local_attributes), 2):
-            attr_key_id = local_attributes[i].item()
-            attr_value_id = local_attributes[i+1].item()
+            attr_key_id = local_attributes[i]
+            attr_value_id = local_attributes[i+1]
 
             serialized_attr_value = body_parts["attr_values"].inverse[attr_value_id]
             attr_key = body_parts["attr_keys"][attr_key_id]
@@ -170,11 +163,11 @@ def reconstruct_edges(body_parts: dict, g: nx.Graph, pdb_id: int):
     for edge_label in g.edges:
         edge_id = body_parts["edge_label_to_edge_id"][edge_label_undirected(edge_label)]
 
-        attributes = body_parts["edge_local_attr_keyvalue_mapping"][pdb_id][edge_id]
+        attributes = body_parts["edge_local_attr_keyvalue_mapping"][(pdb_id, edge_id)]
 
         for i in range(0, len(attributes), 2):
-            attr_key_id = attributes[i].item()
-            attr_value_id = attributes[i+1].item()
+            attr_key_id = attributes[i]
+            attr_value_id = attributes[i+1]
 
             serialized_attr_value = body_parts["attr_values"].inverse[attr_value_id]
             attr_key = body_parts["attr_keys"][attr_key_id]
@@ -267,11 +260,7 @@ def compress_pdb_graphs(protein_graphs: dict[str, list[nx.Graph]]) -> dict:
 
     body_parts = initialize_body_parts()
     initialize_structures(protein_graphs, body_parts)
-    process_graphs(protein_graphs, body_parts)
-
-    body_parts["node_global_attr_keyvalue_mapping"] = body_parts["node_global_attr_keyvalue_mapping"].to_sparse()
-    body_parts["node_local_attr_keyvalue_mapping"] = body_parts["node_local_attr_keyvalue_mapping"].to_sparse()
-    body_parts["edge_local_attr_keyvalue_mapping"] = body_parts["edge_local_attr_keyvalue_mapping"].to_sparse() 
+    process_graphs(protein_graphs, body_parts) 
 
     time_to_construct = time.time() - time_to_construct_start
 

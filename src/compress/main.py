@@ -362,14 +362,53 @@ def experimento_1():
         \nUncompressed complete graph size: {asizeof.asizeof(protein_graph_with_metadata_dict) /1024 / 1024}\
         \nUncompressed complete graph size serialized: {len(pickle.dumps(protein_graph_with_metadata_dict)) /1024 / 1024}\
         \n\
+        \n \
         \nCompressed graph: {pdb_store.total_memory()}\
         \nCompressed graph structure: {pdb_store.graph_structure_memory()} \
+        \n \
+        \n pdb_code_to_id: {pdb_store.pdb_code_to_id_memory()} \
+        \n pdb_code_to_id_serialized: {pdb_store.pdb_code_to_id_serialized_memory()}\
+        \n \
+        \n pdb_id_to_nodes: {pdb_store.pdb_id_to_nodes_memory()} \
+        \n pdb_id_to_nodes_serialized: {pdb_store.pdb_id_to_nodes_serialized_memory()} \
+        \n\
+        \n pdb_id_to_edges: {pdb_store.pdb_id_to_edges_memory()} \
+        \n pdb_id_to_edges_serialized: {pdb_store.pdb_id_to_edges_serialized_memory()}\
+        \n\
+        \n node_label_to_node_id: {pdb_store.node_label_to_node_id_memory()}\
+        \n node_label_to_node_id_serialized: {pdb_store.node_label_to_node_id_serialized_memory()}\
+        \n\
+        \n edge_label_to_edge_id: {pdb_store.edge_label_to_edge_id_memory()}\
+        \n edge_label_to_edge_id_serialized: {pdb_store.edge_label_to_edge_id_serialized_memory()}\
+        \n\
+        \n \
         \nCompressed dict attributes: {pdb_store.dict_attributes_memory()} \
+        \n \
+        \n attr_keys: {pdb_store.attr_keys_memory()} \
+        \n attr_keys_serialized: {pdb_store.attr_keys_serialized_memory()}\
+        \n\
+        \n attr_values: {pdb_store.attr_values_memory()} \
+        \n attr_values_serialized: {pdb_store.attr_values_serialized_memory()}\
+        \n\
+        \n \
         \nCompressed node attributes: {pdb_store.node_attributes_memory()}\
+        \n \
+        \n node_global_attr_keyvalue_mapping: {pdb_store.node_global_attr_keyvalue_mapping_memory()} \
+        \n node_global_attr_keyvalue_mapping_serialized: {pdb_store.node_global_attr_keyvalue_mapping_serialized_memory()}\
+        \n\
+        \n node_local_attr_keyvalue_mapping: {pdb_store.node_local_attr_keyvalue_mapping_memory()} \
+        \n node_local_attr_keyvalue_mapping_serialized: {pdb_store.node_local_attr_keyvalue_mapping_serialized_memory()}\
+        \n\
+        \n \
         \nCompressed edge attributes: {pdb_store.edge_attributes_memory()}\
+        \n \
+        \n edge_local_attr_keyvalue_mapping: {pdb_store.edge_local_attr_keyvalue_mapping_memory()} \
+        \n edge_local_attr_keyvalue_mapping_serialized: {pdb_store.edge_local_attr_keyvalue_mapping_serialized_memory()}\
+        \n \
         \n\
         \nCompressed graph object size: {asizeof.asizeof(pdb_store)/1024/1024}\
         \nCompressed graph complete size serialized: {asizeof.asizeof(pickle.dumps(pdb_store))/1024/1024}\
+        \nCompressed graph complete size serialized (sum) {pdb_store.total_serialized_memory()}\
     '
 
     write_result(dataset=dataset_name, msg=msg, result_path=result_path)

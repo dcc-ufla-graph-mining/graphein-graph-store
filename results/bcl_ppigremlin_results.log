@@ -1,18 +1,57 @@
 Result log for bcl_ppigremlin
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 7.759005069732666
+Time to construct graphs: 9.322783470153809
 Number of graphs: 116
-Time to compress: 21.290923833847046
+Time to compress: 13.060457706451416
         
 Uncompressed complete graph size: 167.25328063964844        
 Uncompressed complete graph size serialized: 19.710888862609863        
         
-Compressed graph: 118.76409149169922        
+         
+Compressed graph: 174.21046447753906        
 Compressed graph structure: 42.13072204589844         
-Compressed dict attributes: 69.45586395263672         
-Compressed node attributes: 4.785003662109375        
-Compressed edge attributes: 2.3925018310546875        
+         
+ pdb_code_to_id: 0.0142059326171875         
+ pdb_code_to_id_serialized: 0.001010894775390625        
+         
+ pdb_id_to_nodes: 0.0743865966796875         
+ pdb_id_to_nodes_serialized: 0.06764411926269531         
         
-Compressed graph object size: 110.92589569091797        
-Compressed graph complete size serialized: 73.44579315185547    
+ pdb_id_to_edges: 0.44033050537109375         
+ pdb_id_to_edges_serialized: 0.4336233139038086        
+        
+ node_label_to_node_id: 1.5174102783203125        
+ node_label_to_node_id_serialized: 0.14545822143554688        
+        
+ edge_label_to_edge_id: 40.084388732910156        
+ edge_label_to_edge_id_serialized: 2.1063737869262695        
+        
+         
+Compressed dict attributes: 69.45586395263672         
+         
+ attr_keys: 0.00078582763671875         
+ attr_keys_serialized: 0.00013637542724609375        
+        
+ attr_values: 69.455078125         
+ attr_values_serialized: 33.422165870666504        
+        
+         
+Compressed node attributes: 9.215408325195312        
+         
+ node_global_attr_keyvalue_mapping: 0.7975006103515625         
+ node_global_attr_keyvalue_mapping_serialized: 0.7976551055908203        
+        
+ node_local_attr_keyvalue_mapping: 8.41790771484375         
+ node_local_attr_keyvalue_mapping_serialized: 0.8775835037231445        
+        
+         
+Compressed edge attributes: 53.408470153808594        
+         
+ edge_local_attr_keyvalue_mapping: 53.408470153808594         
+ edge_local_attr_keyvalue_mapping_serialized: 5.222792625427246        
+         
+        
+Compressed graph object size: 161.02476501464844        
+Compressed graph complete size serialized: 43.00690460205078        
+Compressed graph complete size serialized (sum) 42.928985595703125    
