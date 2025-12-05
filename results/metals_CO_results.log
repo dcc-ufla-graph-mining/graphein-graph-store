@@ -1,6 +1,57 @@
 Result log for metals_CO
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 22.088917016983032
+Time to construct graphs: 22.095476150512695
 Number of graphs: 196
-Time to compress: 13.553938865661621
+Time to compress: 17.64994239807129
+        
+Uncompressed complete graph size: 627.3435440063477        
+Uncompressed complete graph size serialized: 73.70052242279053        
+        
+         
+Compressed graph: 603.9382705688477        
+Compressed graph structure: 170.12513732910156         
+         
+ pdb_code_to_id: 0.02532196044921875         
+ pdb_code_to_id_serialized: 0.001697540283203125        
+         
+ pdb_id_to_nodes: 0.25109100341796875         
+ pdb_id_to_nodes_serialized: 0.23840618133544922         
+        
+ pdb_id_to_edges: 1.1827468872070312         
+ pdb_id_to_edges_serialized: 1.1701793670654297        
+        
+ node_label_to_node_id: 9.126373291015625        
+ node_label_to_node_id_serialized: 0.6352987289428711        
+        
+ edge_label_to_edge_id: 159.53960418701172        
+ edge_label_to_edge_id_serialized: 14.582350730895996        
+        
+         
+Compressed dict attributes: 157.47996520996094         
+         
+ attr_keys: 0.00078582763671875         
+ attr_keys_serialized: 0.00013637542724609375        
+        
+ attr_values: 157.47917938232422         
+ attr_values_serialized: 29.097806930541992        
+        
+         
+Compressed node attributes: 32.445709228515625        
+         
+ node_global_attr_keyvalue_mapping: 1.7216339111328125         
+ node_global_attr_keyvalue_mapping_serialized: 1.7216510772705078        
+        
+ node_local_attr_keyvalue_mapping: 30.724075317382812         
+ node_local_attr_keyvalue_mapping_serialized: 3.2700767517089844        
+        
+         
+Compressed edge attributes: 243.88745880126953        
+         
+ edge_local_attr_keyvalue_mapping: 243.88745880126953         
+ edge_local_attr_keyvalue_mapping_serialized: 21.13704013824463        
+         
+        
+Compressed graph object size: 542.1703414916992        
+Compressed graph complete size serialized: 76.20378875732422        
+Compressed graph complete size serialized (sum) 71.21934509277344    

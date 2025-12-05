@@ -1,57 +1,57 @@
 Result log for ligand_PO4
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 1871.5761020183563
-Number of graphs: 1258
-Time to compress: 324.6995244026184
+Time to construct graphs: 172.48046851158142
+Number of graphs: 1259
+Time to compress: 138.29406356811523
         
-Uncompressed complete graph size: 4886.747955322266        
-Uncompressed complete graph size serialized: 573.7457113265991        
-        
-         
-Compressed graph: 6135.101058959961        
-Compressed graph structure: 2147.45076751709         
-         
- pdb_code_to_id: 0.14081573486328125         
- pdb_code_to_id_serialized: 0.011770248413085938        
-         
- pdb_id_to_nodes: 1.8987503051757812         
- pdb_id_to_nodes_serialized: 1.8395109176635742         
-        
- pdb_id_to_edges: 9.425209045410156         
- pdb_id_to_edges_serialized: 9.366982460021973        
-        
- node_label_to_node_id: 25.419479370117188        
- node_label_to_node_id_serialized: 2.601466178894043        
-        
- edge_label_to_edge_id: 2110.5665130615234        
- edge_label_to_edge_id_serialized: 108.51424789428711        
+Uncompressed complete graph size: 4932.5234451293945        
+Uncompressed complete graph size serialized: 579.3319225311279        
         
          
-Compressed dict attributes: 2067.983444213867         
+Compressed graph: 4630.62565612793        
+Compressed graph structure: 1242.1495895385742         
+         
+ pdb_code_to_id: 0.140899658203125         
+ pdb_code_to_id_serialized: 0.01177978515625        
+         
+ pdb_id_to_nodes: 1.9127960205078125         
+ pdb_id_to_nodes_serialized: 1.8535490036010742         
+        
+ pdb_id_to_edges: 9.448577880859375         
+ pdb_id_to_edges_serialized: 9.39022159576416        
+        
+ node_label_to_node_id: 25.606101989746094        
+ node_label_to_node_id_serialized: 2.6343612670898438        
+        
+ edge_label_to_edge_id: 1205.0412139892578        
+ edge_label_to_edge_id_serialized: 103.96679878234863        
+        
+         
+Compressed dict attributes: 1244.8398895263672         
          
  attr_keys: 0.00078582763671875         
  attr_keys_serialized: 0.00013637542724609375        
         
- attr_values: 2067.9826583862305         
- attr_values_serialized: 976.0554676055908        
+ attr_values: 1244.8391036987305         
+ attr_values_serialized: 228.71479988098145        
         
          
-Compressed node attributes: 244.73798370361328        
+Compressed node attributes: 239.89305877685547        
          
- node_global_attr_keyvalue_mapping: 12.86346435546875         
- node_global_attr_keyvalue_mapping_serialized: 12.86362075805664        
+ node_global_attr_keyvalue_mapping: 6.5096893310546875         
+ node_global_attr_keyvalue_mapping_serialized: 6.509708404541016        
         
- node_local_attr_keyvalue_mapping: 231.87451934814453         
- node_local_attr_keyvalue_mapping_serialized: 27.0447998046875        
+ node_local_attr_keyvalue_mapping: 233.38336944580078         
+ node_local_attr_keyvalue_mapping_serialized: 27.233948707580566        
         
          
-Compressed edge attributes: 1674.9288635253906        
+Compressed edge attributes: 1903.7431182861328        
          
- edge_local_attr_keyvalue_mapping: 1674.9288635253906         
- edge_local_attr_keyvalue_mapping_serialized: 171.71483325958252        
+ edge_local_attr_keyvalue_mapping: 1903.7431182861328         
+ edge_local_attr_keyvalue_mapping_serialized: 173.5445499420166        
          
         
-Compressed graph object size: 5694.647506713867        
-Compressed graph complete size serialized: 1308.904556274414        
-Compressed graph complete size serialized (sum) 1307.4113693237305    
+Compressed graph object size: 4185.714866638184        
+Compressed graph complete size serialized: 589.1493530273438        
+Compressed graph complete size serialized (sum) 551.225492477417    

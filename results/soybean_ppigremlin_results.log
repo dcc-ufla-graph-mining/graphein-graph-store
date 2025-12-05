@@ -1,6 +1,57 @@
 Result log for soybean_ppigremlin
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 5.716447830200195
+Time to construct graphs: 5.79276704788208
 Number of graphs: 93
-Time to compress: 2.2485005855560303
+Time to compress: 3.2652368545532227
+        
+Uncompressed complete graph size: 159.1702117919922        
+Uncompressed complete graph size serialized: 18.7236385345459        
+        
+         
+Compressed graph: 118.72644805908203        
+Compressed graph structure: 13.868377685546875         
+         
+ pdb_code_to_id: 0.01227569580078125         
+ pdb_code_to_id_serialized: 0.0008134841918945312        
+         
+ pdb_id_to_nodes: 0.07027435302734375         
+ pdb_id_to_nodes_serialized: 0.06401634216308594         
+        
+ pdb_id_to_edges: 0.4189910888671875         
+ pdb_id_to_edges_serialized: 0.4127187728881836        
+        
+ node_label_to_node_id: 1.2397384643554688        
+ node_label_to_node_id_serialized: 0.10347270965576172        
+        
+ edge_label_to_edge_id: 12.127098083496094        
+ edge_label_to_edge_id_serialized: 1.1537914276123047        
+        
+         
+Compressed dict attributes: 39.84656524658203         
+         
+ attr_keys: 0.00078582763671875         
+ attr_keys_serialized: 0.00013637542724609375        
+        
+ attr_values: 39.84577941894531         
+ attr_values_serialized: 7.310962677001953        
+        
+         
+Compressed node attributes: 8.204765319824219        
+         
+ node_global_attr_keyvalue_mapping: 0.28269195556640625         
+ node_global_attr_keyvalue_mapping_serialized: 0.28270912170410156        
+        
+ node_local_attr_keyvalue_mapping: 7.9220733642578125         
+ node_local_attr_keyvalue_mapping_serialized: 0.8193645477294922        
+        
+         
+Compressed edge attributes: 56.806739807128906        
+         
+ edge_local_attr_keyvalue_mapping: 56.806739807128906         
+ edge_local_attr_keyvalue_mapping_serialized: 4.843857765197754        
+         
+        
+Compressed graph object size: 107.81568908691406        
+Compressed graph complete size serialized: 16.128021240234375        
+Compressed graph complete size serialized (sum) 14.888370513916016    

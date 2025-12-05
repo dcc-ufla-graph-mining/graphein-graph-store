@@ -1,6 +1,57 @@
 Result log for ligand_BME
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 18.33353042602539
+Time to construct graphs: 18.528008699417114
 Number of graphs: 187
-Time to compress: 11.084710121154785
+Time to compress: 15.51570987701416
+        
+Uncompressed complete graph size: 543.2452392578125        
+Uncompressed complete graph size serialized: 63.846421241760254        
+        
+         
+Compressed graph: 548.8885192871094        
+Compressed graph structure: 156.44578552246094         
+         
+ pdb_code_to_id: 0.024566650390625         
+ pdb_code_to_id_serialized: 0.0016202926635742188        
+         
+ pdb_id_to_nodes: 0.21848297119140625         
+ pdb_id_to_nodes_serialized: 0.20594501495361328         
+        
+ pdb_id_to_edges: 1.0776214599609375         
+ pdb_id_to_edges_serialized: 1.0651683807373047        
+        
+ node_label_to_node_id: 6.334968566894531        
+ node_label_to_node_id_serialized: 0.5918750762939453        
+        
+ edge_label_to_edge_id: 148.79014587402344        
+ edge_label_to_edge_id_serialized: 12.59461498260498        
+        
+         
+Compressed dict attributes: 147.0620880126953         
+         
+ attr_keys: 0.00078582763671875         
+ attr_keys_serialized: 0.00013637542724609375        
+        
+ attr_values: 147.0613021850586         
+ attr_values_serialized: 25.164610862731934        
+        
+         
+Compressed node attributes: 28.98908233642578        
+         
+ node_global_attr_keyvalue_mapping: 1.5997543334960938         
+ node_global_attr_keyvalue_mapping_serialized: 1.599771499633789        
+        
+ node_local_attr_keyvalue_mapping: 27.389328002929688         
+ node_local_attr_keyvalue_mapping_serialized: 2.841571807861328        
+        
+         
+Compressed edge attributes: 216.39156341552734        
+         
+ edge_local_attr_keyvalue_mapping: 216.39156341552734         
+ edge_local_attr_keyvalue_mapping_serialized: 18.257817268371582        
+         
+        
+Compressed graph object size: 495.21154022216797        
+Compressed graph complete size serialized: 66.07176971435547        
+Compressed graph complete size serialized (sum) 61.73125648498535    

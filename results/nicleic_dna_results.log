@@ -1,6 +1,57 @@
 Result log for nicleic_dna
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 70.23716855049133
+Time to construct graphs: 70.78716969490051
 Number of graphs: 533
-Time to compress: 40.32791018486023
+Time to compress: 52.795915603637695
+        
+Uncompressed complete graph size: 1979.1788177490234        
+Uncompressed complete graph size serialized: 232.07800102233887        
+        
+         
+Compressed graph: 1871.9102249145508        
+Compressed graph structure: 409.07621002197266         
+         
+ pdb_code_to_id: 0.06238555908203125         
+ pdb_code_to_id_serialized: 0.0048542022705078125        
+         
+ pdb_id_to_nodes: 0.7655258178710938         
+ pdb_id_to_nodes_serialized: 0.7375411987304688         
+        
+ pdb_id_to_edges: 3.4627456665039062         
+ pdb_id_to_edges_serialized: 3.435126304626465        
+        
+ node_label_to_node_id: 21.131690979003906        
+ node_label_to_node_id_serialized: 1.846592903137207        
+        
+ edge_label_to_edge_id: 383.6538619995117        
+ edge_label_to_edge_id_serialized: 41.170565605163574        
+        
+         
+Compressed dict attributes: 563.7538299560547         
+         
+ attr_keys: 0.00078582763671875         
+ attr_keys_serialized: 0.00013637542724609375        
+        
+ attr_values: 563.753044128418         
+ attr_values_serialized: 91.93102741241455        
+        
+         
+Compressed node attributes: 104.42217254638672        
+         
+ node_global_attr_keyvalue_mapping: 4.642814636230469         
+ node_global_attr_keyvalue_mapping_serialized: 4.642833709716797        
+        
+ node_local_attr_keyvalue_mapping: 99.77935791015625         
+ node_local_attr_keyvalue_mapping_serialized: 10.81717586517334        
+        
+         
+Compressed edge attributes: 794.6580123901367        
+         
+ edge_local_attr_keyvalue_mapping: 794.6580123901367         
+ edge_local_attr_keyvalue_mapping_serialized: 68.95297622680664        
+         
+        
+Compressed graph object size: 1688.5516052246094        
+Compressed graph complete size serialized: 237.33279418945312        
+Compressed graph complete size serialized (sum) 221.6922369003296    
