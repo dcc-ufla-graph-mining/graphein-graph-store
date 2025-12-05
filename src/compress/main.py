@@ -73,7 +73,7 @@ def read_dataset(general_data_path, dataset_txt_name, file_mode='r'):
 def define_graphein_edge_funcs(func_idx=1):
     # usado no experimento 1
     # return random.sample([v for _, v in edgeModel.edge_functions_dict.items()], 3)
-    return [edgeModel.edge_functions_dict[f] for f in ["delaunay"]]
+    return [edgeModel.edge_functions_dict[f] for f in ["delaunay", "aromatic", "aromatic_sulphur"]]
     # , "aromatic_sulphur", "delaunay", "aromatic"
 
     # usado no experimento 2

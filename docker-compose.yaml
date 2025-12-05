@@ -6,8 +6,8 @@ services:
     environment:
       - PROGRAM_NAME=main
       - DATA_DIR=/app/data
-      - DATASET=ligand_PO4.txt
+      - DATASET=ligand_PLP.txt
     volumes:
       - .:/app
-    # command: sh run_metadata_with_different_datasets.sh
-    command: python src/compress/main.py
+    command: sh run_metadata_with_different_datasets.sh
+    # command: python src/compress/main.py

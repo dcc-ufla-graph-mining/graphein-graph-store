@@ -33,23 +33,50 @@ def initialize_body_parts():
 def edge_label_undirected(edge_label: tuple) -> tuple:
     return tuple(sorted(edge_label))
 
-def process_edge_attrs(body_parts: dict, pdb_id: int, edge_id: int, edge: dict):
-    local_attr_list = []
-    for attr_key, attr_value in edge.items():
+def process_edge_distances(distance: float, body_parts: dict) -> list:
+    distance_keyvalue_mapping_list = []
 
-        if isinstance(attr_value, set):
-            attr_value = next(iter(attr_value))
+    attr_key = "distance"
+    attr_value = distance
+
+    if attr_value not in body_parts["attr_values"]:
+        body_parts["attr_values"][attr_value] = len(body_parts["attr_values"])
+
+    attr_key_id = body_parts["attr_keys"].index(attr_key)
+    attr_value_id = body_parts["attr_values"][attr_value]  
+
+    distance_keyvalue_mapping_list.append(attr_key_id)
+    distance_keyvalue_mapping_list.append(attr_value_id)
+
+    return distance_keyvalue_mapping_list
+
+def process_edge_kinds(kinds: set, body_parts: dict) -> list:
+    kind_keyvalue_mapping_list = []
+
+    attr_key = "kind"
+    attr_key_id = body_parts["attr_keys"].index(attr_key)
+
+    kind_keyvalue_mapping_list.append(attr_key_id)
+
+    for kind in kinds:
+        attr_value = kind
 
         if attr_value not in body_parts["attr_values"]:
             body_parts["attr_values"][attr_value] = len(body_parts["attr_values"])
-
-        attr_key_id = body_parts["attr_keys"].index(attr_key)
+        
         attr_value_id = body_parts["attr_values"][attr_value]
 
-        local_attr_list.append(attr_key_id)
-        local_attr_list.append(attr_value_id)
+        kind_keyvalue_mapping_list.append(attr_value_id)
+
+    return kind_keyvalue_mapping_list
+
+def process_edge_attrs(body_parts: dict, pdb_id: int, edge_id: int, edge: dict):
+    local_attr_keyvalue_mapping = []
+
+    local_attr_keyvalue_mapping.extend(process_edge_distances(edge["distance"],  body_parts))
+    local_attr_keyvalue_mapping.extend(process_edge_kinds(edge["kind"], body_parts))
         
-    body_parts["edge_local_attr_keyvalue_mapping"][(pdb_id, edge_id)] = local_attr_list
+    body_parts["edge_local_attr_keyvalue_mapping"][(pdb_id, edge_id)] = local_attr_keyvalue_mapping
 
 
 def process_edges(g: nx.Graph, body_parts: dict, pdb_id: int):
@@ -173,23 +200,37 @@ def reconstruct_nodes(body_parts: dict, g: nx.Graph, pdb_id: int):
 
             g.nodes[node_label][attr_key] = attr_value
 
+def reconstruct_edge_distance(attributes: list, g: nx.Graph, body_parts: dict, edge_label):
+    attr_key = "distance"
+    attr_value_id = attributes[1]
+    distance_value = body_parts["attr_values"].inverse[attr_value_id]
+
+    g.edges[edge_label][attr_key] = distance_value
+
+def reconstruct_edge_kinds(attributes: list, g: nx.Graph, body_parts: dict, edge_label):
+    attr_key = "kind"
+
+    kind_list = []
+
+    for i in range(1, len(attributes)):
+        attr_value_id = attributes[i]
+        kind_value = body_parts["attr_values"].inverse[attr_value_id]
+
+        kind_list.append(kind_value)
+    
+    kinds = set(kind_list)
+
+    g.edges[edge_label][attr_key] = kinds
+
 def reconstruct_edges(body_parts: dict, g: nx.Graph, pdb_id: int):
     for edge_label in g.edges:
         edge_id = body_parts["edge_label_to_edge_id"][edge_label_undirected(edge_label)]
 
         attributes = body_parts["edge_local_attr_keyvalue_mapping"][(pdb_id, edge_id)]
-
-        for i in range(0, len(attributes), 2):
-            attr_key_id = attributes[i]
-            attr_value_id = attributes[i+1]
-
-            attr_value = body_parts["attr_values"].inverse[attr_value_id]
-            attr_key = body_parts["attr_keys"][attr_key_id]
-
-            if attr_key == "kind":
-                attr_value = set([attr_value])
-
-            g.edges[edge_label][attr_key] = attr_value
+        
+        reconstruct_edge_kinds(attributes[2:], g, body_parts, edge_label)
+        reconstruct_edge_distance(attributes[:2], g, body_parts, edge_label)
+        
 
 def reconstruct_and_validate(protein_graphs: dict[str, list[nx.Graph]], body_parts: dict):
     for pdb_code, pdb_graph_list in protein_graphs.items():
@@ -224,16 +265,20 @@ def reconstruct_and_validate(protein_graphs: dict[str, list[nx.Graph]], body_par
                 try:
                     e = (u, v)
                     original_edge = original_graph.edges[e]
+                    print(original_edge)
                 except:
                     e = (v, u)
                     original_edge = original_graph.edges[e]
+                    print(original_edge)
                 
                 try:
                     e = (u, v)
                     extracted_edge = extracted_graph.edges[e]
+                    print(extracted_edge)
                 except:
                     e = (v, u)
                     extracted_edge = extracted_graph.edges[e]
+                    print(extracted_edge)
 
                 if original_edge != extracted_edge:
                     print(f"\ndifferent attributes in edges {e}: \n")
