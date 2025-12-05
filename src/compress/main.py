@@ -412,7 +412,7 @@ def experimento_1():
     '
 
     write_result(dataset=dataset_name, msg=msg, result_path=result_path)
-    print(msg)
+    # print(msg)
 
 def experimento_2():
     '''
