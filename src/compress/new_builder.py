@@ -30,8 +30,8 @@ def initialize_body_parts():
 
     return body_parts
 
-def edge_label_undirected(edge_label: tuple) -> frozenset:
-    return frozenset(edge_label)
+def edge_label_undirected(edge_label: tuple) -> tuple:
+    return tuple(sorted(edge_label))
 
 def process_edge_attrs(body_parts: dict, pdb_id: int, edge_id: int, edge: dict):
     local_attr_list = []
@@ -136,7 +136,7 @@ def initialize_structures(protein_graphs: dict[str, list[nx.Graph]], body_parts:
     body_parts["node_global_attr_keyvalue_mapping"] = np.zeros((
                                                                 len(body_parts["node_label_to_node_id"]), 
                                                                 10
-                                                                ), dtype=np.int64)
+                                                                ), dtype=np.int32)
 
 def reconstruct_nodes(body_parts: dict, g: nx.Graph, pdb_id: int):
     for node_label in g.nodes:
@@ -198,7 +198,7 @@ def reconstruct_and_validate(protein_graphs: dict[str, list[nx.Graph]], body_par
             pdb_id = body_parts["pdb_code_to_id"][pdb_code]
 
             nodes = [body_parts["node_label_to_node_id"].inverse[node_id] for node_id in body_parts["pdb_id_to_nodes"][pdb_id]]
-            edges = [tuple(body_parts["edge_label_to_edge_id"].inverse[edge_id]) for edge_id in body_parts["pdb_id_to_edges"][pdb_id]]
+            edges = [body_parts["edge_label_to_edge_id"].inverse[edge_id] for edge_id in body_parts["pdb_id_to_edges"][pdb_id]]
 
             extracted_graph.add_nodes_from(nodes)
             extracted_graph.add_edges_from(edges)
