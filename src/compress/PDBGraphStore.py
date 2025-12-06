@@ -46,12 +46,29 @@ class PDBGraphStore:
     
     def pdb_id_to_edges_serialized_memory(self):
         return len(pk.dumps(self.__body_parts["pdb_id_to_edges"]))/1024/1024
+    
+    def node_global_attr_keys_memory(self):
+        return asizeof.asizeof(self.__body_parts["node_global_attr_keys"])/1024/1024
+
+    def node_local_attr_keys_memory(self):
+        return asizeof.asizeof(self.__body_parts["node_local_attr_keys"])/1024/1024
+
+    def edge_attr_keys_memory(self):
+        return asizeof.asizeof(self.__body_parts["edge_attr_keys"])/1024/1024
 
     def attr_keys_memory(self):
-        return asizeof.asizeof(self.__body_parts["attr_keys"])/1024/1024
+        return (
+            self.node_global_attr_keys_memory() +
+            self.node_local_attr_keys_memory() +
+            self.edge_attr_keys_memory()
+        )
     
     def attr_keys_serialized_memory(self):
-        return len(pk.dumps(self.__body_parts["attr_keys"]))/1024/1024
+        return (
+            len(pk.dumps(self.__body_parts["node_global_attr_keys"]))/1024/1024 +
+            len(pk.dumps(self.__body_parts["node_local_attr_keys"]))/1024/1024 +
+            len(pk.dumps(self.__body_parts["edge_attr_keys"]))/1024/1024
+            )
 
     def attr_values_memory(self):
         return asizeof.asizeof(self.__body_parts["attr_values"])/1024/1024

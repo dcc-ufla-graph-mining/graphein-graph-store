@@ -3,9 +3,7 @@ from pyroaring import BitMap64
 from bidict import bidict
 import numpy as np
 import pandas as pd
-import pickle as pk
 import time
-import torch
 
 def initialize_body_parts():
     body_parts = {
@@ -14,19 +12,14 @@ def initialize_body_parts():
         "edge_label_to_edge_id": bidict(),
         "pdb_id_to_nodes": {},
         "pdb_id_to_edges": {},
-        "attr_keys": 
-                [
-                      "empty", "chain_id", "residue_name", "residue_number", 
-                      "atom_type", "element_symbol", "coords", "b_factor", 
-                      "meiler", "kind", "distance"
-                ],
+        "edge_attr_keys": ["kind", "distance"],
+        "node_global_attr_keys": ["chain_id", "residue_name", "atom_type", "element_symbol", "meiler"],
+        "node_local_attr_keys": ["residue_number", "coords", "b_factor"],
         "attr_values": bidict(),
         "node_global_attr_keyvalue_mapping": '',
         "node_local_attr_keyvalue_mapping": {},
         "edge_local_attr_keyvalue_mapping": {}
     }
-
-    body_parts["attr_values"]["empty"] = 0
 
     return body_parts
 
@@ -42,7 +35,7 @@ def process_edge_distances(distance: float, body_parts: dict) -> list:
     if attr_value not in body_parts["attr_values"]:
         body_parts["attr_values"][attr_value] = len(body_parts["attr_values"])
 
-    attr_key_id = body_parts["attr_keys"].index(attr_key)
+    attr_key_id = body_parts["edge_attr_keys"].index(attr_key)
     attr_value_id = body_parts["attr_values"][attr_value]  
 
     distance_keyvalue_mapping_list.append(attr_key_id)
@@ -54,7 +47,7 @@ def process_edge_kinds(kinds: set, body_parts: dict) -> list:
     kind_keyvalue_mapping_list = []
 
     attr_key = "kind"
-    attr_key_id = body_parts["attr_keys"].index(attr_key)
+    attr_key_id = body_parts["edge_attr_keys"].index(attr_key)
 
     kind_keyvalue_mapping_list.append(attr_key_id)
 
@@ -78,42 +71,45 @@ def process_edge_attrs(body_parts: dict, pdb_id: int, edge_id: int, edge: dict):
         
     body_parts["edge_local_attr_keyvalue_mapping"][(pdb_id, edge_id)] = local_attr_keyvalue_mapping
 
-
 def process_edges(g: nx.Graph, body_parts: dict, pdb_id: int):
     for e in g.edges:
         edge_id = body_parts["edge_label_to_edge_id"][edge_label_undirected(e)]
         process_edge_attrs(body_parts, pdb_id, edge_id, g.edges[e])
 
-def process_node_attrs(body_parts: dict, pdb_id: int, node_id: int, node: dict):
-    global_idx = 0
-
-    global_node_attributes= ["chain_id", "residue_name", "atom_type", "element_symbol", "meiler"]
-    local_node_attributes = ["residue_number", "coords", "b_factor"]
-
-    local_attr_list = []
-
-    for attr_key, attr_value in node.items():
+def process_global_node_attrs(body_parts: dict, node: dict, node_id: int):
+    for attr_idx, node_global_attr in enumerate(body_parts["node_global_attr_keys"]):
+        attr_value = node[node_global_attr]
 
         if isinstance(attr_value, pd.Series):
             attr_value = tuple([tuple(attr_value.tolist()), tuple(attr_value.name)])
         
+        if attr_value not in body_parts["attr_values"]:
+            body_parts["attr_values"][attr_value] = len(body_parts["attr_values"])
+
+        attr_value_id = body_parts["attr_values"][attr_value]
+        
+        body_parts["node_global_attr_keyvalue_mapping"][node_id][attr_idx] = attr_value_id
+
+def process_local_node_attrs(body_parts: dict, node: dict) -> list:
+    local_attr_list = []
+    for node_local_attr in body_parts["node_local_attr_keys"]:
+        attr_value = node[node_local_attr]
+
         if isinstance(attr_value, np.ndarray):
             attr_value = tuple(attr_value)
 
         if attr_value not in body_parts["attr_values"]:
             body_parts["attr_values"][attr_value] = len(body_parts["attr_values"])
 
-        attr_key_id = body_parts["attr_keys"].index(attr_key)
         attr_value_id = body_parts["attr_values"][attr_value]
-        
-        if attr_key in local_node_attributes:
-            local_attr_list.append(attr_key_id)
-            local_attr_list.append(attr_value_id)
 
-        if attr_key in global_node_attributes:
-            body_parts["node_global_attr_keyvalue_mapping"][node_id][global_idx] = attr_key_id
-            body_parts["node_global_attr_keyvalue_mapping"][node_id][global_idx+1] = attr_value_id
-            global_idx+=2
+        local_attr_list.append(attr_value_id)
+
+    return local_attr_list
+
+def process_node_attrs(body_parts: dict, pdb_id: int, node_id: int, node: dict):
+    process_global_node_attrs(body_parts, node, node_id)
+    local_attr_list = process_local_node_attrs(body_parts, node)
 
     body_parts["node_local_attr_keyvalue_mapping"][(pdb_id, node_id)] = local_attr_list
 
@@ -162,43 +158,49 @@ def initialize_structures(protein_graphs: dict[str, list[nx.Graph]], body_parts:
 
     body_parts["node_global_attr_keyvalue_mapping"] = np.zeros((
                                                                 len(body_parts["node_label_to_node_id"]), 
-                                                                10
+                                                                5
                                                                 ), dtype=np.int32)
+
+def reconstruct_node_global_attrs(body_parts: dict, node_id: int, g: nx.Graph):
+    global_attributes = body_parts["node_global_attr_keyvalue_mapping"][node_id]
+    global_attribute_keys = body_parts["node_global_attr_keys"]
+
+    node_label = body_parts["node_label_to_node_id"].inverse[node_id]
+
+    for attr_idx, attr_key in enumerate(global_attribute_keys):
+        attr_value_id = global_attributes[attr_idx]
+        attr_value = body_parts["attr_values"].inverse[attr_value_id]
+
+        if isinstance(attr_value, tuple):
+            attr_value = pd.Series(
+                attr_value[0],
+                name=''.join(list(attr_value[1])),
+                index=[f'dim_{x}' for x in [1,2,3,4,5,6,7]]
+            )
+        
+        g.nodes[node_label][attr_key] = attr_value
+
+def reconstruct_node_local_attrs(body_parts: dict, node_id: int, pdb_id: int, g: nx.Graph):
+    local_attributes = body_parts["node_local_attr_keyvalue_mapping"][(pdb_id, node_id)]
+    local_attribute_keys = body_parts["node_local_attr_keys"]
+
+    node_label = body_parts["node_label_to_node_id"].inverse[node_id]
+
+    for attr_idx, attr_key in enumerate(local_attribute_keys):
+        attr_value_id = local_attributes[attr_idx]
+        attr_value = body_parts["attr_values"].inverse[attr_value_id]
+
+        if isinstance(attr_value, tuple):
+            attr_value = np.array(attr_value)
+        
+        g.nodes[node_label][attr_key] = attr_value
 
 def reconstruct_nodes(body_parts: dict, g: nx.Graph, pdb_id: int):
     for node_label in g.nodes:
         node_id = body_parts["node_label_to_node_id"][node_label]
 
-        global_attributes = body_parts["node_global_attr_keyvalue_mapping"][node_id]
-        local_attributes = body_parts["node_local_attr_keyvalue_mapping"][(pdb_id, node_id)]
-
-        for i in range(0, len(global_attributes), 2):
-            attr_key_id = global_attributes[i]
-            attr_value_id = global_attributes[i+1]
-
-            attr_value = body_parts["attr_values"].inverse[attr_value_id]
-            attr_key = body_parts["attr_keys"][attr_key_id]
-            
-            if isinstance(attr_value, tuple):
-                attr_value = pd.Series(
-                    attr_value[0],
-                    name=''.join(list(attr_value[1])),
-                    index=[f'dim_{x}' for x in [1,2,3,4,5,6,7]]
-                )
-
-            g.nodes[node_label][attr_key] = attr_value
-
-        for i in range(0, len(local_attributes), 2):
-            attr_key_id = local_attributes[i]
-            attr_value_id = local_attributes[i+1]
-
-            attr_value = body_parts["attr_values"].inverse[attr_value_id]
-            attr_key = body_parts["attr_keys"][attr_key_id]
-
-            if isinstance(attr_value, tuple):
-                attr_value = np.array(attr_value)
-
-            g.nodes[node_label][attr_key] = attr_value
+        reconstruct_node_global_attrs(body_parts, node_id, g)
+        reconstruct_node_local_attrs(body_parts, node_id, pdb_id, g)
 
 def reconstruct_edge_distance(attributes: list, g: nx.Graph, body_parts: dict, edge_label):
     attr_key = "distance"
