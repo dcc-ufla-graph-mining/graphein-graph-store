@@ -267,20 +267,16 @@ def reconstruct_and_validate(protein_graphs: dict[str, list[nx.Graph]], body_par
                 try:
                     e = (u, v)
                     original_edge = original_graph.edges[e]
-                    print(original_edge)
                 except:
                     e = (v, u)
                     original_edge = original_graph.edges[e]
-                    print(original_edge)
                 
                 try:
                     e = (u, v)
                     extracted_edge = extracted_graph.edges[e]
-                    print(extracted_edge)
                 except:
                     e = (v, u)
                     extracted_edge = extracted_graph.edges[e]
-                    print(extracted_edge)
 
                 if original_edge != extracted_edge:
                     print(f"\ndifferent attributes in edges {e}: \n")
