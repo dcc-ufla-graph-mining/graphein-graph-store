@@ -6,11 +6,12 @@ from bidict import bidict
 import random
 import time
 import numpy as np
+import pandas as pd
 from pympler import asizeof
 import pickle
 import Builder
 import edge_functions_Model as edgeModel
-import operations
+import sys
 import networkx as nx
 import traceback
 from sortedcontainers import SortedSet
@@ -202,6 +203,80 @@ def test():
     # print(gs1, gs2)
     pass
 
+def extract_g_structure(g):
+    g_aux = nx.Graph()
+    for n in g.nodes:
+        g_aux.add_node(n)
+
+    for u, v in g.edges:
+        e = (u, v)
+        g_aux.add_edge(*e)
+
+    return g_aux
+
+def extract_structure(graphs: dict):
+    structure_dict = {}
+    for pdb_code, gs in graphs.items():
+        g = extract_g_structure(gs[0])
+        structure_dict[pdb_code] = g
+
+    return structure_dict
+
+def measure_graph_structure_memory(graphs: dict):
+    graph_structure = extract_structure(graphs)
+    graph_structure_memory = asizeof.asizeof(graph_structure)/1024/1024
+    return graph_structure_memory
+
+def measure_dict_attr_memory(graphs: dict):
+    dict_attr_memory = 0
+    for pdb_code, graph in graphs.items():
+        for g in graph:
+            for n in g._node.items():
+                node = n[1]
+                for attr_key, attr_value in node.items():
+                    attr_key_memory = asizeof.asizeof(attr_key)
+                    if isinstance(attr_value, pd.Series):
+                        attr_value_memory = attr_value.memory_usage(deep=True)
+                    elif isinstance(attr_value, np.ndarray):
+                        attr_value_memory = attr_value.nbytes + sys.getsizeof(attr_value)
+                    else:
+                        attr_value_memory = asizeof.asizeof(attr_value)
+                    
+                    dict_attr_memory += attr_key_memory/1024/1024
+                    dict_attr_memory += attr_value_memory/1024/1024
+
+            dict_attr_memory += asizeof.asizeof(g._adj)/1024/1024
+    
+    return dict_attr_memory
+
+def measure_node_attributes_memory(graphs: dict):
+    node_attributes_memory = 0
+
+    return node_attributes_memory
+
+def measure_edge_attributes_memory(graphs: dict):
+    edge_attributes_memory = 0
+
+    return edge_attributes_memory
+
+def extract_structure_memory_info(graphs: dict):
+    msg = '\n'
+
+    msg += "graph structure memory: "
+    msg+= str(measure_graph_structure_memory(graphs))
+    msg+= "\n"
+    msg += "dict attributes memory: "
+    msg+= str(measure_dict_attr_memory(graphs))
+    msg+= "\n"
+    msg += "node attributes memory: "
+    msg+= str(measure_node_attributes_memory(graphs))
+    msg+= "\n"
+    msg += "edge attributes memory: "
+    msg+= str(measure_edge_attributes_memory(graphs))
+    msg+= "\n"
+
+    return msg
+
 def experimento_1():
 
     #config usada:
@@ -269,6 +344,9 @@ def experimento_1():
 
     msg = f'\nTime to construct graphs: {time_to_construct}\nNumber of graphs: {len(protein_graph_with_metadata_dict)}'
 
+    write_result(dataset=dataset_name, msg=msg, result_path=result_path)
+
+    msg = extract_structure_memory_info(protein_graph_with_metadata_dict)
     write_result(dataset=dataset_name, msg=msg, result_path=result_path)
 
     body_parts, time_to_compress = new_builder.compress_pdb_graphs(protein_graph_with_metadata_dict)

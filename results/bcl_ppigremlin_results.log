@@ -1,9 +1,14 @@
 Result log for bcl_ppigremlin
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 15.184476137161255
+Time to construct graphs: 15.693812370300293
 Number of graphs: 116
-Time to compress: 8.283547639846802
+graph structure memory: 40.89509582519531
+dict attributes memory: 175.6172695159912
+node attributes memory: 0
+edge attributes memory: 0
+
+Time to compress: 6.826190710067749
         
 Uncompressed complete graph size: 167.5694122314453        
 Uncompressed complete graph size serialized: 19.76239776611328        

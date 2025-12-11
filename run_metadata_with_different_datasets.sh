@@ -24,6 +24,8 @@ else
     mkdir /app/results
 fi
 
+python -m memory_profiler src/compress/trash_measure_memory.py > "times/trash.txt"
+
 for dataset in data/*.txt
 do
     dataset_name=$(basename $dataset)
