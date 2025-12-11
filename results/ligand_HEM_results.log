@@ -1,5 +1,9 @@
 Result log for ligand_HEM
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 26.20527410507202
+Time to construct graphs: 26.608365774154663
 Number of graphs: 164
+graph structure memory: 173.56085205078125
+dict attributes memory: 747.7233295440674
+node attributes memory: 0
+edge attributes memory: 0

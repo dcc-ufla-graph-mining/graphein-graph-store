@@ -1,5 +1,9 @@
 Result log for metals_MG
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 336.41835260391235
+Time to construct graphs: 336.6616885662079
 Number of graphs: 1807
+graph structure memory: 2266.402374267578
+dict attributes memory: 9762.423685073853
+node attributes memory: 0
+edge attributes memory: 0

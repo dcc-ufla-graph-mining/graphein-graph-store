@@ -1,5 +1,9 @@
 Result log for ligand_NAG
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 1154.9010961055756
+Time to construct graphs: 111.51113724708557
 Number of graphs: 683
+graph structure memory: 722.2403335571289
+dict attributes memory: 3108.8708152770996
+node attributes memory: 0
+edge attributes memory: 0

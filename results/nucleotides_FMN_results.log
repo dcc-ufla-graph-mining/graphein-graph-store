@@ -1,5 +1,9 @@
 Result log for nucleotides_FMN
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 15.672760725021362
+Time to construct graphs: 15.66318392753601
 Number of graphs: 115
+graph structure memory: 107.1907730102539
+dict attributes memory: 460.48046112060547
+node attributes memory: 0
+edge attributes memory: 0

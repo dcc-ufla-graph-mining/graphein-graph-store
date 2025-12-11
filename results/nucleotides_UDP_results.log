@@ -1,15 +1,20 @@
 Result log for nucleotides_UDP
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 12.265967607498169
+Time to construct graphs: 12.255093097686768
 Number of graphs: 68
-Time to compress: 9.91877269744873
+graph structure memory: 83.35468292236328
+dict attributes memory: 358.48094749450684
+node attributes memory: 0
+edge attributes memory: 0
+
+Time to compress: 9.4916090965271
         
 Uncompressed complete graph size: 343.09603118896484        
 Uncompressed complete graph size serialized: 40.33279323577881        
         
          
-Compressed graph: 324.7591323852539        
+Compressed graph: 322.01578521728516        
 Compressed graph structure: 91.37317657470703         
          
  pdb_code_to_id: 0.00786590576171875         
@@ -28,30 +33,30 @@ Compressed graph structure: 91.37317657470703
  edge_label_to_edge_id_serialized: 8.149384498596191        
         
          
-Compressed dict attributes: 82.6072769165039         
+Compressed dict attributes: 82.60724639892578         
          
- attr_keys: 0.00078582763671875         
- attr_keys_serialized: 0.00013637542724609375        
+ attr_keys: 0.0008392333984375         
+ attr_keys_serialized: 0.00015926361083984375        
         
- attr_values: 82.60649108886719         
- attr_values_serialized: 15.925048828125        
+ attr_values: 82.60640716552734         
+ attr_values_serialized: 15.925036430358887        
         
          
-Compressed node attributes: 18.51091766357422        
+Compressed node attributes: 15.767601013183594        
          
- node_global_attr_keyvalue_mapping: 1.4988555908203125         
- node_global_attr_keyvalue_mapping_serialized: 1.4988727569580078        
+ node_global_attr_keyvalue_mapping: 0.7494964599609375         
+ node_global_attr_keyvalue_mapping_serialized: 0.7495136260986328        
         
- node_local_attr_keyvalue_mapping: 17.012062072753906         
- node_local_attr_keyvalue_mapping_serialized: 1.773859977722168        
+ node_local_attr_keyvalue_mapping: 15.018104553222656         
+ node_local_attr_keyvalue_mapping_serialized: 1.3999462127685547        
         
          
 Compressed edge attributes: 132.26776123046875        
          
  edge_local_attr_keyvalue_mapping: 132.26776123046875         
- edge_local_attr_keyvalue_mapping_serialized: 11.49973201751709        
+ edge_local_attr_keyvalue_mapping_serialized: 11.499730110168457        
          
         
-Compressed graph object size: 289.0292739868164        
-Compressed graph complete size serialized: 42.28349304199219        
-Compressed graph complete size serialized (sum) 39.45949363708496    
+Compressed graph object size: 286.28641510009766        
+Compressed graph complete size serialized: 41.16026306152344        
+Compressed graph complete size serialized (sum) 38.33622932434082    

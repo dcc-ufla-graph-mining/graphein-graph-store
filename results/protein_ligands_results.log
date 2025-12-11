@@ -1,5 +1,9 @@
 Result log for protein_ligands
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 1887.903305530548
+Time to construct graphs: 848.0400493144989
 Number of graphs: 6549
+graph structure memory: 5806.512435913086
+dict attributes memory: 24979.52576828003
+node attributes memory: 0
+edge attributes memory: 0

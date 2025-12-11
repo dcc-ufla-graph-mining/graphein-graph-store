@@ -2,9 +2,9 @@ Filename: src/compress/measure_memory_v2.py
 
 Line #    Mem usage    Increment  Occurrences   Line Contents
 =============================================================
-     4     45.1 MiB     45.1 MiB           1   @profile
+     4     45.3 MiB     45.3 MiB           1   @profile
      5                                         def main():
-     6    674.3 MiB      0.0 MiB           2       with open('v2.pkl', 'rb') as f:
-     7    674.3 MiB    629.2 MiB           1           v2 = pickle.load(f)
+     6    688.3 MiB      0.0 MiB           2       with open('v2.pkl', 'rb') as f:
+     7    688.3 MiB    643.0 MiB           1           v2 = pickle.load(f)
 
 

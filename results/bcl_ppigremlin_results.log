@@ -1,21 +1,21 @@
 Result log for bcl_ppigremlin
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 15.693812370300293
+Time to construct graphs: 8.384446859359741
 Number of graphs: 116
-graph structure memory: 40.89509582519531
-dict attributes memory: 175.6172695159912
+graph structure memory: 40.89503479003906
+dict attributes memory: 175.61681175231934
 node attributes memory: 0
 edge attributes memory: 0
 
-Time to compress: 6.826190710067749
+Time to compress: 3.787201166152954
         
-Uncompressed complete graph size: 167.5694122314453        
-Uncompressed complete graph size serialized: 19.76239776611328        
+Uncompressed complete graph size: 167.56895446777344        
+Uncompressed complete graph size serialized: 19.762340545654297        
         
          
-Compressed graph: 133.2422866821289        
-Compressed graph structure: 23.80011749267578         
+Compressed graph: 133.2388916015625        
+Compressed graph structure: 23.797882080078125         
          
  pdb_code_to_id: 0.0142059326171875         
  pdb_code_to_id_serialized: 0.001010894775390625        
@@ -24,39 +24,39 @@ Compressed graph structure: 23.80011749267578
  pdb_id_to_nodes_serialized: 0.06764411926269531         
         
  pdb_id_to_edges: 0.44139862060546875         
- pdb_id_to_edges_serialized: 0.43465518951416016        
+ pdb_id_to_edges_serialized: 0.43465328216552734        
         
- node_label_to_node_id: 1.5174102783203125        
- node_label_to_node_id_serialized: 0.14545822143554688        
+ node_label_to_node_id: 1.5171356201171875        
+ node_label_to_node_id_serialized: 0.14541053771972656        
         
- edge_label_to_edge_id: 21.752716064453125        
- edge_label_to_edge_id_serialized: 1.9963130950927734        
+ edge_label_to_edge_id: 21.750755310058594        
+ edge_label_to_edge_id_serialized: 1.995962142944336        
         
          
-Compressed dict attributes: 41.074188232421875         
+Compressed dict attributes: 41.07402038574219         
          
  attr_keys: 0.0008392333984375         
  attr_keys_serialized: 0.00015926361083984375        
         
- attr_values: 41.07334899902344         
- attr_values_serialized: 7.757145881652832        
+ attr_values: 41.07318115234375         
+ attr_values_serialized: 7.75709342956543        
         
          
-Compressed node attributes: 7.607170104980469        
+Compressed node attributes: 7.606956481933594        
          
- node_global_attr_keyvalue_mapping: 0.19951629638671875         
- node_global_attr_keyvalue_mapping_serialized: 0.19952964782714844        
+ node_global_attr_keyvalue_mapping: 0.19945526123046875         
+ node_global_attr_keyvalue_mapping_serialized: 0.19947242736816406        
         
- node_local_attr_keyvalue_mapping: 7.40765380859375         
- node_local_attr_keyvalue_mapping_serialized: 0.6869039535522461        
+ node_local_attr_keyvalue_mapping: 7.407501220703125         
+ node_local_attr_keyvalue_mapping_serialized: 0.686894416809082        
         
          
-Compressed edge attributes: 60.76081085205078        
+Compressed edge attributes: 60.760032653808594        
          
- edge_local_attr_keyvalue_mapping: 60.76081085205078         
- edge_local_attr_keyvalue_mapping_serialized: 5.2439069747924805        
+ edge_local_attr_keyvalue_mapping: 60.760032653808594         
+ edge_local_attr_keyvalue_mapping_serialized: 5.243843078613281        
          
         
-Compressed graph object size: 120.03487396240234        
-Compressed graph complete size serialized: 17.711135864257812        
-Compressed graph complete size serialized (sum) 16.387269020080566    
+Compressed graph object size: 120.03242492675781        
+Compressed graph complete size serialized: 17.71057891845703        
+Compressed graph complete size serialized (sum) 16.386733055114746    

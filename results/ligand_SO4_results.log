@@ -1,5 +1,9 @@
 Result log for ligand_SO4
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 390.1148748397827
+Time to construct graphs: 391.069842338562
 Number of graphs: 3206
+graph structure memory: 2713.5676803588867
+dict attributes memory: 11674.597064971924
+node attributes memory: 0
+edge attributes memory: 0
