@@ -8,14 +8,15 @@ import time
 def initialize_body_parts():
     body_parts = {
         "pdb_code_to_id": {},
-        "node_label_to_node_id": bidict(),
-        "edge_label_to_edge_id": bidict(),
         "pdb_id_to_nodes": {},
         "pdb_id_to_edges": {},
+        "node_label_to_node_id": bidict(),
+        "edge_label_to_edge_id": bidict(),
         "edge_attr_keys": ["kind", "distance"],
         "node_global_attr_keys": ["chain_id", "residue_name", "atom_type", "element_symbol", "meiler"],
         "node_local_attr_keys": ["residue_number", "coords", "b_factor"],
-        "attr_values": bidict(),
+        "node_attr_values": bidict(),
+        "edge_attr_values": bidict(),
         "node_global_attr_keyvalue_mapping": '',
         "node_local_attr_keyvalue_mapping": {},
         "edge_local_attr_keyvalue_mapping": {}
@@ -32,11 +33,11 @@ def process_edge_distances(distance: float, body_parts: dict) -> list:
     attr_key = "distance"
     attr_value = distance
 
-    if attr_value not in body_parts["attr_values"]:
-        body_parts["attr_values"][attr_value] = len(body_parts["attr_values"])
+    if attr_value not in body_parts["edge_attr_values"]:
+        body_parts["edge_attr_values"][attr_value] = len(body_parts["edge_attr_values"])
 
     attr_key_id = body_parts["edge_attr_keys"].index(attr_key)
-    attr_value_id = body_parts["attr_values"][attr_value]  
+    attr_value_id = body_parts["edge_attr_values"][attr_value]  
 
     distance_keyvalue_mapping_list.append(attr_key_id)
     distance_keyvalue_mapping_list.append(attr_value_id)
@@ -54,10 +55,10 @@ def process_edge_kinds(kinds: set, body_parts: dict) -> list:
     for kind in kinds:
         attr_value = kind
 
-        if attr_value not in body_parts["attr_values"]:
-            body_parts["attr_values"][attr_value] = len(body_parts["attr_values"])
+        if attr_value not in body_parts["edge_attr_values"]:
+            body_parts["edge_attr_values"][attr_value] = len(body_parts["edge_attr_values"])
         
-        attr_value_id = body_parts["attr_values"][attr_value]
+        attr_value_id = body_parts["edge_attr_values"][attr_value]
 
         kind_keyvalue_mapping_list.append(attr_value_id)
 
@@ -83,10 +84,10 @@ def process_global_node_attrs(body_parts: dict, node: dict, node_id: int):
         if isinstance(attr_value, pd.Series):
             attr_value = tuple([tuple(attr_value.tolist()), tuple(attr_value.name)])
         
-        if attr_value not in body_parts["attr_values"]:
-            body_parts["attr_values"][attr_value] = len(body_parts["attr_values"])
+        if attr_value not in body_parts["node_attr_values"]:
+            body_parts["node_attr_values"][attr_value] = len(body_parts["node_attr_values"])
 
-        attr_value_id = body_parts["attr_values"][attr_value]
+        attr_value_id = body_parts["node_attr_values"][attr_value]
         
         body_parts["node_global_attr_keyvalue_mapping"][node_id][attr_idx] = attr_value_id
 
@@ -98,10 +99,10 @@ def process_local_node_attrs(body_parts: dict, node: dict) -> list:
         if isinstance(attr_value, np.ndarray):
             attr_value = tuple(attr_value)
 
-        if attr_value not in body_parts["attr_values"]:
-            body_parts["attr_values"][attr_value] = len(body_parts["attr_values"])
+        if attr_value not in body_parts["node_attr_values"]:
+            body_parts["node_attr_values"][attr_value] = len(body_parts["node_attr_values"])
 
-        attr_value_id = body_parts["attr_values"][attr_value]
+        attr_value_id = body_parts["node_attr_values"][attr_value]
 
         local_attr_list.append(attr_value_id)
 
@@ -169,7 +170,7 @@ def reconstruct_node_global_attrs(body_parts: dict, node_id: int, g: nx.Graph):
 
     for attr_idx, attr_key in enumerate(global_attribute_keys):
         attr_value_id = global_attributes[attr_idx]
-        attr_value = body_parts["attr_values"].inverse[attr_value_id]
+        attr_value = body_parts["node_attr_values"].inverse[attr_value_id]
 
         if isinstance(attr_value, tuple):
             attr_value = pd.Series(
@@ -188,7 +189,7 @@ def reconstruct_node_local_attrs(body_parts: dict, node_id: int, pdb_id: int, g:
 
     for attr_idx, attr_key in enumerate(local_attribute_keys):
         attr_value_id = local_attributes[attr_idx]
-        attr_value = body_parts["attr_values"].inverse[attr_value_id]
+        attr_value = body_parts["node_attr_values"].inverse[attr_value_id]
 
         if isinstance(attr_value, tuple):
             attr_value = np.array(attr_value)
@@ -205,7 +206,7 @@ def reconstruct_nodes(body_parts: dict, g: nx.Graph, pdb_id: int):
 def reconstruct_edge_distance(attributes: list, g: nx.Graph, body_parts: dict, edge_label):
     attr_key = "distance"
     attr_value_id = attributes[1]
-    distance_value = body_parts["attr_values"].inverse[attr_value_id]
+    distance_value = body_parts["edge_attr_values"].inverse[attr_value_id]
 
     g.edges[edge_label][attr_key] = distance_value
 
@@ -216,7 +217,7 @@ def reconstruct_edge_kinds(attributes: list, g: nx.Graph, body_parts: dict, edge
 
     for i in range(1, len(attributes)):
         attr_value_id = attributes[i]
-        kind_value = body_parts["attr_values"].inverse[attr_value_id]
+        kind_value = body_parts["edge_attr_values"].inverse[attr_value_id]
 
         kind_list.append(kind_value)
     

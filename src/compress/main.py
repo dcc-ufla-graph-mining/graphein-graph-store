@@ -227,55 +227,37 @@ def measure_graph_structure_memory(graphs: dict):
     graph_structure_memory = asizeof.asizeof(graph_structure)/1024/1024
     return graph_structure_memory
 
-def measure_dict_attr_memory(graphs: dict):
-    dict_attr_memory = 0
-    for pdb_code, graph in graphs.items():
-        for g in graph:
-            for n in g._node.items():
-                node = n[1]
-                for attr_key, attr_value in node.items():
-                    attr_key_memory = asizeof.asizeof(attr_key)
-                    if isinstance(attr_value, pd.Series):
-                        attr_value_memory = attr_value.memory_usage(deep=True)
-                    elif isinstance(attr_value, np.ndarray):
-                        attr_value_memory = attr_value.nbytes + sys.getsizeof(attr_value)
-                    else:
-                        attr_value_memory = asizeof.asizeof(attr_value)
-                    
-                    dict_attr_memory += attr_key_memory/1024/1024
-                    dict_attr_memory += attr_value_memory/1024/1024
-
-            dict_attr_memory += asizeof.asizeof(g._adj)/1024/1024
-    
-    return dict_attr_memory
-
 def measure_node_attributes_memory(graphs: dict):
     node_attributes_memory = 0
+
+    for _, graph_list in graphs.items():
+        g = graph_list[0]
+        for n in g.nodes:
+            attrs = g.nodes[n]
+
+            for k, v in attrs.items():
+                attr_key_memory = asizeof.asizeof(k)
+                if isinstance(v, pd.Series):
+                    attr_value_memory = v.memory_usage(deep=True)
+                elif isinstance(v, np.ndarray):
+                    attr_value_memory = v.nbytes + sys.getsizeof(v)
+                else:
+                    attr_value_memory = asizeof.asizeof(v)
+                    
+                node_attributes_memory += attr_key_memory/1024/1024
+                node_attributes_memory += attr_value_memory/1024/1024
 
     return node_attributes_memory
 
 def measure_edge_attributes_memory(graphs: dict):
     edge_attributes_memory = 0
 
+    for _, graph_list in graphs.items():
+        g = graph_list[0]
+
+        edge_attributes_memory += asizeof.asizeof(g._adj)/1024/1024
+
     return edge_attributes_memory
-
-def extract_structure_memory_info(graphs: dict):
-    msg = '\n'
-
-    msg += "graph structure memory: "
-    msg+= str(measure_graph_structure_memory(graphs))
-    msg+= "\n"
-    msg += "dict attributes memory: "
-    msg+= str(measure_dict_attr_memory(graphs))
-    msg+= "\n"
-    msg += "node attributes memory: "
-    msg+= str(measure_node_attributes_memory(graphs))
-    msg+= "\n"
-    msg += "edge attributes memory: "
-    msg+= str(measure_edge_attributes_memory(graphs))
-    msg+= "\n"
-
-    return msg
 
 def experimento_1():
 
@@ -310,7 +292,7 @@ def experimento_1():
     pdb_codes = read_dataset(general_data_path=general_data_path, dataset_txt_name=dataset_txt_file_name)
 
     protein_graph_with_metadata_dict = {}
-    # protein_graph_without_metadata_dict = {}
+    protein_graph_without_metadata_dict = {}
     number_of_nodes_in_which_graph = list()
     number_of_edges_in_which_graph = list()
 
@@ -318,14 +300,14 @@ def experimento_1():
 
     for i, pdb_code in enumerate(pdb_codes.copy()):
         try:
-            graph_with_data, _ = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path,1)
+            graph_with_data, graph_without_data = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path,1)
         except Exception as e:
             msg = traceback.format_exc()
             print(msg)
             write_error(dataset_name, msg, error_path)
             continue
         protein_graph_with_metadata_dict[pdb_code] = graph_with_data[pdb_code]
-        # protein_graph_without_metadata_dict[pdb_code] = graph_without_data[pdb_code]
+        protein_graph_without_metadata_dict[pdb_code] = graph_without_data[pdb_code]
 
         # number_of_edges_in_which_graph.append(len(protein_graph_without_metadata_dict[pdb_code][-1].edges()))
         # number_of_nodes_in_which_graph.append(len(protein_graph_without_metadata_dict[pdb_code][-1].nodes()))
@@ -344,9 +326,6 @@ def experimento_1():
 
     msg = f'\nTime to construct graphs: {time_to_construct}\nNumber of graphs: {len(protein_graph_with_metadata_dict)}'
 
-    write_result(dataset=dataset_name, msg=msg, result_path=result_path)
-
-    msg = extract_structure_memory_info(protein_graph_with_metadata_dict)
     write_result(dataset=dataset_name, msg=msg, result_path=result_path)
 
     body_parts, time_to_compress = new_builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
@@ -440,6 +419,7 @@ def experimento_1():
         \nUncompressed complete graph size: {asizeof.asizeof(protein_graph_with_metadata_dict) /1024 / 1024}\
         \nUncompressed complete graph size serialized: {len(pickle.dumps(protein_graph_with_metadata_dict)) /1024 / 1024}\
         \n\
+        \n Uncompressed graph structure: {asizeof.asizeof(protein_graph_without_metadata_dict)/1024/1024}\
         \n \
         \nCompressed graph: {pdb_store.total_memory()}\
         \nCompressed graph structure: {pdb_store.graph_structure_memory()} \
@@ -459,14 +439,23 @@ def experimento_1():
         \n edge_label_to_edge_id: {pdb_store.edge_label_to_edge_id_memory()}\
         \n edge_label_to_edge_id_serialized: {pdb_store.edge_label_to_edge_id_serialized_memory()}\
         \n\
+        \n Uncompressed node attr values: {measure_node_attributes_memory(protein_graph_with_metadata_dict)}\
+        \n Uncompressed edge attr values: {measure_edge_attributes_memory(protein_graph_with_metadata_dict)}\
         \n \
         \nCompressed dict attributes: {pdb_store.dict_attributes_memory()} \
+        \n\
+        \n Total compressed node attr values: {pdb_store.node_attr_values_memory() + pdb_store.node_global_attr_keyvalue_mapping_memory() + pdb_store.node_local_attr_keyvalue_mapping_memory()}\
+        \n\
+        \n Total compressed edge attr values: {pdb_store.edge_attr_values_memory() + pdb_store.edge_local_attr_keyvalue_mapping_memory()}\
         \n \
         \n attr_keys: {pdb_store.attr_keys_memory()} \
         \n attr_keys_serialized: {pdb_store.attr_keys_serialized_memory()}\
         \n\
-        \n attr_values: {pdb_store.attr_values_memory()} \
-        \n attr_values_serialized: {pdb_store.attr_values_serialized_memory()}\
+        \n edge_attr_values: {pdb_store.edge_attr_values_memory()} \
+        \n edge_attr_values_serialized: {pdb_store.edge_attr_values_serialized_memory()}\
+        \n \
+        \n node_attr_values: {pdb_store.node_attr_values_memory()} \
+        \n node_attr_values_serialized: {pdb_store.node_attr_values_serialized_memory()}\
         \n\
         \n \
         \nCompressed node attributes: {pdb_store.node_attributes_memory()}\
@@ -484,7 +473,7 @@ def experimento_1():
         \n edge_local_attr_keyvalue_mapping_serialized: {pdb_store.edge_local_attr_keyvalue_mapping_serialized_memory()}\
         \n \
         \n\
-        \nCompressed graph object size: {asizeof.asizeof(pdb_store)/1024/1024}\
+        \nCompressed graph object size: {asizeof.asizeof(pdb_store)/1024/1024} \
         \nCompressed graph complete size serialized: {asizeof.asizeof(pickle.dumps(pdb_store))/1024/1024}\
         \nCompressed graph complete size serialized (sum) {pdb_store.total_serialized_memory()}\
     '

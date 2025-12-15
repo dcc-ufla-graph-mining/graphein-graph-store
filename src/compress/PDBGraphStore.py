@@ -70,11 +70,17 @@ class PDBGraphStore:
             len(pk.dumps(self.__body_parts["edge_attr_keys"]))/1024/1024
             )
 
-    def attr_values_memory(self):
-        return asizeof.asizeof(self.__body_parts["attr_values"])/1024/1024
+    def edge_attr_values_memory(self):
+        return asizeof.asizeof(self.__body_parts["edge_attr_values"])/1024/1024
     
-    def attr_values_serialized_memory(self):
-        return len(pk.dumps(self.__body_parts["attr_values"]))/1024/1024
+    def node_attr_values_memory(self):
+        return asizeof.asizeof(self.__body_parts["node_attr_values"])/1024/1024
+    
+    def edge_attr_values_serialized_memory(self):
+        return len(pk.dumps(self.__body_parts["edge_attr_values"]))/1024/1024
+    
+    def node_attr_values_serialized_memory(self):
+        return len(pk.dumps(self.__body_parts["node_attr_values"]))/1024/1024
 
     def node_global_attr_keyvalue_mapping_memory(self):
         vetor = self.__body_parts["node_global_attr_keyvalue_mapping"]
@@ -112,7 +118,8 @@ class PDBGraphStore:
     def dict_attributes_memory(self):
         return (
         self.attr_keys_memory() +
-        self.attr_values_memory()
+        self.edge_attr_values_memory() +
+        self.node_attr_values_memory()
         )
 
     def node_attributes_memory(self):
@@ -135,7 +142,8 @@ class PDBGraphStore:
     def total_serialized_memory(self):
         return (
             self.attr_keys_serialized_memory() +
-            self.attr_values_serialized_memory() +
+            self.edge_attr_values_serialized_memory() +
+            self.node_attr_values_serialized_memory() +
             self.edge_label_to_edge_id_serialized_memory() +
             self.edge_local_attr_keyvalue_mapping_serialized_memory() +
             self.node_global_attr_keyvalue_mapping_serialized_memory() +
