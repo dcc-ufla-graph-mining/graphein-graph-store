@@ -1,20 +1,16 @@
 Result log for metals_CO
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 21.782637119293213
+Time to construct graphs: 22.038031578063965
 Number of graphs: 196
-graph structure memory: 152.60601806640625
-dict attributes memory: 656.1887664794922
-node attributes memory: 0
-edge attributes memory: 0
-
-Time to compress: 17.249159812927246
+Time to compress: 16.875164031982422
         
 Uncompressed complete graph size: 627.3435440063477        
 Uncompressed complete graph size serialized: 73.70052242279053        
         
+ Uncompressed graph structure: 152.83009338378906        
          
-Compressed graph: 599.3893508911133        
+Compressed graph: 609.3822631835938        
 Compressed graph structure: 170.12513732910156         
          
  pdb_code_to_id: 0.02532196044921875         
@@ -32,14 +28,23 @@ Compressed graph structure: 170.12513732910156
  edge_label_to_edge_id: 159.53960418701172        
  edge_label_to_edge_id_serialized: 14.582350730895996        
         
+ Uncompressed node attr values: 134.50911712646484        
+ Uncompressed edge attr values: 417.1807556152344        
          
-Compressed dict attributes: 157.4799346923828         
+Compressed dict attributes: 167.4806900024414         
+        
+ Total compressed node attr values: 60.70683288574219        
+        
+ Total compressed edge attr values: 378.54945373535156        
          
  attr_keys: 0.0008392333984375         
  attr_keys_serialized: 0.00015926361083984375        
         
- attr_values: 157.47909545898438         
- attr_values_serialized: 29.097783088684082        
+ edge_attr_values: 134.66983795166016         
+ edge_attr_values_serialized: 20.380268096923828        
+         
+ node_attr_values: 32.81001281738281         
+ node_attr_values_serialized: 6.029411315917969        
         
          
 Compressed node attributes: 27.896820068359375        
@@ -48,15 +53,15 @@ Compressed node attributes: 27.896820068359375
  node_global_attr_keyvalue_mapping_serialized: 0.8609027862548828        
         
  node_local_attr_keyvalue_mapping: 27.035934448242188         
- node_local_attr_keyvalue_mapping_serialized: 2.578460693359375        
+ node_local_attr_keyvalue_mapping_serialized: 2.4095849990844727        
         
          
-Compressed edge attributes: 243.88745880126953        
+Compressed edge attributes: 243.8796157836914        
          
- edge_local_attr_keyvalue_mapping: 243.88745880126953         
- edge_local_attr_keyvalue_mapping_serialized: 21.137038230895996        
+ edge_local_attr_keyvalue_mapping: 243.8796157836914         
+ edge_local_attr_keyvalue_mapping_serialized: 20.252674102783203        
          
         
-Compressed graph object size: 537.6219100952148        
-Compressed graph complete size serialized: 74.65145874023438        
-Compressed graph complete size serialized (sum) 69.66697788238525    
+Compressed graph object size: 547.6146697998047         
+Compressed graph complete size serialized: 73.473876953125        
+Compressed graph complete size serialized (sum) 65.92563438415527    

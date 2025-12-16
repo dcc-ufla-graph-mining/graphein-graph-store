@@ -1,20 +1,16 @@
 Result log for nicleic_dna
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 70.96375608444214
+Time to construct graphs: 70.45374488830566
 Number of graphs: 533
-graph structure memory: 480.97469329833984
-dict attributes memory: 2068.2089977264404
-node attributes memory: 0
-edge attributes memory: 0
-
-Time to compress: 55.160908460617065
+Time to compress: 53.00022768974304
         
 Uncompressed complete graph size: 1979.1788177490234        
 Uncompressed complete graph size serialized: 232.07800102233887        
         
+ Uncompressed graph structure: 481.5818634033203        
          
-Compressed graph: 1858.0321578979492        
+Compressed graph: 1898.0250701904297        
 Compressed graph structure: 409.07621002197266         
          
  pdb_code_to_id: 0.06238555908203125         
@@ -32,14 +28,23 @@ Compressed graph structure: 409.07621002197266
  edge_label_to_edge_id: 383.6538619995117        
  edge_label_to_edge_id_serialized: 41.170565605163574        
         
+ Uncompressed node attr values: 421.02686309814453        
+ Uncompressed edge attr values: 1318.6828002929688        
          
-Compressed dict attributes: 563.7537994384766         
+Compressed dict attributes: 603.7545547485352         
+        
+ Total compressed node attr values: 201.57540130615234        
+        
+ Total compressed edge attr values: 1287.3726196289062        
          
  attr_keys: 0.0008392333984375         
  attr_keys_serialized: 0.00015926361083984375        
         
- attr_values: 563.7529602050781         
- attr_values_serialized: 91.93101501464844        
+ edge_attr_values: 492.72245025634766         
+ edge_attr_values_serialized: 64.65977191925049        
+         
+ node_attr_values: 111.03126525878906         
+ node_attr_values_serialized: 19.048667907714844        
         
          
 Compressed node attributes: 90.54413604736328        
@@ -48,15 +53,15 @@ Compressed node attributes: 90.54413604736328
  node_global_attr_keyvalue_mapping_serialized: 2.3214950561523438        
         
  node_local_attr_keyvalue_mapping: 88.22265625         
- node_local_attr_keyvalue_mapping_serialized: 8.649998664855957        
+ node_local_attr_keyvalue_mapping_serialized: 8.245498657226562        
         
          
-Compressed edge attributes: 794.6580123901367        
+Compressed edge attributes: 794.6501693725586        
          
- edge_local_attr_keyvalue_mapping: 794.6580123901367         
- edge_local_attr_keyvalue_mapping_serialized: 68.95297431945801        
+ edge_local_attr_keyvalue_mapping: 794.6501693725586         
+ edge_local_attr_keyvalue_mapping_serialized: 66.21348190307617        
          
         
-Compressed graph object size: 1674.6740264892578        
-Compressed graph complete size serialized: 232.84432220458984        
-Compressed graph complete size serialized (sum) 217.2037296295166    
+Compressed graph object size: 1714.6667861938477         
+Compressed graph complete size serialized: 229.57511138916016        
+Compressed graph complete size serialized (sum) 205.83716201782227    

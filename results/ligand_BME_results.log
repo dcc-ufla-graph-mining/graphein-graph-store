@@ -1,20 +1,16 @@
 Result log for ligand_BME
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 18.665478944778442
+Time to construct graphs: 19.084612131118774
 Number of graphs: 187
-graph structure memory: 132.04315948486328
-dict attributes memory: 568.2975463867188
-node attributes memory: 0
-edge attributes memory: 0
-
-Time to compress: 14.957593202590942
+Time to compress: 14.896350860595703
         
 Uncompressed complete graph size: 543.2452392578125        
 Uncompressed complete graph size serialized: 63.846421241760254        
         
+ Uncompressed graph structure: 132.2570037841797        
          
-Compressed graph: 544.8867492675781        
+Compressed graph: 554.8796615600586        
 Compressed graph structure: 156.44578552246094         
          
  pdb_code_to_id: 0.024566650390625         
@@ -32,14 +28,23 @@ Compressed graph structure: 156.44578552246094
  edge_label_to_edge_id: 148.79014587402344        
  edge_label_to_edge_id_serialized: 12.59461498260498        
         
+ Uncompressed node attr values: 117.0081558227539        
+ Uncompressed edge attr values: 361.1296691894531        
          
-Compressed dict attributes: 147.0620574951172         
+Compressed dict attributes: 157.06281280517578         
+        
+ Total compressed node attr values: 54.746788024902344        
+        
+ Total compressed edge attr values: 343.6862487792969        
          
  attr_keys: 0.0008392333984375         
  attr_keys_serialized: 0.00015926361083984375        
         
- attr_values: 147.06121826171875         
- attr_values_serialized: 25.164589881896973        
+ edge_attr_values: 127.30252838134766         
+ edge_attr_values_serialized: 17.616918563842773        
+         
+ node_attr_values: 29.759445190429688         
+ node_attr_values_serialized: 5.204961776733398        
         
          
 Compressed node attributes: 24.987342834472656        
@@ -48,15 +53,15 @@ Compressed node attributes: 24.987342834472656
  node_global_attr_keyvalue_mapping_serialized: 0.7999629974365234        
         
  node_local_attr_keyvalue_mapping: 24.187393188476562         
- node_local_attr_keyvalue_mapping_serialized: 2.2411279678344727        
+ node_local_attr_keyvalue_mapping_serialized: 2.0931215286254883        
         
          
-Compressed edge attributes: 216.39156341552734        
+Compressed edge attributes: 216.38372039794922        
          
- edge_local_attr_keyvalue_mapping: 216.39156341552734         
- edge_local_attr_keyvalue_mapping_serialized: 18.25781536102295        
+ edge_local_attr_keyvalue_mapping: 216.38372039794922         
+ edge_local_attr_keyvalue_mapping_serialized: 17.489985466003418        
          
         
-Compressed graph object size: 491.2102584838867        
-Compressed graph complete size serialized: 64.67155456542969        
-Compressed graph complete size serialized (sum) 60.33100414276123    
+Compressed graph object size: 501.20301818847656         
+Compressed graph complete size serialized: 63.63154602050781        
+Compressed graph complete size serialized (sum) 57.072458267211914    

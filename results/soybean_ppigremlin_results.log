@@ -1,20 +1,16 @@
 Result log for soybean_ppigremlin
 Average number of nodes: nan         
 Average number of edges: nan     
-Time to construct graphs: 5.753223419189453
+Time to construct graphs: 5.801700592041016
 Number of graphs: 93
-graph structure memory: 38.89307403564453
-dict attributes memory: 166.89535903930664
-node attributes memory: 0
-edge attributes memory: 0
-
-Time to compress: 3.1622679233551025
+Time to compress: 3.2499237060546875
         
 Uncompressed complete graph size: 159.1702117919922        
 Uncompressed complete graph size serialized: 18.7236385345459        
         
+ Uncompressed graph structure: 39.00006103515625        
          
-Compressed graph: 117.62118530273438        
+Compressed graph: 120.11409759521484        
 Compressed graph structure: 13.868377685546875         
          
  pdb_code_to_id: 0.01227569580078125         
@@ -32,14 +28,23 @@ Compressed graph structure: 13.868377685546875
  edge_label_to_edge_id: 12.127098083496094        
  edge_label_to_edge_id_serialized: 1.1537914276123047        
         
+ Uncompressed node attr values: 34.812095642089844        
+ Uncompressed edge attr values: 104.67041015625        
          
-Compressed dict attributes: 39.846534729003906         
+Compressed dict attributes: 42.3472900390625         
+        
+ Total compressed node attr values: 15.721397399902344        
+        
+ Total compressed edge attr values: 90.52348327636719        
          
  attr_keys: 0.0008392333984375         
  attr_keys_serialized: 0.00015926361083984375        
         
- attr_values: 39.84569549560547         
- attr_values_serialized: 7.310947418212891        
+ edge_attr_values: 33.724586486816406         
+ edge_attr_values_serialized: 5.022416114807129        
+         
+ node_attr_values: 8.621864318847656         
+ node_attr_values_serialized: 1.5729827880859375        
         
          
 Compressed node attributes: 7.0995330810546875        
@@ -48,15 +53,15 @@ Compressed node attributes: 7.0995330810546875
  node_global_attr_keyvalue_mapping_serialized: 0.1414318084716797        
         
  node_local_attr_keyvalue_mapping: 6.9581146240234375         
- node_local_attr_keyvalue_mapping_serialized: 0.63848876953125        
+ node_local_attr_keyvalue_mapping_serialized: 0.5841779708862305        
         
          
-Compressed edge attributes: 56.806739807128906        
+Compressed edge attributes: 56.79889678955078        
          
- edge_local_attr_keyvalue_mapping: 56.806739807128906         
- edge_local_attr_keyvalue_mapping_serialized: 4.843857765197754        
+ edge_local_attr_keyvalue_mapping: 56.79889678955078         
+ edge_local_attr_keyvalue_mapping_serialized: 4.605566024780273        
          
         
-Compressed graph object size: 106.7109146118164        
-Compressed graph complete size serialized: 15.805908203125        
-Compressed graph complete size serialized (sum) 14.566225051879883    
+Compressed graph object size: 109.20367431640625         
+Compressed graph complete size serialized: 15.446479797363281        
+Compressed graph complete size serialized (sum) 13.558073997497559    
