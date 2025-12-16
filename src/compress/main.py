@@ -228,6 +228,7 @@ def measure_graph_structure_memory(graphs: dict):
     return graph_structure_memory
 
 def measure_node_attributes_memory(graphs: dict):
+    node_attrs = []
     node_attributes_memory = 0
 
     for _, graph_list in graphs.items():
@@ -235,27 +236,37 @@ def measure_node_attributes_memory(graphs: dict):
         for n in g.nodes:
             attrs = g.nodes[n]
 
+            node_attr = {}
+
             for k, v in attrs.items():
                 attr_key_memory = asizeof.asizeof(k)
                 if isinstance(v, pd.Series):
-                    attr_value_memory = v.memory_usage(deep=True)
+                    node_attr[k] = tuple([tuple(v.tolist()), tuple(v.name)])
                 elif isinstance(v, np.ndarray):
-                    attr_value_memory = v.nbytes + sys.getsizeof(v)
+                    node_attr[k] = tuple(v)
                 else:
-                    attr_value_memory = asizeof.asizeof(v)
-                    
-                node_attributes_memory += attr_key_memory/1024/1024
-                node_attributes_memory += attr_value_memory/1024/1024
+                    node_attr[k] = v
+                
+                node_attrs.append(node_attr)
+
+    node_attributes_memory = asizeof.asizeof(node_attrs)/1024/1024
 
     return node_attributes_memory
 
 def measure_edge_attributes_memory(graphs: dict):
     edge_attributes_memory = 0
 
+    edge_attrs = []
+
     for _, graph_list in graphs.items():
         g = graph_list[0]
 
-        edge_attributes_memory += asizeof.asizeof(g._adj)/1024/1024
+        for e in g.edges:
+            edge_attr = g.edges[e]
+
+            edge_attrs.append(edge_attr)
+
+    edge_attributes_memory += asizeof.asizeof(edge_attrs)/1024/1024
 
     return edge_attributes_memory
 
