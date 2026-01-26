@@ -1,4 +1,4 @@
-import new_builder
+import compress.Builder as Builder
 from PDBGraphStore import PDBGraphStore
 import os
 import metadata
@@ -335,7 +335,7 @@ def experimento_1():
 
     write_result(dataset=dataset_name, msg=msg, result_path=result_path)
 
-    body_parts, time_to_compress = new_builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
+    body_parts, time_to_compress = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
 
     msg = f'\nTime to compress: {time_to_compress}'
     write_result(dataset=dataset_name, msg=msg, result_path=result_path)
