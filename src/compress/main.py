@@ -235,11 +235,8 @@ def measure_node_attributes_memory(graphs: dict):
         g = graph_list[0]
         for n in g.nodes:
             attrs = g.nodes[n]
-
             node_attr = {}
-
             for k, v in attrs.items():
-                attr_key_memory = asizeof.asizeof(k)
                 if isinstance(v, pd.Series):
                     node_attr[k] = tuple([tuple(v.tolist()), tuple(v.name)])
                 elif isinstance(v, np.ndarray):
@@ -255,7 +252,6 @@ def measure_node_attributes_memory(graphs: dict):
 
 def measure_edge_attributes_memory(graphs: dict):
     edge_attributes_memory = 0
-
     edge_attrs = []
 
     for _, graph_list in graphs.items():

@@ -1,9 +1,0 @@
-Result log for metals_NI
-Average number of nodes: nan         
-Average number of edges: nan     
-Time to construct graphs: 33.813684940338135
-Number of graphs: 347
-graph structure memory: 239.05101776123047
-dict attributes memory: 1027.8360214233398
-node attributes memory: 0
-edge attributes memory: 0
