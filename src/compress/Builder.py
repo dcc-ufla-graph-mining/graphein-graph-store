@@ -233,7 +233,6 @@ def reconstruct_edges(body_parts: dict, g: nx.Graph, pdb_id: int):
         
         reconstruct_edge_kinds(attributes[2:], g, body_parts, edge_label)
         reconstruct_edge_distance(attributes[:2], g, body_parts, edge_label)
-        
 
 def reconstruct_and_validate(protein_graphs: dict[str, list[nx.Graph]], body_parts: dict):
     for pdb_code, pdb_graph_list in protein_graphs.items():

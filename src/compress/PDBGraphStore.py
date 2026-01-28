@@ -28,12 +28,12 @@ class PDBGraphStore:
 
     def __str__(self):
         return f'PDBGraphStore with {len(self.get_pdb_code_list())} pdbs'
+    
+    def __edge_label_undirected(self, edge_label: tuple) -> tuple:
+        return tuple(sorted(edge_label))
 
     # TODO considerar transformar esse metodo em uma classe a parte, eliminando assim a necessidade do Builder.py tambem
     def insert_pdb(self, pdb_to_insert: dict[str, list[nx.Graph]]):
-        def __edge_label_undirected(edge_label: tuple) -> tuple:
-            return tuple(sorted(edge_label))
-
         def __process_edge_distances(distance: float)-> list:
             distance_keyvalue_mapping_list = []
 
@@ -81,7 +81,7 @@ class PDBGraphStore:
 
         def __process_edges(g: nx.Graph, pdb_id: int):
             for e in g.edges:
-                edge_id = self.__body_parts["edge_label_to_edge_id"][__edge_label_undirected(e)]
+                edge_id = self.__body_parts["edge_label_to_edge_id"][self.__edge_label_undirected(e)]
                 __process_edge_attrs(pdb_id, edge_id, g.edges[e])
 
         def __process_global_node_attrs(node: dict, node_id: int):
@@ -134,7 +134,7 @@ class PDBGraphStore:
 
         def __construct_edge_structure(g: nx.Graph, pdb_id: int): 
             for e in g.edges:
-                edge_label = __edge_label_undirected(e)
+                edge_label = self.__edge_label_undirected(e)
 
                 if edge_label not in self.__body_parts["edge_label_to_edge_id"]:
                     self.__body_parts["edge_label_to_edge_id"][edge_label] = len(self.__body_parts["edge_label_to_edge_id"])
@@ -168,10 +168,7 @@ class PDBGraphStore:
         insert()
 
     # TODO: considerar transformar esse método em uma classe a parte
-    def extract_pdb(self, pdb_to_extract: str) -> nx.Graph:
-        def __edge_label_undirected(edge_label: tuple) -> tuple:
-            return tuple(sorted(edge_label))
-        
+    def extract_pdb(self, pdb_to_extract: str) -> nx.Graph:        
         def __reconstruct_node_global_attrs(node_id: int, extracted_graph: nx.Graph):
             global_attributes = self.__body_parts["node_global_attr_keyvalue_mapping"][node_id]
             global_attribute_keys = self.__body_parts["node_global_attr_keys"]
@@ -203,7 +200,7 @@ class PDBGraphStore:
                 if isinstance(attr_value, tuple):
                     attr_value = np.array(attr_value)
 
-                g.nodes[node_label][attr_key] = attr_value
+                extracted_graph.nodes[node_label][attr_key] = attr_value
         
         def __reconstruct_edge_kinds(attributes: list, g: nx.Graph, edge_label: str):
             attr_key = "kind"
@@ -235,7 +232,7 @@ class PDBGraphStore:
 
         def __reconstruct_edges(extracted_graph: nx.Graph, pdb_id: int):
             for edge_label in extracted_graph.edges:
-                edge_id = self.__body_parts["edge_label_to_edge_id"][__edge_label_undirected(edge_label)]
+                edge_id = self.__body_parts["edge_label_to_edge_id"][self.__edge_label_undirected(edge_label)]
                 attributes = self.__body_parts["edge_local_attr_keyvalue_mapping"][(pdb_id, edge_id)]
 
                 __reconstruct_edge_kinds(attributes[2:], extracted_graph, edge_label)
@@ -257,7 +254,28 @@ class PDBGraphStore:
 
     # return str(pdb) se o pdb foi removido com sucesso 
     def remove_pdb(self, pdb_to_remove: str) -> str:
-        pass
+        def remove_edge(e: dict, edge_label):
+            edge_label = self.__edge_label_undirected(edge_label)
+
+            self.__body_parts["edge_local_attr_keyvalue_mapping"]
+
+        def remove_node(n: dict):
+            self.__body_parts["node_global_keyvalue_mapping"]
+            self.__body_parts["node_local_keyvalue_mapping"]
+
+        def remove_dicts():
+            self.__body_parts["edge_attr_keys"]
+            self.__body_parts["node_global_attr_keys"]
+            self.__body_parts["node_local_attr_keys"]
+            self.__body_parts["node_attr_values"]
+            self.__body_parts["edge_attr_values"]
+
+        def remove_graph():
+            self.__body_parts["pdb_code_to_id"].pop(pdb_to_remove, None)
+            self.__body_parts["pdb_id_to_nodes"]
+            self.__body_parts["pdb_id_to_edges"]
+            self.__body_parts["node_label_to_node_id"]
+            self.__body_parts["edge_label_to_edge_id"]
 
     # after some removes, there will be a lot of empty spaces in id mapping. solves this in this method
     def remake_id_mapping(self):
