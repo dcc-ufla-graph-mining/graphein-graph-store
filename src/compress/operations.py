@@ -19,3 +19,5 @@ def extract_pdb_graphs_multiprocessing(pdb_store, pdb_codes=[], num_cpus=4) -> l
 
         for future in as_completed(futures):
             extracted_graphs.append(future.result())
+
+        return extracted_graphs

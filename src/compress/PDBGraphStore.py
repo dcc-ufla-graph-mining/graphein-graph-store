@@ -95,7 +95,7 @@ class PDBGraphStore:
                     self.__body_parts["node_attr_values"][attr_value] = len(self.__body_parts["node_attr_values"])
 
                 attr_value_id = self.__body_parts["node_attr_values"][attr_value]
-                self.__body_parts["node_global_attr_keyvalue_mapping"][node_id][attr_idx]
+                self.__body_parts["node_global_attr_keyvalue_mapping"][node_id][attr_idx] = attr_value_id
 
         def __process_local_node_attrs(node: dict) -> list:
             local_attr_list = []
@@ -154,13 +154,13 @@ class PDBGraphStore:
                 pdb_id = self.__body_parts["pdb_code_to_id"][pdb_code]
 
                 __construct_structure_attributes(pdb_graph[0], pdb_id)
-                
-                # TODO node_global_attr_keyvalue_mapping tem que ser rebuildado e copiado para o novo objeto
 
-                # body_parts["node_global_attr_keyvalue_mapping"] = np.zeros((
-                #                                                 len(body_parts["node_label_to_node_id"]), 
-                #                                                 5
-                #                                                 ), dtype=np.int32)
+                old = self.__body_parts["node_global_attr_keyvalue_mapping"]
+                new_size = len(self.__body_parts["node_label_to_node_id"])
+                new = np.zeros((new_size, old.shape[1]), dtype=old.dtype)
+                new[:old.shape[0]] = old
+
+                self.__body_parts["node_global_attr_keyvalue_mapping"] = new
 
                 __process_nodes(pdb_graph[0], pdb_id)
                 __process_edges(pdb_graph[0], pdb_id)
