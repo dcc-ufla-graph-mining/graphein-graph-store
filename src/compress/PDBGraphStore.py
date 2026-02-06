@@ -29,6 +29,9 @@ class PDBGraphStore:
     def __str__(self):
         return f'PDBGraphStore with {len(self.get_pdb_code_list())} pdbs'
     
+    def get_this_pdb_list(self):
+        return self.pdb_code_to_id.keys()
+    
     def __edge_label_undirected(self, edge_label: tuple) -> tuple:
         return tuple(sorted(edge_label))
 
@@ -253,29 +256,29 @@ class PDBGraphStore:
         return extracted_graph
 
     # return str(pdb) se o pdb foi removido com sucesso 
-    def remove_pdb(self, pdb_to_remove: str) -> str:
-        def remove_edge(e: dict, edge_label):
-            edge_label = self.__edge_label_undirected(edge_label)
+    def remove_pdb(self, pdb_to_remove: str):
+        def remove_edge(edge_id: int, pdb_id: int):
+            self.__body_parts["edge_local_attr_keyvalue_mapping"].pop((pdb_id, edge_id))
 
-            self.__body_parts["edge_local_attr_keyvalue_mapping"]
+        def remove_node(node_id: int, pdb_id: int):
+            # skip this cause global attr may appear in other graphs with the same node
+            # self.__body_parts["node_global_keyvalue_mapping"]
 
-        def remove_node(n: dict):
-            self.__body_parts["node_global_keyvalue_mapping"]
-            self.__body_parts["node_local_keyvalue_mapping"]
+            removed_local_node_attrs = self.__body_parts["node_local_keyvalue_mapping"].pop((pdb_id, node_id))
 
-        def remove_dicts():
-            self.__body_parts["edge_attr_keys"]
-            self.__body_parts["node_global_attr_keys"]
-            self.__body_parts["node_local_attr_keys"]
-            self.__body_parts["node_attr_values"]
-            self.__body_parts["edge_attr_values"]
+            return removed_local_node_attrs
 
-        def remove_graph():
-            self.__body_parts["pdb_code_to_id"].pop(pdb_to_remove, None)
-            self.__body_parts["pdb_id_to_nodes"]
-            self.__body_parts["pdb_id_to_edges"]
-            self.__body_parts["node_label_to_node_id"]
-            self.__body_parts["edge_label_to_edge_id"]
+        pdb_id = self.__body_parts["pdb_code_to_id"].pop(pdb_to_remove, None)
+
+        node_ids_to_remove = self.__body_parts["pdb_id_to_nodes"].pop(pdb_id, KeyError)
+        edge_ids_to_remove = self.__body_parts["pdb_id_to_edges"].pop(pdb_id, KeyError)
+
+        #skip the node_label_to_node_id and edge_label_to_edge_id pops cause they may be part of other pdbs
+
+        [remove_edge(edge_id, pdb_id) for edge_id in edge_ids_to_remove]
+        [remove_node(node_id, pdb_id) for node_id in node_ids_to_remove]
+
+        #also skip the dicts node_attr_values and edge_attr_values. handle with this in remake_id_mapping()
 
     # after some removes, there will be a lot of empty spaces in id mapping. solves this in this method
     def remake_id_mapping(self):
@@ -297,5 +300,3 @@ class PDBGraphStore:
         print(f"\n\nTodos os pdbs {removed_pdb_codes} foram removidos com sucesso!")
 
         return removed_pdb_codes
-
-
