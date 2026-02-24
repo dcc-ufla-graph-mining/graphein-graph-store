@@ -29,6 +29,9 @@ class PDBGraphStore:
     def __str__(self):
         return f'PDBGraphStore with {len(self.get_pdb_code_list())} pdbs'
     
+    def get_body_parts(self):
+        return self.__body_parts
+
     def get_this_pdb_list(self):
         return self.pdb_code_to_id.keys()
     
@@ -36,7 +39,7 @@ class PDBGraphStore:
         return tuple(sorted(edge_label))
 
     # TODO considerar transformar esse metodo em uma classe a parte, eliminando assim a necessidade do Builder.py tambem
-    def insert_pdb(self, pdb_to_insert: dict[str, list[nx.Graph]]):
+    def insert_pdb(self, pdb_to_insert: dict):
         def __process_edge_distances(distance: float)-> list:
             distance_keyvalue_mapping_list = []
 
@@ -284,7 +287,7 @@ class PDBGraphStore:
     def remake_id_mapping(self):
         pass
 
-    def remove_multi_pdb(self, pdb_to_remove_list: list) -> list | None:
+    def remove_multi_pdb(self, pdb_to_remove_list: list):
         removed_pdb_codes = []
 
         for pdb_code in pdb_to_remove_list:

@@ -3,7 +3,6 @@ import Builder
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 
-#TODO
 def split_graph_store(pdb_store=PDBGraphStore, pdb_code_list=[]) -> tuple[PDBGraphStore, PDBGraphStore]:
     pdb_graphs = []
     for pdb_code in pdb_code_list:
@@ -18,7 +17,6 @@ def split_graph_store(pdb_store=PDBGraphStore, pdb_code_list=[]) -> tuple[PDBGra
 
     return (pdb_store, pdb_store_2)
 
-#TODO
 def merge_graph_stores(graph_stores=[PDBGraphStore]) -> PDBGraphStore:
     main_graph_store = graph_stores.pop()
     

@@ -7,7 +7,8 @@ services:
       - PROGRAM_NAME=main
       - DATA_DIR=/app/data
       - DATASET=bcl_ppigremlin.txt
+      - EXCOUNT=0
     volumes:
       - .:/app
-    # command: sh run_metadata_with_different_datasets.sh
-    command: python src/compress/main.py
+    command: sh run_metadata_with_different_datasets.sh
+    # command: python src/compress/main.py

@@ -8,4 +8,3 @@ type=docker/
 logs/metadata.log
 v1.pkl
 v2.pkl
-edge_distances.txt

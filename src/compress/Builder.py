@@ -141,7 +141,7 @@ def construct_structure_attributes(g: nx.Graph, body_parts: dict, pdb_id: int):
     construct_node_structure(g, body_parts, pdb_id)
     construct_edge_structure(g, body_parts, pdb_id)
 
-def initialize_structures(protein_graphs: dict[str, list[nx.Graph]], body_parts: dict):
+def initialize_structures(protein_graphs: dict, body_parts: dict):
     for pdb_code, pdb_graph_list in protein_graphs.items():
         if pdb_code not in body_parts["pdb_code_to_id"]:
             body_parts["pdb_code_to_id"][pdb_code] = len(body_parts["pdb_code_to_id"])
@@ -234,7 +234,7 @@ def reconstruct_edges(body_parts: dict, g: nx.Graph, pdb_id: int):
         reconstruct_edge_kinds(attributes[2:], g, body_parts, edge_label)
         reconstruct_edge_distance(attributes[:2], g, body_parts, edge_label)
 
-def reconstruct_and_validate(protein_graphs: dict[str, list[nx.Graph]], body_parts: dict):
+def reconstruct_and_validate(protein_graphs: dict, body_parts: dict):
     for pdb_code, pdb_graph_list in protein_graphs.items():
         for original_graph in pdb_graph_list:
             extracted_graph = nx.Graph()
@@ -302,7 +302,7 @@ def reconstruct_and_validate(protein_graphs: dict[str, list[nx.Graph]], body_par
                     print(f"original: {original_node}")
                     print(f"extracted: {extracted_node}")
 
-def process_graphs(protein_graphs: dict[str, list[nx.Graph]], body_parts: dict):
+def process_graphs(protein_graphs: dict, body_parts: dict):
     for pdb_code, pdb_graph_list in protein_graphs.items():
         for g in pdb_graph_list:
             pdb_id = body_parts["pdb_code_to_id"][pdb_code]
@@ -310,7 +310,7 @@ def process_graphs(protein_graphs: dict[str, list[nx.Graph]], body_parts: dict):
             process_nodes(g, body_parts, pdb_id)
             process_edges(g, body_parts, pdb_id)
 
-def compress_pdb_graphs(protein_graphs: dict[str, list[nx.Graph]]) -> dict:
+def compress_pdb_graphs(protein_graphs: dict) -> dict:
     time_to_construct_start = time.time()
 
     body_parts = initialize_body_parts()

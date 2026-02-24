@@ -1,24 +1,16 @@
-import compress.Builder as Builder
-from PDBGraphStore import PDBGraphStore
-import os
-import metadata
-from bidict import bidict
-import random
-import time
+import os, metadata, time, pickle, traceback
+
 import numpy as np
 import pandas as pd
 from pympler import asizeof
-import pickle
+
 import Builder
+from MemoryMeasuring import MemoryMeasuring
+from PDBGraphStore import PDBGraphStore
 import edge_functions_Model as edgeModel
-import sys
-import networkx as nx
-import traceback
-from sortedcontainers import SortedSet
 
 from graphein.protein.config import ProteinGraphConfig
 from graphein.protein.graphs import construct_graph
-from graphein.protein.graphs import compute_edges
 from graphein.protein.utils import download_pdb
 
 def initialize_errors_directory(current_file_path):
@@ -42,9 +34,9 @@ def initialize_results_directory(current_file_path):
 
     return result_path
 
-def create_dataset_result_file(result_path, dataset_name):
-    with open(f"{result_path}/{dataset_name}_results.log", "w") as file:
-        file.write(f"Result log for {dataset_name}\n")
+def create_dataset_result_file(result_path, experiment_fields):
+    with open(f"{result_path}/results.csv", "w") as file:
+        file.write(experiment_fields)
 
 def initialize_pdb_data_path(general_data_path):
     pdb_data_path = os.path.abspath(f"{general_data_path}/pdb_files/")
@@ -54,8 +46,9 @@ def initialize_pdb_data_path(general_data_path):
 
     return pdb_data_path
 
-def write_result(dataset, msg, result_path, file_mode='a'):
-    with open(f"{result_path}/{dataset}_results.log", file_mode) as file:
+def write_result(msg, result_path, file_mode='a'):
+    with open(f"{result_path}/results.csv", file_mode) as file:
+        file.write("\n")
         file.write(msg)
 
 def write_error(dataset, msg, error_path, file_mode='a'):
@@ -152,81 +145,6 @@ def prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path, func_idx):
 
     return protein_graph_with_metadata_dict, protein_graph_without_metadata_dict
 
-def initialize_body_parts():
-    body_parts = {}
-    body_parts["node_to_id"] = {}
-    body_parts["edge_to_id"] = {}
-    body_parts["pdb_to_nodes"] = {}
-    body_parts["pdb_to_edges"] = {}
-    body_parts["node_attrs"] = {}
-    body_parts["node_attr_keys"] = {}
-
-    node_attr_keys_list = ["chain_id", "residue_name", "residue_number", "atom_type", "element_symbol", "coords", "b_factor", "meiler"]
-    for key in node_attr_keys_list:
-        body_parts["node_attr_keys"][key] = SortedSet()
-
-    body_parts["edge_kinds"] = {}
-    body_parts["edge_kind_keys"] = SortedSet(set(edgeModel.edge_functions_dict.keys()))
-
-    body_parts["edge_distances"] = []
-    body_parts["all_pdb_codes"] = SortedSet()
-
-    return body_parts
-
-def test():
-    # graphs_extracted = operations.extract_pdb_graphs_multiprocessing(pdb_store, ["1BXL", "1G5J"], ["bb_carbonyl_carbonyl"], 2)
-
-
-    # for graphs in graphs_extracted:
-    #     for g in graphs:
-    #         print(g.graph["pdb_code"])
-    #         print(g)
-    #         for u, v in g.edges():
-    #             print(g.edges[u, v])
-    # #insert pdb into the pdb_store
-    # graph_to_insert, _ = prepare_graph(pdb_data_path, "2NL9", dataset_name, error_path)
-
-    # pdb_store.insert_pdbs(graph_to_insert)
-
-    # #remove pdb from the pdb_store
-    # # print(pdb_store.remove_multiple_pdbs(["2NL9"]))
-
-    # #merge 2 pdb_stores
-    # pdb_store2 = PDBGraphStore(node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_attrs, node_attr_keys, edge_attr_keys)
-
-    # #operation merge graph stores
-    # gs_merged = operations.merge_graph_stores([pdb_store, pdb_store2])
-    # print(pdb_store)
-    # #operation split graph store into 2
-    # gs1, gs2 = operations.split_graph_store(pdb_store, ["2NL9"])
-
-    # print(gs1, gs2)
-    pass
-
-def extract_g_structure(g):
-    g_aux = nx.Graph()
-    for n in g.nodes:
-        g_aux.add_node(n)
-
-    for u, v in g.edges:
-        e = (u, v)
-        g_aux.add_edge(*e)
-
-    return g_aux
-
-def extract_structure(graphs: dict):
-    structure_dict = {}
-    for pdb_code, gs in graphs.items():
-        g = extract_g_structure(gs[0])
-        structure_dict[pdb_code] = g
-
-    return structure_dict
-
-def measure_graph_structure_memory(graphs: dict):
-    graph_structure = extract_structure(graphs)
-    graph_structure_memory = asizeof.asizeof(graph_structure)/1024/1024
-    return graph_structure_memory
-
 def measure_node_attributes_memory(graphs: dict):
     node_attrs = []
     node_attributes_memory = 0
@@ -266,7 +184,7 @@ def measure_edge_attributes_memory(graphs: dict):
 
     return edge_attributes_memory
 
-def experimento_1():
+def experiment_1():
 
     #config usada:
     #granularity: CA
@@ -284,7 +202,7 @@ def experimento_1():
     pdb_data_path = initialize_pdb_data_path(general_data_path=general_data_path)
 
     create_dataset_error_file(error_path, dataset_name)
-    create_dataset_result_file(result_path, dataset_name)
+    
 
     print(f"\
           current_file_path={current_file_path}, \
@@ -300,12 +218,12 @@ def experimento_1():
 
     protein_graph_with_metadata_dict = {}
     protein_graph_without_metadata_dict = {}
-    number_of_nodes_in_which_graph = list()
-    number_of_edges_in_which_graph = list()
+    number_of_nodes = 0
+    number_of_edges = 0
 
     time_start = time.time()
 
-    for i, pdb_code in enumerate(pdb_codes.copy()):
+    for _, pdb_code in enumerate(pdb_codes.copy()):
         try:
             graph_with_data, graph_without_data = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path,1)
         except Exception as e:
@@ -316,365 +234,135 @@ def experimento_1():
         protein_graph_with_metadata_dict[pdb_code] = graph_with_data[pdb_code]
         protein_graph_without_metadata_dict[pdb_code] = graph_without_data[pdb_code]
 
-        # number_of_edges_in_which_graph.append(len(protein_graph_without_metadata_dict[pdb_code][-1].edges()))
-        # number_of_nodes_in_which_graph.append(len(protein_graph_without_metadata_dict[pdb_code][-1].nodes()))
-
-    msg = f'Average number of nodes: {np.mean(number_of_nodes_in_which_graph)} \
-        \nAverage number of edges: {np.mean(number_of_edges_in_which_graph)} \
-    '
-    print(msg)
-
-    write_result(dataset=dataset_name, msg=msg, result_path=result_path)
-
-    del number_of_edges_in_which_graph
-    del number_of_nodes_in_which_graph
+        number_of_edges+=len(protein_graph_without_metadata_dict[pdb_code][-1].edges())
+        number_of_nodes+=len(protein_graph_without_metadata_dict[pdb_code][-1].nodes())
 
     time_to_construct = time_count(time_start=time_start)
+    
+    result_columns = [
+        "dataset"
+        "Time to construct graphs",
+        "number of nodes in dataset",
+        "number of edges in dataset",
+        "Number of graphs",
+        "Time to compress",
+        "Uncompressed complete graph size",
+        "Uncompressed complete graph size serialized",
+        "Uncompressed graph structure",
+        "Compressed graph",
+        "Compressed graph structure",
+        "pdb_code_to_id",
+        "pdb_code_to_id_serialized",
+        "pdb_id_to_nodes",
+        "pdb_id_to_nodes_serialized",
+        "pdb_id_to_edges",
+        "pdb_id_to_edges_serialized",
+        "node_label_to_node_id",
+        "node_label_to_node_id_serialized",
+        "edge_label_to_edge_id",
+        "edge_label_to_edge_id_serialized",
+        "Uncompressed node attr values",
+        "Uncompressed edge attr values",
+        "Compressed dict attributes",
+        "Total compressed node attr values",
+        "Total compressed edge attr values",
+        "attr_keys",
+        "attr_keys_serialized",
+        "edge_attr_values",
+        "edge_attr_values_serialized",
+        "node_attr_values",
+        "node_attr_values_serialized",
+        "Compressed node attributes",
+        "node_global_attr_keyvalue_mapping",
+        "node_global_attr_keyvalue_mapping_serialized",
+        "node_local_attr_keyvalue_mapping",
+        "node_local_attr_keyvalue_mapping_serialized",
+        "Compressed edge attributes",
+        "edge_local_attr_keyvalue_mapping",
+        "edge_local_attr_keyvalue_mapping_serialized",
+        "Compressed graph object size",
+        "Compressed graph complete size serialized"
+    ]
 
-    msg = f'\nTime to construct graphs: {time_to_construct}\nNumber of graphs: {len(protein_graph_with_metadata_dict)}'
+    result_line = []
 
-    write_result(dataset=dataset_name, msg=msg, result_path=result_path)
+    if os.getenv("EXCOUNT") == '0':
+        msg = ",".join(result_columns)
+        create_dataset_result_file(result_path, msg)
+    elif os.getenv("EXCOUNT") == '-1':
+        msg = ",".join(result_columns)
+        write_result(msg=msg, result_path=result_path)
+
+    result_line.append(dataset_name)
+    result_line.append(time_to_construct)
+    result_line.append(number_of_nodes)
+    result_line.append(number_of_edges)
+    result_line.append(len(protein_graph_with_metadata_dict))
 
     body_parts, time_to_compress = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
-
-    msg = f'\nTime to compress: {time_to_compress}'
-    write_result(dataset=dataset_name, msg=msg, result_path=result_path)
+    result_line.append(time_to_compress)
 
     pdb_store = PDBGraphStore(body_parts)
+    memory = MemoryMeasuring(pdb_store)
 
-    v1 = protein_graph_with_metadata_dict
-    v2 = pdb_store
+    result_line.append(asizeof.asizeof(protein_graph_with_metadata_dict) /1024 / 1024)
+    result_line.append(len(pickle.dumps(protein_graph_with_metadata_dict)) /1024 / 1024)
+    result_line.append(asizeof.asizeof(protein_graph_without_metadata_dict)/1024/1024)
+    result_line.append(memory.total_memory())
+    result_line.append(memory.graph_structure_memory())
+    result_line.append(memory.pdb_code_to_id_memory())
+    result_line.append(memory.pdb_code_to_id_serialized_memory())
+    result_line.append(memory.pdb_id_to_nodes_memory())
+    result_line.append(memory.pdb_id_to_nodes_serialized_memory())
+    result_line.append(memory.pdb_id_to_edges_memory())
+    result_line.append(memory.pdb_id_to_edges_serialized_memory())
+    result_line.append(memory.node_label_to_node_id_memory())
+    result_line.append(memory.node_label_to_node_id_serialized_memory())
+    result_line.append(memory.edge_label_to_edge_id_memory())
+    result_line.append(memory.edge_label_to_edge_id_serialized_memory())
+    result_line.append(measure_node_attributes_memory(protein_graph_with_metadata_dict))
+    result_line.append(measure_edge_attributes_memory(protein_graph_with_metadata_dict))
+    result_line.append(memory.dict_attributes_memory())
+    result_line.append(memory.node_attr_values_memory() + memory.node_global_attr_keyvalue_mapping_memory() + memory.node_local_attr_keyvalue_mapping_memory())
+    result_line.append(memory.edge_attr_values_memory() + memory.edge_local_attr_keyvalue_mapping_memory())
+    result_line.append(memory.attr_keys_memory())
+    result_line.append(memory.attr_keys_serialized_memory())
+    result_line.append(memory.edge_attr_values_memory())
+    result_line.append(memory.edge_attr_values_serialized_memory())
+    result_line.append(memory.node_attr_values_memory())
+    result_line.append(memory.node_attr_values_serialized_memory())
+    result_line.append(memory.node_attributes_memory())
+    result_line.append(memory.node_global_attr_keyvalue_mapping_memory())
+    result_line.append(memory.node_global_attr_keyvalue_mapping_serialized_memory())
+    result_line.append(memory.node_local_attr_keyvalue_mapping_memory())
+    result_line.append(memory.node_local_attr_keyvalue_mapping_serialized_memory())
+    result_line.append(memory.edge_attributes_memory())
+    result_line.append(memory.edge_local_attr_keyvalue_mapping_memory())
+    result_line.append(memory.edge_local_attr_keyvalue_mapping_serialized_memory())
+    result_line.append(asizeof.asizeof(pdb_store)/1024/1024)
+    result_line.append(len(pickle.dumps(pdb_store))/1024/1024)
 
-    with open("v1.pkl", 'wb') as f:
-        pickle.dump(v1, f)
-    
-    with open("v2.pkl", 'wb') as f:
-        pickle.dump(v2, f)
-# ==================================
-    # extract_times = []
+    result_line = [f'{item:.2f}' if type(item) == float else f'{item}' for item in result_line]
 
-    # for pdb_code in set(protein_graph_with_metadata_dict.keys()):
-    #     for g in protein_graph_with_metadata_dict[pdb_code]:
-    #         time_start = time.time()
-    #         extracted_graph = pdb_store.extract_pdb_graphs([pdb_code], [edgeModel.edge_functions_dict.inverse[func] for func in g.graph["config"].edge_construction_functions])
-    #         time_to_extract = time_count(time_start=time_start)
+    msg = ",".join(result_line)
 
-    #         extract_times.append(time_to_extract)
-
-    #         msg = f' \
-    #             \nNumber of edges in original graph: {len(g.edges())} \
-    #             \nNumber of nodes in original graph: {len(g.nodes())} \
-    #             \nNumber of edges in extracted graph: {len(extracted_graph[0].edges())} \
-    #             \nNumber of nodes in extracted graph: {len(extracted_graph[0].nodes())} \
-    #             \n\n \
-    #         '
-    #         print(msg)
-
-    #         try:
-    #             assert nx.utils.edges_equal(g.edges.data(), extracted_graph[0].edges(data=True))
-
-    #             # for u, v in g.edges:
-    #             #     print(f'original graph edge data:s {g.edges[(u,v)]}')
-    #             #     print(f'extracted graph edge data:s {extracted_graph[0].edges[(u,v)]}')
-
-    #             # print(f'original: {len(g.edges)}\nextracted: {len(extracted_graph[0].edges)}')
-
-    #         except AssertionError as e:
-    #             msg = f'\nError in graph_extraction for {pdb_code}: {e}'
-    #             print(msg)
-    #             def canonical_edges(G):
-    #                 return {(min(u, v), max(u, v)) for u, v in G.edges}
-
-    #             for e in set(canonical_edges(g)) - set(canonical_edges(extracted_graph[0])):
-    #                 msg += f"\n{e}\n"
-    #                 msg += f"original: {g.edges[e]}\n"
-    #                 msg += f"extracted: {extracted_graph[0].edges.get(e, 'NOT FOUND')}\n"
-
-    #             for e in set(canonical_edges(extracted_graph[0])) - set(canonical_edges(g)):
-    #                 msg += f"\n{e}\n"
-    #                 msg += f"original: {g.edges.get(e, 'NOT FOUND')}\n"
-    #                 msg += f"extracted: {extracted_graph[0].edges[e]}\n"
-                    
-
-    #             for e in set(g.edges) & set(extracted_graph[0].edges):
-    #                 if g.edges[e] != extracted_graph[0].edges[e]:
-    #                     msg += f"\nDifferent attributes in edge {e}:\n"
-    #                     msg += f"original:  {g.edges[e]}\n"
-    #                     msg += f"extracted: {extracted_graph[0].edges[e]}\n"
-
-    #             write_error(dataset=dataset_name, msg=msg, error_path=error_path)
-    #             continue
-
-    #         try:
-    #             assert nx.utils.nodes_equal(g.nodes, extracted_graph[0].nodes)
-
-    #             # g1 = g
-    #             # g2 = extracted_graph[0]
-    #             # for n in g.nodes:
-    #             #     print(f'original: {g1.nodes[n]}')
-    #             #     print(f'extracted: {g2.nodes[n]}')
-
-    #         except AssertionError as e:
-    #             msg = f'Error in graph_extraction for {pdb_code}: {e}'
-
-    #             print(msg)
-    #             continue
-
-    # extract_time_mean = np.mean(extract_times)
-
-    msg = f'\n\
-        \nUncompressed complete graph size: {asizeof.asizeof(protein_graph_with_metadata_dict) /1024 / 1024}\
-        \nUncompressed complete graph size serialized: {len(pickle.dumps(protein_graph_with_metadata_dict)) /1024 / 1024}\
-        \n\
-        \n Uncompressed graph structure: {asizeof.asizeof(protein_graph_without_metadata_dict)/1024/1024}\
-        \n \
-        \nCompressed graph: {pdb_store.total_memory()}\
-        \nCompressed graph structure: {pdb_store.graph_structure_memory()} \
-        \n \
-        \n pdb_code_to_id: {pdb_store.pdb_code_to_id_memory()} \
-        \n pdb_code_to_id_serialized: {pdb_store.pdb_code_to_id_serialized_memory()}\
-        \n \
-        \n pdb_id_to_nodes: {pdb_store.pdb_id_to_nodes_memory()} \
-        \n pdb_id_to_nodes_serialized: {pdb_store.pdb_id_to_nodes_serialized_memory()} \
-        \n\
-        \n pdb_id_to_edges: {pdb_store.pdb_id_to_edges_memory()} \
-        \n pdb_id_to_edges_serialized: {pdb_store.pdb_id_to_edges_serialized_memory()}\
-        \n\
-        \n node_label_to_node_id: {pdb_store.node_label_to_node_id_memory()}\
-        \n node_label_to_node_id_serialized: {pdb_store.node_label_to_node_id_serialized_memory()}\
-        \n\
-        \n edge_label_to_edge_id: {pdb_store.edge_label_to_edge_id_memory()}\
-        \n edge_label_to_edge_id_serialized: {pdb_store.edge_label_to_edge_id_serialized_memory()}\
-        \n\
-        \n Uncompressed node attr values: {measure_node_attributes_memory(protein_graph_with_metadata_dict)}\
-        \n Uncompressed edge attr values: {measure_edge_attributes_memory(protein_graph_with_metadata_dict)}\
-        \n \
-        \nCompressed dict attributes: {pdb_store.dict_attributes_memory()} \
-        \n\
-        \n Total compressed node attr values: {pdb_store.node_attr_values_memory() + pdb_store.node_global_attr_keyvalue_mapping_memory() + pdb_store.node_local_attr_keyvalue_mapping_memory()}\
-        \n\
-        \n Total compressed edge attr values: {pdb_store.edge_attr_values_memory() + pdb_store.edge_local_attr_keyvalue_mapping_memory()}\
-        \n \
-        \n attr_keys: {pdb_store.attr_keys_memory()} \
-        \n attr_keys_serialized: {pdb_store.attr_keys_serialized_memory()}\
-        \n\
-        \n edge_attr_values: {pdb_store.edge_attr_values_memory()} \
-        \n edge_attr_values_serialized: {pdb_store.edge_attr_values_serialized_memory()}\
-        \n \
-        \n node_attr_values: {pdb_store.node_attr_values_memory()} \
-        \n node_attr_values_serialized: {pdb_store.node_attr_values_serialized_memory()}\
-        \n\
-        \n \
-        \nCompressed node attributes: {pdb_store.node_attributes_memory()}\
-        \n \
-        \n node_global_attr_keyvalue_mapping: {pdb_store.node_global_attr_keyvalue_mapping_memory()} \
-        \n node_global_attr_keyvalue_mapping_serialized: {pdb_store.node_global_attr_keyvalue_mapping_serialized_memory()}\
-        \n\
-        \n node_local_attr_keyvalue_mapping: {pdb_store.node_local_attr_keyvalue_mapping_memory()} \
-        \n node_local_attr_keyvalue_mapping_serialized: {pdb_store.node_local_attr_keyvalue_mapping_serialized_memory()}\
-        \n\
-        \n \
-        \nCompressed edge attributes: {pdb_store.edge_attributes_memory()}\
-        \n \
-        \n edge_local_attr_keyvalue_mapping: {pdb_store.edge_local_attr_keyvalue_mapping_memory()} \
-        \n edge_local_attr_keyvalue_mapping_serialized: {pdb_store.edge_local_attr_keyvalue_mapping_serialized_memory()}\
-        \n \
-        \n\
-        \nCompressed graph object size: {asizeof.asizeof(pdb_store)/1024/1024} \
-        \nCompressed graph complete size serialized: {asizeof.asizeof(pickle.dumps(pdb_store))/1024/1024}\
-        \nCompressed graph complete size serialized (sum) {pdb_store.total_serialized_memory()}\
-    '
-
-    write_result(dataset=dataset_name, msg=msg, result_path=result_path)
+    write_result(msg=msg, result_path=result_path)
     # print(msg)
 
-def experimento_2():
-    '''
-    Avaliar a sobreposição de arestas entre as funções de arestas.
-    Por exemplo, será que existem funções de aresta que geram muitas
-    arestas iguais no grafo de uma determinada granularidade? Para isso,
-    podemos construir o PDB store incrementalmente, adicionando funções
-    de aresta uma a uma, e determinando se o tamanho do PDBStore está
-    aumentando significativamente quando incluímos uma nova função de aresta.
+def experiment_2():
+    pass
 
-    obs: executado somente com o bcl_ppigremlin dataset
+def experiment_3():
+    pass
 
-    get_len_edges
-    get_len_nodes
+def experiment_4():
+    pass
 
-    '''
+def experiment_5():
+    pass
 
-    #config usada:
-    #granularity: atom
-    #edge_construction_funcs: todas, menos fully_connected, pois ela adiciona todas as arestas possiveis entre os nodes
-
-    #dataset usado: bcl (a principio apenas ele)
-
-    current_file_path = os.path.dirname(os.path.realpath(metadata.__file__))
-    general_data_path = os.environ.get("DATA_DIR") if os.environ.get("DATA_DIR") is not None else os.path.abspath(f"{current_file_path}/../../data/")
-    dataset_txt_file_name = os.environ.get("DATASET")
-    dataset_name = dataset_txt_file_name.split(".")[0]
-
-    error_path = initialize_errors_directory(current_file_path=current_file_path)
-    result_path = initialize_results_directory(current_file_path=current_file_path)
-    pdb_data_path = initialize_pdb_data_path(general_data_path=general_data_path)
-
-    create_dataset_error_file(error_path, dataset_name)
-    create_dataset_result_file(result_path, dataset_name)
-
-    print(f"\
-          current_file_path={current_file_path}, \
-          general_data_path={general_data_path}, \
-          dataset_txt_file_name={dataset_txt_file_name}, \
-          dataset_name={dataset_name}, \
-          error_path={error_path}, \
-          result_path={result_path}, \
-          pdb_data_path={pdb_data_path} \
-          ")
-
-    pdb_codes = read_dataset(general_data_path=general_data_path, dataset_txt_name=dataset_txt_file_name)
-
-    protein_graph_with_metadata_dict = {}
-    number_of_nodes_in_which_graph = list()
-    number_of_edges_in_which_graph = list()
-
-    for _, pdb_code in enumerate(pdb_codes.copy()):
-        try:
-            #construct graph with 1 edge_func
-            graph_with_data, _ = prepare_graph(pdb_data_path=pdb_data_path, pdb_code=pdb_code, dataset_name=dataset_name, error_path=error_path, func_idx=0)
-        except:
-            msg = traceback.format_exc()
-            print(msg)
-            write_error(dataset_name, msg, error_path)
-            continue
-
-        protein_graph_with_metadata_dict[pdb_code] = graph_with_data[pdb_code]
-
-    node_to_id,\
-    edge_to_id,\
-    pdb_to_nodes,\
-    pdb_to_edges,\
-    node_attrs,\
-    edge_attrs,\
-    node_attr_keys,\
-    edge_attr_keys = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
-
-    pdb_store = PDBGraphStore(node_to_id, edge_to_id, pdb_to_nodes, pdb_to_edges, node_attrs, edge_attrs, node_attr_keys, edge_attr_keys)
-
-    print(f'graphStore with 1 edgefunc amount of edge: {pdb_store.get_len_edges()}')
-    print(f'graphStore with 1 edgefunc amount of node: {pdb_store.get_len_nodes()}')
-
-    msg = f'number of nodes: {pdb_store.get_len_nodes()}\nnumber of edges initially (with one func): {pdb_store.get_len_edges()}\
-        \nmemory size initially: {asizeof.asizeof(pdb_store)/1024/1024:.2f} MB'
-    write_result(dataset=dataset_name, msg=msg, result_path=result_path)
-
-    for i in range(1, len(edgeModel.edge_functions_dict.keys())):
-        graphs_to_insert = {}
-        for pdb_code in pdb_codes:
-            try:
-                print(f'pdb_code: {pdb_code}')
-                graph_to_insert, _ = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path, i)
-
-            except:
-                msg = traceback.format_exc()
-                print(msg)
-                write_error(dataset_name, msg, error_path)
-                continue
-            graphs_to_insert[pdb_code] = graph_to_insert[pdb_code]
-
-        sorted_func_list = sorted(edgeModel.edge_functions_dict.keys())
-        pdb_store.insert_pdbs(graphs_to_insert)
-        msg = f'\nNumber of edges after {i} insertion ({sorted_func_list[i]}): {pdb_store.get_len_edges()}\
-            \nMemory size: {asizeof.asizeof(pdb_store)/1024/1024:.2f} MB'
-
-        write_result(dataset=dataset_name, msg=msg, result_path=result_path)
-
-def experimento_3():
-
-    #config usada:
-    #granularity: atom
-    #edge_construction_funcs: todas, menos fully_connected
-    #dataset usado: bcl (a principio apenas ele)
-
-    current_file_path = os.path.dirname(os.path.realpath(metadata.__file__))
-    general_data_path = os.environ.get("DATA_DIR") if os.environ.get("DATA_DIR") is not None else os.path.abspath(f"{current_file_path}/../../data/")
-    dataset_txt_file_name = os.environ.get("DATASET")
-    dataset_name = dataset_txt_file_name.split(".")[0]
-
-    error_path = initialize_errors_directory(current_file_path=current_file_path)
-    result_path = initialize_results_directory(current_file_path=current_file_path)
-    pdb_data_path = initialize_pdb_data_path(general_data_path=general_data_path)
-
-    create_dataset_error_file(error_path, dataset_name)
-    create_dataset_result_file(result_path, dataset_name)
-
-    print(f"\
-          current_file_path={current_file_path}, \
-          general_data_path={general_data_path}, \
-          dataset_txt_file_name={dataset_txt_file_name}, \
-          dataset_name={dataset_name}, \
-          error_path={error_path}, \
-          result_path={result_path}, \
-          pdb_data_path={pdb_data_path} \
-          ")
-
-    pdb_codes = read_dataset(general_data_path=general_data_path, dataset_txt_name=dataset_txt_file_name)
-
-    protein_graph_with_metadata_dict = {}
-    number_of_nodes_in_which_graph = list()
-    number_of_edges_in_which_graph = list()
-
-    for _, pdb_code in enumerate(pdb_codes.copy()):
-        try:
-            #construct graph with 1 edge_func
-            graph_with_data, _ = prepare_graph(pdb_data_path=pdb_data_path, pdb_code=pdb_code, dataset_name=dataset_name, error_path=error_path, func_idx=0)
-        except:
-            msg = traceback.format_exc()
-            print(msg)
-            write_error(dataset_name, msg, error_path)
-            continue
-
-        protein_graph_with_metadata_dict[pdb_code] = graph_with_data[pdb_code]
-
-    body_parts = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
-
-    pdb_store = PDBGraphStore(body_parts)
-
-    edge_funcs_to_extract = list(random.sample(edgeModel.edge_functions_dict.keys(), 3))
-
-    for _, pdb_code in enumerate(pdb_codes.copy()):
-        time_start = time.time()
-        extracted_graph = pdb_store.extract_pdb_graphs(pdb_codes=[pdb_code], edge_construction_functions=edge_funcs_to_extract)
-        time_to_extract = time_count(time_start=time_start)
-        print(extracted_graph[0].graph)
-
-        time_start = time.time()
-        print(edge_funcs_to_extract)
-        edge_funcs = []
-
-        for edge_func in edge_funcs_to_extract:
-            edge_funcs.append(edgeModel.edge_functions_dict[edge_func])
-
-        print(edge_funcs)
-
-        config = ProteinGraphConfig(**{"granularity": "atom", "edge_construction_functions": edge_funcs})
-
-        pdb_file = get_pdb_file(pdb_data_path=pdb_data_path, pdb_code=pdb_code)
-        graph = construct_graph(config=config, path=pdb_file)
-        time_to_construct = time_count(time_start=time_start)
-
-        print(extracted_graph)
-        print(f'edges in original: {len(graph.edges())}; edges in extracted: {len(extracted_graph[0].edges())}')
-
-        # for e in graph.edges:
-        #     print(f'original: {graph.edges[e]}')
-        #     print(f'extracted: {extracted_graph[0].edges[e]}')
-
-
-        msg = f'Time to construct pdb graph {pdb_code}: {time_to_construct}\
-            \nTime to extract the same graph: {time_to_extract}\n\n'
-
-        write_result(dataset=dataset_name, msg=msg, result_path=result_path)
+def experimen_6():
+    pass
 
 if __name__=="__main__":
-    experimento_1()
+    experiment_1()
