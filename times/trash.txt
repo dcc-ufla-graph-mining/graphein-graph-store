@@ -3,8 +3,8 @@ Filename: src/compress/trash_measure_memory.py
 
 Line #    Mem usage    Increment  Occurrences   Line Contents
 =============================================================
-     4     45.4 MiB     45.4 MiB           1   @profile
+     4     45.8 MiB     45.8 MiB           1   @profile
      5                                         def main():
-     6     45.4 MiB      0.0 MiB           1       print(pickle.__name__)
+     6     45.8 MiB      0.0 MiB           1       print(pickle.__name__)
 
 
