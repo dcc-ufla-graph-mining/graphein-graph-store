@@ -240,7 +240,7 @@ def experiment_1():
     time_to_construct = time_count(time_start=time_start)
     
     result_columns = [
-        "dataset"
+        "dataset",
         "Time to construct graphs",
         "number of nodes in dataset",
         "number of edges in dataset",
@@ -288,10 +288,10 @@ def experiment_1():
 
     if os.getenv("EXCOUNT") == '0':
         msg = ",".join(result_columns)
-        create_dataset_result_file(result_path, msg)
+        create_dataset_result_file(result_path=result_path,experiment_fields=msg)
     elif os.getenv("EXCOUNT") == '-1':
         msg = ",".join(result_columns)
-        write_result(msg=msg, result_path=result_path)
+        write_result(msg=msg, result_path=result_path, file_mode='a')
 
     result_line.append(dataset_name)
     result_line.append(time_to_construct)
@@ -346,7 +346,7 @@ def experiment_1():
 
     msg = ",".join(result_line)
 
-    write_result(msg=msg, result_path=result_path)
+    write_result(msg=msg, result_path=result_path, file_mode='a')
     # print(msg)
 
 def experiment_2():
