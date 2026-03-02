@@ -1,9 +1,8 @@
 from PDBGraphStore import PDBGraphStore
-import Builder
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 
-def split_graph_store(pdb_store=PDBGraphStore, pdb_code_list=[]) -> tuple[PDBGraphStore, PDBGraphStore]:
+def split_graph_store(pdb_store=PDBGraphStore, pdb_code_list=[]) -> tuple:
     pdb_graphs = []
     for pdb_code in pdb_code_list:
         pdb_graphs.append(pdb_store.extract_pdb(pdb_code))
@@ -17,7 +16,7 @@ def split_graph_store(pdb_store=PDBGraphStore, pdb_code_list=[]) -> tuple[PDBGra
 
     return (pdb_store, pdb_store_2)
 
-def merge_graph_stores(graph_stores=[PDBGraphStore]) -> PDBGraphStore:
+def merge_graph_stores(graph_stores=[]) -> PDBGraphStore:
     main_graph_store = graph_stores.pop()
     
 
@@ -37,4 +36,4 @@ def extract_pdb_graphs_multiprocessing(pdb_store, pdb_codes=[], num_cpus=4) -> l
         for future in as_completed(futures):
             extracted_graphs.append(future.result())
 
-        return extracted_graphs
+    return extracted_graphs

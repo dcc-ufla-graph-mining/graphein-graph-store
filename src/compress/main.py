@@ -1,13 +1,15 @@
-import os, metadata, time, pickle, traceback
+import os, metadata, time, pickle, traceback, random
 
 import numpy as np
 import pandas as pd
 from pympler import asizeof
+import networkx as nx
 
 import Builder
 from MemoryMeasuring import MemoryMeasuring
 from PDBGraphStore import PDBGraphStore
 import edge_functions_Model as edgeModel
+from operations import *
 
 from graphein.protein.config import ProteinGraphConfig
 from graphein.protein.graphs import construct_graph
@@ -34,8 +36,8 @@ def initialize_results_directory(current_file_path):
 
     return result_path
 
-def create_dataset_result_file(result_path, experiment_fields):
-    with open(f"{result_path}/results.csv", "w") as file:
+def create_dataset_result_file(result_path, experiment_fields, func):
+    with open(f"{result_path}/results_{func}.csv", "w") as file:
         file.write(experiment_fields)
 
 def initialize_pdb_data_path(general_data_path):
@@ -70,20 +72,9 @@ def define_graphein_edge_funcs(func_idx=1):
     return [edgeModel.edge_functions_dict[f] for f in ["delaunay", "aromatic", "aromatic_sulphur"]]
     # , "aromatic_sulphur", "delaunay", "aromatic"
 
-    # usado no experimento 2
-    # sorted_func_list = sorted(edgeModel.edge_functions_dict.keys())
-    # print(f'returning {sorted_func_list[func_idx]}')
-    # print(f'returning {[edgeModel.edge_functions_dict[sorted_func_list[func_idx]]]}')
-    # return [edgeModel.edge_functions_dict[sorted_func_list[func_idx]]]
-
-    #usado no experimento 3
-    # print(list(edgeModel.edge_functions_dict.values()))
-    # return list(edgeModel.edge_functions_dict.values())
-
-
 def define_configuration(edge_construction_funcs):
     return {
-        "granularity": "CA",
+        "granularity": "atom",
         "edge_construction_functions": edge_construction_funcs
     }
 
@@ -188,9 +179,7 @@ def experiment_1():
 
     #config usada:
     #granularity: CA
-    #edge_construction_funcs: ["aromatic", "bb_carbonyl_carbonyl", "delaunay"]
-
-    #datasets usados: todos (porem, alguns nao foram possiveis terminar a execucao por causa de estouro da memoria)
+    #edge_construction_funcs: ["delaunay", "aromatic", "aromatic_sulphur"]
 
     current_file_path = os.path.dirname(os.path.realpath(metadata.__file__))
     general_data_path = os.environ.get("DATA_DIR") if os.environ.get("DATA_DIR") is not None else os.path.abspath(f"{current_file_path}/../../data/")
@@ -246,7 +235,7 @@ def experiment_1():
         "number of edges in dataset",
         "Number of graphs",
         "Time to compress",
-        "Uncompressed complete graph size",
+        "Uncompressed complete graph size", #g
         "Uncompressed complete graph size serialized",
         "Uncompressed graph structure",
         "Compressed graph",
@@ -288,10 +277,7 @@ def experiment_1():
 
     if os.getenv("EXCOUNT") == '0':
         msg = ",".join(result_columns)
-        create_dataset_result_file(result_path=result_path,experiment_fields=msg)
-    elif os.getenv("EXCOUNT") == '-1':
-        msg = ",".join(result_columns)
-        write_result(msg=msg, result_path=result_path, file_mode='a')
+        create_dataset_result_file(result_path=result_path,experiment_fields=msg, func=experiment_1.__name__)
 
     result_line.append(dataset_name)
     result_line.append(time_to_construct)
@@ -350,10 +336,161 @@ def experiment_1():
     # print(msg)
 
 def experiment_2():
-    pass
+    #config usada:
+    #granularity: CA
+    #edge_construction_funcs: ["delaunay", "aromatic", "aromatic_sulphur"]
+
+    current_file_path = os.path.dirname(os.path.realpath(metadata.__file__))
+    general_data_path = os.environ.get("DATA_DIR") if os.environ.get("DATA_DIR") is not None else os.path.abspath(f"{current_file_path}/../../data/")
+    dataset_txt_file_name = os.environ.get("DATASET")
+    dataset_name = dataset_txt_file_name.split(".")[0]
+
+    error_path = initialize_errors_directory(current_file_path=current_file_path)
+    result_path = initialize_results_directory(current_file_path=current_file_path)
+    pdb_data_path = initialize_pdb_data_path(general_data_path=general_data_path)
+
+    create_dataset_error_file(error_path, dataset_name)
+    
+
+    print(f"\
+          current_file_path={current_file_path}, \
+          general_data_path={general_data_path}, \
+          dataset_txt_file_name={dataset_txt_file_name}, \
+          dataset_name={dataset_name}, \
+          error_path={error_path}, \
+          result_path={result_path}, \
+          pdb_data_path={pdb_data_path} \
+          ")
+
+    pdb_codes = read_dataset(general_data_path=general_data_path, dataset_txt_name=dataset_txt_file_name)
+
+    protein_graph_with_metadata_dict = {}
+
+    for _, pdb_code in enumerate(pdb_codes.copy()):
+        try:
+            graph_with_data, _ = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path,1)
+        except Exception as e:
+            msg = traceback.format_exc()
+            print(msg)
+            write_error(dataset_name, msg, error_path)
+            continue
+        protein_graph_with_metadata_dict[pdb_code] = graph_with_data[pdb_code]
+    
+    result_columns = [
+        "dataset",
+        "time_to_extract_1",
+        "time_to_extract_2",
+        "time_to_extract_3",
+        "time_to_extract_4",
+        "time_to_extract_5",
+        "time_to_extract_6",
+        "time_to_extract_7",
+        "time_to_extract_8",
+        "time_to_extract_9",
+        "time_to_extract_10",
+    ]
+
+    result_line = []
+
+    result_line.append(dataset_name)
+
+    if os.getenv("EXCOUNT") == '0':
+        msg = ",".join(result_columns)
+        create_dataset_result_file(result_path=result_path,experiment_fields=msg, func=experiment_2.__name__)
+
+    body_parts, _ = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
+    pdb_store = PDBGraphStore(body_parts)
+    
+    for i in range(10):
+        pdb_to_extract = random.choice(pdb_codes)
+        time_start = time.time()
+        _ = pdb_store.extract_pdb(pdb_to_extract)
+
+        result_line.append(time_count(time_start=time_start))
+
+    result_line = [f'{item:.2f}' if type(item) == float else f'{item}' for item in result_line]
+    print(result_line)
+    msg = ",".join(result_line)
+
+    write_result(msg=msg, result_path=result_path, file_mode='a')
 
 def experiment_3():
-    pass
+    #config usada:
+    #granularity: CA
+    #edge_construction_funcs: ["delaunay", "aromatic", "aromatic_sulphur"]
+
+    current_file_path = os.path.dirname(os.path.realpath(metadata.__file__))
+    general_data_path = os.environ.get("DATA_DIR") if os.environ.get("DATA_DIR") is not None else os.path.abspath(f"{current_file_path}/../../data/")
+    dataset_txt_file_name = os.environ.get("DATASET")
+    dataset_name = dataset_txt_file_name.split(".")[0]
+
+    error_path = initialize_errors_directory(current_file_path=current_file_path)
+    result_path = initialize_results_directory(current_file_path=current_file_path)
+    pdb_data_path = initialize_pdb_data_path(general_data_path=general_data_path)
+
+    create_dataset_error_file(error_path, dataset_name)
+    
+
+    print(f"\
+          current_file_path={current_file_path}, \
+          general_data_path={general_data_path}, \
+          dataset_txt_file_name={dataset_txt_file_name}, \
+          dataset_name={dataset_name}, \
+          error_path={error_path}, \
+          result_path={result_path}, \
+          pdb_data_path={pdb_data_path} \
+          ")
+
+    pdb_codes = read_dataset(general_data_path=general_data_path, dataset_txt_name=dataset_txt_file_name)
+
+    protein_graph_with_metadata_dict = {}
+
+    for _, pdb_code in enumerate(pdb_codes.copy()):
+        try:
+            graph_with_data, _ = prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path,1)
+        except Exception as e:
+            msg = traceback.format_exc()
+            print(msg)
+            write_error(dataset_name, msg, error_path)
+            continue
+        protein_graph_with_metadata_dict[pdb_code] = graph_with_data[pdb_code]
+    
+    result_columns = [
+        "dataset",
+        "time_to_extract_1",
+        "time_to_extract_2",
+        "time_to_extract_3",
+        "time_to_extract_4",
+        "time_to_extract_5",
+        "time_to_extract_6",
+        "time_to_extract_7",
+        "time_to_extract_8",
+        "time_to_extract_9",
+        "time_to_extract_10",
+    ]
+
+    result_line = []
+
+    result_line.append(dataset_name)
+
+    if os.getenv("EXCOUNT") == '0':
+        msg = ",".join(result_columns)
+        create_dataset_result_file(result_path=result_path,experiment_fields=msg, func=experiment_3.__name__)
+
+    body_parts, _ = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
+    pdb_store = PDBGraphStore(body_parts)
+    
+    for _ in range(10):
+        time_start = time.time()
+        pdb_extracted = extract_pdb_graphs_multiprocessing(pdb_store=pdb_store, pdb_codes=random.choices(k=10, population=pdb_codes),num_cpus=2)
+
+        result_line.append(time_count(time_start=time_start))
+
+    result_line = [f'{item:.2f}' if type(item) == float else f'{item}' for item in result_line]
+    print(result_line)
+    msg = ",".join(result_line)
+
+    write_result(msg=msg, result_path=result_path, file_mode='a')
 
 def experiment_4():
     pass
@@ -366,3 +503,5 @@ def experimen_6():
 
 if __name__=="__main__":
     experiment_1()
+    # experiment_2()
+    # experiment_3()

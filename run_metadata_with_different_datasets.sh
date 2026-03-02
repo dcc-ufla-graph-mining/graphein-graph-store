@@ -45,5 +45,4 @@ do
         # python -m memory_profiler src/compress/measure_memory_v2.py > "times/${dataset_name}_v2.txt"
         EXCOUNT=$i
     done
-    EXCOUNT=-1
 done
