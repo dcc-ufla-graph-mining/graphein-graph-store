@@ -48,8 +48,8 @@ def initialize_pdb_data_path(general_data_path):
 
     return pdb_data_path
 
-def write_result(msg, result_path, file_mode='a'):
-    with open(f"{result_path}/results.csv", file_mode) as file:
+def write_result(msg="", result_path="./", file_mode='a', func=""):
+    with open(f"{result_path}/results_{func}.csv", file_mode) as file:
         file.write("\n")
         file.write(msg)
 
@@ -332,7 +332,7 @@ def experiment_1():
 
     msg = ",".join(result_line)
 
-    write_result(msg=msg, result_path=result_path, file_mode='a')
+    write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_1.__name__)
     # print(msg)
 
 def experiment_2():
@@ -412,7 +412,7 @@ def experiment_2():
     print(result_line)
     msg = ",".join(result_line)
 
-    write_result(msg=msg, result_path=result_path, file_mode='a')
+    write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_2.__name__)
 
 def experiment_3():
     #config usada:
@@ -490,7 +490,7 @@ def experiment_3():
     print(result_line)
     msg = ",".join(result_line)
 
-    write_result(msg=msg, result_path=result_path, file_mode='a')
+    write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_3.__name__)
 
 def experiment_4():
     pass
@@ -502,6 +502,6 @@ def experimen_6():
     pass
 
 if __name__=="__main__":
-    experiment_1()
-    # experiment_2()
-    # experiment_3()
+    #experiment_1()
+    #experiment_2()
+     experiment_3()

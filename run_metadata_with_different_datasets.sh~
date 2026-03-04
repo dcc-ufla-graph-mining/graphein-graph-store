@@ -26,6 +26,8 @@ else
     mkdir /app/results
 fi
 
+rm -r /app/results
+
 python -m memory_profiler src/compress/trash_measure_memory.py > "times/trash.txt"
 
 EXCOUNT=0
