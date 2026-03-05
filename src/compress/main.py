@@ -502,6 +502,6 @@ def experimen_6():
     pass
 
 if __name__=="__main__":
-    experiment_1()
-    #experiment_2()
+    #experiment_1()
+    experiment_2()
     #experiment_3()
