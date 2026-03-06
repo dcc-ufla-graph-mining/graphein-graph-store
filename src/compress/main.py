@@ -74,7 +74,7 @@ def define_graphein_edge_funcs(func_idx=1):
 
 def define_configuration(edge_construction_funcs):
     return {
-        "granularity": "atom",
+        "granularity": "CA",
         "edge_construction_functions": edge_construction_funcs
     }
 
@@ -502,6 +502,6 @@ def experimen_6():
     pass
 
 if __name__=="__main__":
-    #experiment_1()
-    experiment_2()
+    experiment_1()
+    #experiment_2()
     #experiment_3()
