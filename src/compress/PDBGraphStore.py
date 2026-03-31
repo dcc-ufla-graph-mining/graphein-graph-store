@@ -33,7 +33,7 @@ class PDBGraphStore:
         return self.__body_parts
 
     def get_this_pdb_list(self):
-        return self.pdb_code_to_id.keys()
+        return self.__body_parts["pdb_code_to_id"].keys()
     
     def __edge_label_undirected(self, edge_label: tuple) -> tuple:
         return tuple(sorted(edge_label))
