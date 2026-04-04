@@ -28,7 +28,7 @@ fi
 
 python -m memory_profiler src/compress/trash_measure_memory.py > "times/trash.txt"
 
-EXCOUNT=0
+EXCOUNT=1
 
 for dataset in data/*.txt
 do
