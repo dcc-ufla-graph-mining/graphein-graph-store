@@ -1,0 +1,16 @@
+dataset,avg_time_to_extract_1,avg_time_to_extract_2,avg_time_to_extract_4,avg_time_to_extract_8,avg_time_to_extract_16,avg_time_to_extract_32
+bcl_ppigremlin,0.95,0.95,0.96,0.97,0.97,0.99
+bcl_ppigremlin,0.95,0.95,0.96,0.96,0.97,0.97
+bcl_ppigremlin,0.95,0.95,0.97,0.97,0.98,1.00
+bcl_ppigremlin,0.95,0.95,0.96,0.96,0.98,0.97
+bcl_ppigremlin,0.95,0.95,0.96,0.97,0.97,0.96
+ligand_BME,3.72,3.71,3.71,3.73,3.72,3.73
+ligand_BME,3.72,3.70,3.74,3.75,3.71,3.74
+ligand_BME,3.72,3.70,3.71,3.75,3.73,3.73
+ligand_BME,3.74,3.73,3.73,3.75,3.74,3.75
+ligand_BME,3.74,3.72,3.74,3.76,3.75,3.74
+ligand_PLP,2.37,2.37,2.43,2.46,2.50,2.53
+ligand_PLP,2.37,2.38,2.43,2.47,2.51,2.54
+ligand_PLP,2.38,2.40,2.43,2.46,2.52,2.54
+ligand_PLP,2.38,2.40,2.43,2.46,2.51,2.54
+ligand_PLP,2.37,2.39,2.44,2.46,2.50,2.53
