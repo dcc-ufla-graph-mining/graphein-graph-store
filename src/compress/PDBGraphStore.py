@@ -261,31 +261,99 @@ class PDBGraphStore:
     # return str(pdb) se o pdb foi removido com sucesso 
     def remove_pdb(self, pdb_to_remove: str):
         def remove_edge(edge_id: int, pdb_id: int):
-            self.__body_parts["edge_local_attr_keyvalue_mapping"].pop((pdb_id, edge_id))
+            removed_local_edge_attrs = self.__body_parts["edge_local_attr_keyvalue_mapping"].pop((pdb_id, edge_id))
+
+            return removed_local_edge_attrs
 
         def remove_node(node_id: int, pdb_id: int):
-            # skip this cause global attr may appear in other graphs with the same node
-            # self.__body_parts["node_global_keyvalue_mapping"]
-
             removed_local_node_attrs = self.__body_parts["node_local_keyvalue_mapping"].pop((pdb_id, node_id))
 
             return removed_local_node_attrs
 
         pdb_id = self.__body_parts["pdb_code_to_id"].pop(pdb_to_remove, None)
 
-        node_ids_to_remove = self.__body_parts["pdb_id_to_nodes"].pop(pdb_id, KeyError)
-        edge_ids_to_remove = self.__body_parts["pdb_id_to_edges"].pop(pdb_id, KeyError)
+        if pdb_id is None:
+            return
 
-        #skip the node_label_to_node_id and edge_label_to_edge_id pops cause they may be part of other pdbs
+        node_ids_to_remove = self.__body_parts["pdb_id_to_nodes"].pop(pdb_id, None)
+        edge_ids_to_remove = self.__body_parts["pdb_id_to_edges"].pop(pdb_id, None)
 
-        [remove_edge(edge_id, pdb_id) for edge_id in edge_ids_to_remove]
-        [remove_node(node_id, pdb_id) for node_id in node_ids_to_remove]
+        node_attrs_removed = []
+        edge_attrs_removed = []
+
+        for edge_id in edge_ids_to_remove:
+            edge_attrs_removed.extend(remove_edge(edge_id, pdb_id))
+        
+        for node_id in node_ids_to_remove:
+            node_attrs_removed.extend(remove_node(node_id, pdb_id))
+
+        self.__remake_id_mapping(pdb_id=pdb_id, node_attrs_removed=node_attrs_removed, edge_attrs_removed=edge_attrs_removed)
 
         #also skip the dicts node_attr_values and edge_attr_values. handle with this in remake_id_mapping()
 
-    # after some removes, there will be a lot of empty spaces in id mapping. solves this in this method
-    def remake_id_mapping(self):
-        pass
+    def __remake_id_mapping(self, pdb_id: int, node_attrs_removed: list, edge_attrs_removed: list):
+        def remove_nodes():
+            all_node_ids = list(self.__body_parts["node_label_to_node_id"].inverse.keys())
+            max_id = np.max(all_node_ids)
+            full_bitmap = BitMap64(range(max_id + 1))
+
+            combined = BitMap64()
+            for bm in self.__body_parts["pdb_id_to_nodes"].values():
+                combined |= bm
+
+            to_remove = list(full_bitmap - combined)
+
+            for x in to_remove:
+                self.__body_parts["node_label_to_node_id"].inverse.pop(x, None)
+        
+        def remove_edges():
+            all_edge_ids = list(self.__body_parts["edge_label_to_edge_id"].inverse.keys())
+            max_id = np.max(all_edge_ids)
+            full_bitmap = BitMap64(range(max_id+1))
+
+            combined = BitMap64()
+            for bm in self.__body_parts["pdb_id_to_edges"].values():
+                combined |= bm
+            
+            to_remove = list(full_bitmap - combined)
+
+            for x in to_remove:
+                self.__body_parts["edge_label_to_edge_id"].inverse.pop(x, None)
+        
+        def remove_node_attrs():
+            used_attrs = set()
+            for attr_list in self.__body_parts["node_local_attr_keyvalue_mapping"].values():
+                used_attrs.update(attr_list)
+            
+            for attr in node_attrs_removed:
+                if attr not in used_attrs:
+                    self.__body_parts["node_attr_values"].inverse.pop(attr, None)
+
+        def remove_edge_attrs():
+            used_attrs = set()
+            for attr_list in self.__body_parts["edge_local_attr_keyvalue_mapping"].values():
+                used_attrs.update(attr_list)
+            
+            for attr in edge_attrs_removed:
+                if attr not in used_attrs:
+                    self.__body_parts["edge_attr_values"].inverse.pop(k, None)
+
+        def remake():
+            #first: node_label_to_node_id and edge_label_to_edge_id
+            #second: pdb_id_to_nodes and pdb_id_to_edges
+            #third: node_local_attr_keyvalue_mapping and edge_local_attr_key_value_mapping
+            #last: finally node_global_attr_keyvalue_mapping
+            pass
+
+
+        remove_nodes()
+        remove_edges()
+
+        remove_node_attrs()
+        remove_edge_attrs()
+
+        #agora de fato fazer o remake_id_mapping
+        remake()
 
     def remove_multi_pdb(self, pdb_to_remove_list: list):
         removed_pdb_codes = []
