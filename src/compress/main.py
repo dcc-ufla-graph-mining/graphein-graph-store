@@ -411,7 +411,32 @@ def experiment_3(pdb_store):
     write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_3.__name__)
 
 def experiment_4():
-    pass
+    result_columns = [
+        "dataset",
+        "avg_time_to_remove"
+    ]
+
+    result_line = []
+
+    result_line.append(dataset_name)
+
+    if os.getenv("EXCOUNT") == '0':
+        msg = ",".join(result_columns)
+        create_dataset_result_file(result_path=result_path,experiment_fields=msg, func=experiment_4.__name__)
+
+    pdb_codes = pdb_store.get_this_pdb_list()
+    pdb_to_remove = random.choice(pdb_codes)
+
+    time_start = time.time()
+    pdb_store = remove_graph_from_graph_store([pdb_to_remove], pdb_store)
+    time_to_remove = time_count(time_start=time_start)
+    
+    result_line.append(f'{time_to_remove:.2f}')
+
+    print(result_line)
+    msg = ",".join(result_line)
+
+    write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_4.__name__)
 
 def experiment_5():
     pass
@@ -422,7 +447,9 @@ def experimen_6():
 if __name__=="__main__":
     exp_1_misc, pdb_store = build_graph()
 
-    experiment_1(exp_1_misc, pdb_store)
-    del exp_1_misc
-    experiment_2(pdb_store)
-    experiment_3(pdb_store)
+    # experiment_1(exp_1_misc, pdb_store)
+    # del exp_1_misc
+    # experiment_2(pdb_store)
+    # experiment_3(pdb_store)
+
+    experiment_4(pdb_store)
