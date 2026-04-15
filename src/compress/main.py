@@ -410,7 +410,7 @@ def experiment_3(pdb_store):
 
     write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_3.__name__)
 
-def experiment_4():
+def experiment_4(pdb_store):
     result_columns = [
         "dataset",
         "avg_time_to_remove"
