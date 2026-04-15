@@ -428,6 +428,7 @@ def experiment_4(pdb_store):
     print(f'{type(pdb_codes)}, pdb_codes: {pdb_codes}')
     pdb_to_remove = random.choice(pdb_codes)
 
+
     time_start = time.time()
     pdb_store = remove_graph_from_graph_store([pdb_to_remove], pdb_store)
     time_to_remove = time_count(time_start=time_start)

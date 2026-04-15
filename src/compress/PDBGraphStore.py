@@ -158,13 +158,23 @@ class PDBGraphStore:
                     self.__body_parts["pdb_code_to_id"][pdb_code] = len(self.__body_parts["pdb_code_to_id"])
                 
                 pdb_id = self.__body_parts["pdb_code_to_id"][pdb_code]
+                if pdb_id not in self.__body_parts["pdb_id_to_edges"]:
+                    self.__body_parts["pdb_id_to_edges"][pdb_id] = BitMap64()
+                if pdb_id not in self.__body_parts["pdb_id_to_nodes"]:
+                    self.__body_parts["pdb_id_to_nodes"][pdb_id] = BitMap64()
 
                 __construct_structure_attributes(pdb_graph[0], pdb_id)
 
                 old = self.__body_parts["node_global_attr_keyvalue_mapping"]
+
+                mshape = 5
+                mtype = np.int32
+
                 new_size = len(self.__body_parts["node_label_to_node_id"])
-                new = np.zeros((new_size, old.shape[1]), dtype=old.dtype)
-                new[:old.shape[0]] = old
+                new = np.zeros((new_size, mshape), dtype=mtype)
+
+                if (type(old) != str):
+                    new[:old.shape[0]] = old
 
                 self.__body_parts["node_global_attr_keyvalue_mapping"] = new
 
