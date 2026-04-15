@@ -12,7 +12,7 @@ def remove_graph_from_graph_store(pdbs_to_remove: list, pdb_store: PDBGraphStore
     for pdb_code in pdbs_to_keep:
         graphs_to_insert[pdb_code] = pdb_store.extract_pdb(pdb_code)
 
-    new_store = PDBGraphStore()
+    new_store = PDBGraphStore(None)
     new_store.insert_pdb(graphs_to_insert)
 
     return new_store
