@@ -425,6 +425,7 @@ def experiment_4(pdb_store):
         create_dataset_result_file(result_path=result_path,experiment_fields=msg, func=experiment_4.__name__)
 
     pdb_codes = pdb_store.get_this_pdb_list()
+    print(f'{type(pdb_codes)}, pdb_codes: {pdb_codes}')
     pdb_to_remove = random.choice(pdb_codes)
 
     time_start = time.time()
