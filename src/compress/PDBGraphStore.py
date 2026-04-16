@@ -27,7 +27,7 @@ class PDBGraphStore:
         print(self.__body_parts.keys())
 
     def __str__(self):
-        return f'PDBGraphStore with {len(self.get_pdb_code_list())} pdbs'
+        return f'PDBGraphStore with {len(self.get_this_pdb_list())} pdbs'
     
     def get_body_parts(self):
         return self.__body_parts

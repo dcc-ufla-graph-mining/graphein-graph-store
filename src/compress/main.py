@@ -176,7 +176,7 @@ def measure_edge_attributes_memory(graphs: dict):
 
     return edge_attributes_memory
 
-def build_graph():
+def build_graph(return_list_of_graphs=False):
     #config usada:
     #granularity: CA
     #edge_construction_funcs: ["delaunay", "aromatic", "aromatic_sulphur"]
@@ -215,6 +215,9 @@ def build_graph():
         number_of_nodes+=len(protein_graph_without_metadata_dict[pdb_code][-1].nodes())
 
     time_to_construct = time_count(time_start=time_start)
+
+    if return_list_of_graphs:
+        return protein_graph_with_metadata_dict
 
     body_parts, time_to_compress = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
     pdb_store = PDBGraphStore(body_parts)
@@ -440,11 +443,73 @@ def experiment_4(pdb_store):
 
     write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_4.__name__)
 
-def experiment_5():
-    pass
+def experiment_5(pdb_store):
+    result_columns = [
+        "dataset",
+        "time_to_split"
+    ]
 
-def experimen_6():
-    pass
+    result_line = []
+
+    result_line.append(dataset_name)
+
+    if os.getenv("EXCOUNT") == '0':
+        msg = ",".join(result_columns)
+        create_dataset_result_file(result_path=result_path,experiment_fields=msg, func=experiment_5.__name__)
+
+    time_start = time.time()
+    pdb_store = split_graph_store(pdb_store=pdb_store, pdb_code_list=None)
+    time_to_split = time_count(time_start=time_start)
+    
+    result_line.append(f'{time_to_split:.2f}')
+
+    print(result_line)
+    msg = ",".join(result_line)
+
+    write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_5.__name__)
+
+def experiment_6():
+    result_columns = [
+        "dataset",
+        "time_to_merge"
+    ]
+
+    result_line = []
+
+    result_line.append(dataset_name)
+
+    if os.getenv("EXCOUNT") == '0':
+        msg = ",".join(result_columns)
+        create_dataset_result_file(result_path=result_path,experiment_fields=msg, func=experiment_6.__name__)
+
+    graphs = build_graph(True)
+
+    mid = len(graphs) // 2
+
+    keys = list(graphs.keys())
+
+    body_parts, _ = Builder.compress_pdb_graphs({k: graphs[k] for k in keys[:mid]})
+    store_1 =  PDBGraphStore(body_parts=body_parts)
+
+    body_parts, _ = Builder.compress_pdb_graphs({k: graphs[k] for k in keys[mid:]})
+    store_2 = PDBGraphStore(body_parts=body_parts)
+
+
+    print(store_1)
+    print(store_2)
+
+    time_start = time.time()
+    super_store = merge_graph_stores([store_1, store_2])
+    time_to_merge = time_count(time_start=time_start)
+    
+    result_line.append(f'{time_to_merge:.2f}')
+
+    print(result_line)
+    msg = ",".join(result_line)
+
+    write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_6.__name__)
+
+    print(super_store)
 
 if __name__=="__main__":
     exp_1_misc, pdb_store = build_graph()
@@ -453,5 +518,6 @@ if __name__=="__main__":
     # del exp_1_misc
     # experiment_2(pdb_store)
     # experiment_3(pdb_store)
-
-    experiment_4(pdb_store)
+    # experiment_4(pdb_store)
+    experiment_5(pdb_store)
+    experiment_6()
