@@ -1,9 +1,10 @@
-import os, metadata, time, pickle, traceback, random
+import os, metadata, time, traceback, random
 
 import numpy as np
 import pandas as pd
 from pympler import asizeof
 import networkx as nx
+import pickle as pk
 
 import Builder
 from MemoryMeasuring import MemoryMeasuring
@@ -511,13 +512,35 @@ def experiment_6():
 
     print(super_store)
 
+def experiment_7(protein_graphs, pdb_store):
+    with open("v1.pkl", "wb") as f:
+        pk.dump(protein_graphs, f)
+
+    with open("v2.pkl", "wb") as f:
+        pk.dump(pdb_store, f)
+
+def experiment_8():
+    pass
+
+def print_(pdb_graphs, pdb_store=None):
+    for pdb_code, graph_list in pdb_graphs.items():
+        for n in graph_list[0].nodes():
+            for k, v in graph_list[0].nodes[n].items():
+                print(k, v)
+            print("\n\n")
+
+
 if __name__=="__main__":
     exp_1_misc, pdb_store = build_graph()
+    # pdb_graphs = build_graph(True)
 
     # experiment_1(exp_1_misc, pdb_store)
     # del exp_1_misc
     # experiment_2(pdb_store)
     # experiment_3(pdb_store)
     # experiment_4(pdb_store)
-    experiment_5(pdb_store)
-    experiment_6()
+    # experiment_5(pdb_store)
+    # experiment_6()
+    experiment_7(exp_1_misc["protein_graph_with_data"], pdb_store)
+    # experiment_8()
+    # print_(pdb_graphs)

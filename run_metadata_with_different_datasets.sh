@@ -32,15 +32,15 @@ EXCOUNT=0
 
 for dataset in data/*.txt
 do
-    for i in {1..5};
-    do
+    # for i in {1..5};
+    # do
         dataset_name=$(basename $dataset)
         export DATASET=$dataset_name
         export EXCOUNT
         echo $dataset_name
         python src/compress/main.py >> /app/logs/metadata.log 2>&1
-        # python -m memory_profiler src/compress/measure_memory_v1.py > "times/${dataset_name}_v1.txt"
-        # python -m memory_profiler src/compress/measure_memory_v2.py > "times/${dataset_name}_v2.txt"
+        python -m memory_profiler src/compress/measure_memory_v1.py > "times/${dataset_name}_v1.txt"
+        python -m memory_profiler src/compress/measure_memory_v2.py > "times/${dataset_name}_v2.txt"
         EXCOUNT=$i
-    done
+    # done
 done
