@@ -529,6 +529,24 @@ def print_(pdb_graphs, pdb_store=None):
                 print(k, v)
             print("\n\n")
 
+def extract_max_min_graphs(protein_graphs):
+    qtd_edges = {}
+    qtd_nodes = {}
+
+    for pdb_code, graphs in protein_graphs.items():
+        graph = graphs[0]
+
+        qtd_edges[pdb_code] = len(graph.edges)
+        qtd_nodes[pdb_code] = len(graph.nodes)
+
+    max_edge_key = max(qtd_edges, key=qtd_edges.get)
+    max_node_key = max(qtd_nodes, key=qtd_nodes.get)
+
+    min_edge_key = min(qtd_edges, key=qtd_edges.get)
+    min_node_key = min(qtd_nodes, key=qtd_nodes.get)
+
+    with open(f"min_max_results/{dataset_name}.csv", "a") as f:
+        f.write(f"\n{qtd_edges[min_edge_key]},{qtd_edges[max_edge_key]},{qtd_nodes[min_node_key]},{qtd_nodes[max_node_key]}")
 
 if __name__=="__main__":
     exp_1_misc, pdb_store = build_graph()
@@ -541,6 +559,9 @@ if __name__=="__main__":
     # experiment_4(pdb_store)
     # experiment_5(pdb_store)
     # experiment_6()
-    experiment_7(exp_1_misc["protein_graph_with_data"], pdb_store)
+    # experiment_7(exp_1_misc["protein_graph_with_data"], pdb_store)
     # experiment_8()
     # print_(pdb_graphs)
+    with open(f"min_max_results/{dataset_name}.csv", "w") as f:
+        f.write("min_edges,max_edges,min_nodes,max_nodes")
+    extract_max_min_graphs(exp_1_misc["protein_graph_with_data"])
