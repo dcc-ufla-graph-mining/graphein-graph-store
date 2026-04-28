@@ -5,6 +5,6 @@ Line #    Mem usage    Increment  Occurrences   Line Contents
      4     44.4 MiB     44.4 MiB           1   @profile
      5                                         def main():
      6     44.4 MiB      0.0 MiB           1       with open('v1.pkl', 'rb') as f:
-     7    485.4 MiB    441.0 MiB           1           v1 = pickle.load(f)
+     7   6555.3 MiB   6511.0 MiB           1           v1 = pickle.load(f)
 
 
