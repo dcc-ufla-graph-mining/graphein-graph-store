@@ -1,5 +1,5 @@
 import networkx as nx
-from pyroaring import BitMap64
+from pyroaring import BitMap64, BitMap
 from bidict import bidict
 import numpy as np
 import pandas as pd
@@ -27,7 +27,7 @@ class PDBGraphStore:
         print(self.__body_parts.keys())
 
     def __str__(self):
-        return f'PDBGraphStore with {len(self.get_pdb_code_list())} pdbs'
+        return f'PDBGraphStore with {len(self.get_this_pdb_list())} pdbs'
     
     def get_body_parts(self):
         return self.__body_parts
@@ -117,7 +117,7 @@ class PDBGraphStore:
                 attr_value_id = self.__body_parts["node_attr_values"][attr_value]
                 local_attr_list.append(attr_value_id)
 
-                return local_attr_list
+            return local_attr_list
 
         def __process_node_attrs(pdb_id: int, node_id: int, node: dict):
             __process_global_node_attrs(node, node_id)
@@ -158,13 +158,23 @@ class PDBGraphStore:
                     self.__body_parts["pdb_code_to_id"][pdb_code] = len(self.__body_parts["pdb_code_to_id"])
                 
                 pdb_id = self.__body_parts["pdb_code_to_id"][pdb_code]
+                if pdb_id not in self.__body_parts["pdb_id_to_edges"]:
+                    self.__body_parts["pdb_id_to_edges"][pdb_id] = BitMap64()
+                if pdb_id not in self.__body_parts["pdb_id_to_nodes"]:
+                    self.__body_parts["pdb_id_to_nodes"][pdb_id] = BitMap64()
 
                 __construct_structure_attributes(pdb_graph[0], pdb_id)
 
                 old = self.__body_parts["node_global_attr_keyvalue_mapping"]
+
+                mshape = 5
+                mtype = np.int32
+
                 new_size = len(self.__body_parts["node_label_to_node_id"])
-                new = np.zeros((new_size, old.shape[1]), dtype=old.dtype)
-                new[:old.shape[0]] = old
+                new = np.zeros((new_size, mshape), dtype=mtype)
+
+                if (type(old) != str):
+                    new[:old.shape[0]] = old
 
                 self.__body_parts["node_global_attr_keyvalue_mapping"] = new
 
@@ -257,49 +267,3 @@ class PDBGraphStore:
         __reconstruct_edges(extracted_graph, pdb_id)
 
         return extracted_graph
-
-    # return str(pdb) se o pdb foi removido com sucesso 
-    def remove_pdb(self, pdb_to_remove: str):
-        def remove_edge(edge_id: int, pdb_id: int):
-            self.__body_parts["edge_local_attr_keyvalue_mapping"].pop((pdb_id, edge_id))
-
-        def remove_node(node_id: int, pdb_id: int):
-            # skip this cause global attr may appear in other graphs with the same node
-            # self.__body_parts["node_global_keyvalue_mapping"]
-
-            removed_local_node_attrs = self.__body_parts["node_local_keyvalue_mapping"].pop((pdb_id, node_id))
-
-            return removed_local_node_attrs
-
-        pdb_id = self.__body_parts["pdb_code_to_id"].pop(pdb_to_remove, None)
-
-        node_ids_to_remove = self.__body_parts["pdb_id_to_nodes"].pop(pdb_id, KeyError)
-        edge_ids_to_remove = self.__body_parts["pdb_id_to_edges"].pop(pdb_id, KeyError)
-
-        #skip the node_label_to_node_id and edge_label_to_edge_id pops cause they may be part of other pdbs
-
-        [remove_edge(edge_id, pdb_id) for edge_id in edge_ids_to_remove]
-        [remove_node(node_id, pdb_id) for node_id in node_ids_to_remove]
-
-        #also skip the dicts node_attr_values and edge_attr_values. handle with this in remake_id_mapping()
-
-    # after some removes, there will be a lot of empty spaces in id mapping. solves this in this method
-    def remake_id_mapping(self):
-        pass
-
-    def remove_multi_pdb(self, pdb_to_remove_list: list):
-        removed_pdb_codes = []
-
-        for pdb_code in pdb_to_remove_list:
-            try:
-                self.remove_pdb(pdb_code)
-            except Exception as e:
-                print("Cannot remove all of the pdb. ERROR {e}")
-                return
-            
-            removed_pdb_codes.append(pdb_code)
-            print(f'\npdb {pdb_code} removido com sucesso')
-        
-        print(f"\n\nTodos os pdbs {removed_pdb_codes} foram removidos com sucesso!")
-
-        return removed_pdb_codes

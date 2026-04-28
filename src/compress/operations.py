@@ -1,33 +1,53 @@
 from PDBGraphStore import PDBGraphStore
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
+def remove_graph_from_graph_store(pdbs_to_remove: list, pdb_store: PDBGraphStore) -> PDBGraphStore:
+    pdbs_to_remove_set = set(pdbs_to_remove)
 
-def split_graph_store(pdb_store=PDBGraphStore, pdb_code_list=[]) -> tuple:
-    pdb_graphs = []
-    for pdb_code in pdb_code_list:
-        pdb_graphs.append(pdb_store.extract_pdb(pdb_code))
-    
-    pdb_store.remove_multi_pdb(pdb_code_list)
+    all_pdbs = pdb_store.get_this_pdb_list()
+    pdbs_to_keep = [x for x in all_pdbs if x not in pdbs_to_remove_set]
 
-    pdb_store_2 = PDBGraphStore()
+    graphs_to_insert = {}
 
-    for pdb_graph in pdb_graphs:
-        pdb_store_2.insert_pdb(pdb_graph)
+    for pdb_code in pdbs_to_keep:
+        graphs_to_insert[pdb_code] = [pdb_store.extract_pdb(pdb_code)]
 
-    return (pdb_store, pdb_store_2)
+    new_store = PDBGraphStore(None)
+    new_store.insert_pdb(graphs_to_insert)
 
-def merge_graph_stores(graph_stores=[]) -> PDBGraphStore:
+    return new_store
+
+def split_graph_store(pdb_store: PDBGraphStore, pdb_code_list: list) -> tuple:
+    pdb_store_code_list = list(pdb_store.get_this_pdb_list())
+
+    if not pdb_code_list:
+        mid = len(pdb_store_code_list) // 2
+
+        list_1 = pdb_store_code_list[:mid]
+        list_2 = pdb_store_code_list[mid:]
+    else:
+        list_1 = [x for x in pdb_store_code_list if x in pdb_code_list]
+        list_2 = [x for x in pdb_store_code_list if x not in pdb_code_list]
+
+    store_1 = remove_graph_from_graph_store(list_2, pdb_store)
+    store_2 = remove_graph_from_graph_store(list_1, pdb_store)
+
+    return store_1, store_2
+
+def merge_graph_stores(graph_stores: list) -> PDBGraphStore:
     main_graph_store = graph_stores.pop()
-    
+    main_pdbs = set(main_graph_store.get_this_pdb_list())
 
     for graph_store in graph_stores:
-        pdb_codes_to_insert = [pdb_code for pdb_code in graph_store.get_this_pdb_list() if pdb_code not in main_graph_store.get_this_pdb_list()]
-        graphs_to_insert_list = [graph_store.extract(pdb_code) for pdb_code in pdb_codes_to_insert]
-        [main_graph_store.insert_pdb(graph) for graph in graphs_to_insert_list]
+        for pdb_code in set(graph_store.get_this_pdb_list()):
+            if pdb_code not in main_pdbs:
+                graph = graph_store.extract_pdb(pdb_code)
+                main_graph_store.insert_pdb({pdb_code: [graph]})
+                main_pdbs.add(pdb_code)
 
-        return main_graph_store
+    return main_graph_store
 
-def extract_pdb_graphs_multiprocessing(pdb_store, pdb_codes=[], num_cpus=4) -> list:
+def extract_pdb_graphs_multiprocessing(pdb_store: PDBGraphStore, pdb_codes: list, num_cpus=4) -> list:
     with ProcessPoolExecutor(max_workers=num_cpus) as executor:
         futures = [executor.submit(pdb_store.extract_pdb, pdb_code) for pdb_code in pdb_codes]
 

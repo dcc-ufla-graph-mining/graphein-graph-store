@@ -1,9 +1,10 @@
-import os, metadata, time, pickle, traceback, random
+import os, metadata, time, traceback, random
 
 import numpy as np
 import pandas as pd
 from pympler import asizeof
 import networkx as nx
+import pickle as pk
 
 import Builder
 from MemoryMeasuring import MemoryMeasuring
@@ -176,7 +177,7 @@ def measure_edge_attributes_memory(graphs: dict):
 
     return edge_attributes_memory
 
-def build_graph():
+def build_graph(return_list_of_graphs=False):
     #config usada:
     #granularity: CA
     #edge_construction_funcs: ["delaunay", "aromatic", "aromatic_sulphur"]
@@ -215,6 +216,9 @@ def build_graph():
         number_of_nodes+=len(protein_graph_without_metadata_dict[pdb_code][-1].nodes())
 
     time_to_construct = time_count(time_start=time_start)
+
+    if return_list_of_graphs:
+        return protein_graph_with_metadata_dict
 
     body_parts, time_to_compress = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
     pdb_store = PDBGraphStore(body_parts)
@@ -410,19 +414,154 @@ def experiment_3(pdb_store):
 
     write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_3.__name__)
 
-def experiment_4():
+def experiment_4(pdb_store):
+    result_columns = [
+        "dataset",
+        "avg_time_to_remove"
+    ]
+
+    result_line = []
+
+    result_line.append(dataset_name)
+
+    if os.getenv("EXCOUNT") == '0':
+        msg = ",".join(result_columns)
+        create_dataset_result_file(result_path=result_path,experiment_fields=msg, func=experiment_4.__name__)
+
+    pdb_codes = list(pdb_store.get_this_pdb_list())
+    print(f'{type(pdb_codes)}, pdb_codes: {pdb_codes}')
+    pdb_to_remove = random.choice(pdb_codes)
+
+
+    time_start = time.time()
+    pdb_store = remove_graph_from_graph_store([pdb_to_remove], pdb_store)
+    time_to_remove = time_count(time_start=time_start)
+    
+    result_line.append(f'{time_to_remove:.2f}')
+
+    print(result_line)
+    msg = ",".join(result_line)
+
+    write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_4.__name__)
+
+def experiment_5(pdb_store):
+    result_columns = [
+        "dataset",
+        "time_to_split"
+    ]
+
+    result_line = []
+
+    result_line.append(dataset_name)
+
+    if os.getenv("EXCOUNT") == '0':
+        msg = ",".join(result_columns)
+        create_dataset_result_file(result_path=result_path,experiment_fields=msg, func=experiment_5.__name__)
+
+    time_start = time.time()
+    pdb_store = split_graph_store(pdb_store=pdb_store, pdb_code_list=None)
+    time_to_split = time_count(time_start=time_start)
+    
+    result_line.append(f'{time_to_split:.2f}')
+
+    print(result_line)
+    msg = ",".join(result_line)
+
+    write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_5.__name__)
+
+def experiment_6():
+    result_columns = [
+        "dataset",
+        "time_to_merge"
+    ]
+
+    result_line = []
+
+    result_line.append(dataset_name)
+
+    if os.getenv("EXCOUNT") == '0':
+        msg = ",".join(result_columns)
+        create_dataset_result_file(result_path=result_path,experiment_fields=msg, func=experiment_6.__name__)
+
+    graphs = build_graph(True)
+
+    mid = len(graphs) // 2
+
+    keys = list(graphs.keys())
+
+    body_parts, _ = Builder.compress_pdb_graphs({k: graphs[k] for k in keys[:mid]})
+    store_1 =  PDBGraphStore(body_parts=body_parts)
+
+    body_parts, _ = Builder.compress_pdb_graphs({k: graphs[k] for k in keys[mid:]})
+    store_2 = PDBGraphStore(body_parts=body_parts)
+
+
+    print(store_1)
+    print(store_2)
+
+    time_start = time.time()
+    super_store = merge_graph_stores([store_1, store_2])
+    time_to_merge = time_count(time_start=time_start)
+    
+    result_line.append(f'{time_to_merge:.2f}')
+
+    print(result_line)
+    msg = ",".join(result_line)
+
+    write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_6.__name__)
+
+    print(super_store)
+
+def experiment_7(protein_graphs, pdb_store):
+    with open("v1.pkl", "wb") as f:
+        pk.dump(protein_graphs, f)
+
+    with open("v2.pkl", "wb") as f:
+        pk.dump(pdb_store, f)
+
+def experiment_8():
     pass
 
-def experiment_5():
-    pass
+def print_(pdb_graphs, pdb_store=None):
+    for pdb_code, graph_list in pdb_graphs.items():
+        for n in graph_list[0].nodes():
+            for k, v in graph_list[0].nodes[n].items():
+                print(k, v)
+            print("\n\n")
 
-def experimen_6():
-    pass
+def extract_max_min_graphs(protein_graphs):
+    qtd_edges = {}
+    qtd_nodes = {}
+
+    for pdb_code, graphs in protein_graphs.items():
+        graph = graphs[0]
+
+        qtd_edges[pdb_code] = len(graph.edges)
+        qtd_nodes[pdb_code] = len(graph.nodes)
+
+    max_edge_key = max(qtd_edges, key=qtd_edges.get)
+    max_node_key = max(qtd_nodes, key=qtd_nodes.get)
+
+    min_edge_key = min(qtd_edges, key=qtd_edges.get)
+    min_node_key = min(qtd_nodes, key=qtd_nodes.get)
+
+    with open(f"min_max_results/{dataset_name}.csv", "a") as f:
+        f.write(f"\n{qtd_edges[min_edge_key]},{qtd_edges[max_edge_key]},{qtd_nodes[min_node_key]},{qtd_nodes[max_node_key]}")
 
 if __name__=="__main__":
     exp_1_misc, pdb_store = build_graph()
+    # pdb_graphs = build_graph(True)
 
-    experiment_1(exp_1_misc, pdb_store)
-    del exp_1_misc
-    experiment_2(pdb_store)
-    experiment_3(pdb_store)
+    # experiment_1(exp_1_misc, pdb_store)
+    # del exp_1_misc
+    # experiment_2(pdb_store)
+    # experiment_3(pdb_store)
+    # experiment_4(pdb_store)
+    # experiment_5(pdb_store)
+    # experiment_6()
+    # experiment_7(exp_1_misc["protein_graph_with_data"], pdb_store)
+    # experiment_8()
+    # print_(pdb_graphs)
+    with open(f"min_max_results/{dataset_name}.csv", "w") as f:
+        f.write("min_edges,max_edges,min_nodes,max_nodes")
+    extract_max_min_graphs(exp_1_misc["protein_graph_with_data"])
