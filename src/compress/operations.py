@@ -1,7 +1,7 @@
 from PDBGraphStore import PDBGraphStore
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
-def remove_graph_from_graph_store(pdbs_to_remove: list, pdb_store: PDBGraphStore) -> PDBGraphStore:
+def remove_graph_from_store(pdbs_to_remove: list, pdb_store: PDBGraphStore) -> PDBGraphStore:
     pdbs_to_remove_set = set(pdbs_to_remove)
 
     all_pdbs = pdb_store.get_this_pdb_list()
@@ -29,8 +29,8 @@ def split_graph_store(pdb_store: PDBGraphStore, pdb_code_list: list) -> tuple:
         list_1 = [x for x in pdb_store_code_list if x in pdb_code_list]
         list_2 = [x for x in pdb_store_code_list if x not in pdb_code_list]
 
-    store_1 = remove_graph_from_graph_store(list_2, pdb_store)
-    store_2 = remove_graph_from_graph_store(list_1, pdb_store)
+    store_1 = remove_graph_from_store(list_2, pdb_store)
+    store_2 = remove_graph_from_store(list_1, pdb_store)
 
     return store_1, store_2
 
