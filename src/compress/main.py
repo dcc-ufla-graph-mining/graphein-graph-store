@@ -434,7 +434,7 @@ def experiment_4(pdb_store):
 
 
     time_start = time.time()
-    pdb_store = remove_graph_from_graph_store([pdb_to_remove], pdb_store)
+    pdb_store = remove_graph_from_store([pdb_to_remove], pdb_store)
     time_to_remove = time_count(time_start=time_start)
     
     result_line.append(f'{time_to_remove:.2f}')
@@ -548,9 +548,219 @@ def extract_max_min_graphs(protein_graphs):
     with open(f"min_max_results/{dataset_name}.csv", "a") as f:
         f.write(f"\n{qtd_edges[min_edge_key]},{qtd_edges[max_edge_key]},{qtd_nodes[min_node_key]},{qtd_nodes[max_node_key]}")
 
+def toy_exemple():
+    def make_meiler(residue_name: str, values: []) -> pd.Series:
+        return pd.Series(
+            values,
+            index=[f"dim_{i}" for i in range(1, 8)],
+            name=residue_name,
+            dtype="float64",
+        )
+
+
+    met_meiler = make_meiler("MET", [2.35, 0.22, 4.43, 1.23, 5.71, 0.38, 0.32])
+    ser_meiler = make_meiler("SER", [1.31, 0.06, 1.60, -0.04, 5.70, 0.20, 0.28])
+
+
+    G_104L = nx.Graph()
+
+    G_104L.add_node(
+        "A:MET:1:N",
+        chain_id="A",
+        residue_name="MET",
+        residue_number=1,
+        atom_type="N",
+        element_symbol="N",
+        coords=np.array([-17.775, 41.398, 46.220], dtype=np.float32),
+        b_factor=26.260000228881836,
+        meiler=met_meiler,
+    )
+
+    G_104L.add_node(
+        "A:MET:1:CA",
+        chain_id="A",
+        residue_name="MET",
+        residue_number=1,
+        atom_type="CA",
+        element_symbol="C",
+        coords=np.array([-16.791, 40.917, 45.201], dtype=np.float32),
+        b_factor=30.690000534057617,
+        meiler=met_meiler,
+    )
+
+    G_104L.add_node(
+        "A:MET:1:C",
+        chain_id="A",
+        residue_name="MET",
+        residue_number=1,
+        atom_type="C",
+        element_symbol="C",
+        coords=np.array([-16.728, 39.422, 45.076], dtype=np.float32),
+        b_factor=28.399999618530273,
+        meiler=met_meiler,
+    )
+
+    G_104L.add_node(
+        "A:MET:1:CB",
+        chain_id="A",
+        residue_name="MET",
+        residue_number=1,
+        atom_type="CB",
+        element_symbol="C",
+        coords=np.array([-15.361, 41.348, 45.496], dtype=np.float32),
+        b_factor=36.40999984741211,
+        meiler=met_meiler,
+    )
+
+    G_104L.add_edge(
+        "A:MET:1:N",
+        "A:MET:1:CA",
+        kind={"covalent"},
+        distance=1.495987169792978,
+    )
+
+    G_104L.add_edge(
+        "A:MET:1:CA",
+        "A:MET:1:C",
+        kind={"covalent"},
+        distance=1.5015378022979415,
+    )
+
+    G_104L.add_edge(
+        "A:MET:1:CA",
+        "A:MET:1:CB",
+        kind={"covalent"},
+        distance=1.5223946866810707,
+    )
+
+
+    G_3eiy = nx.Graph()
+
+    G_3eiy.add_node(
+        "A:SER:2:N",
+        chain_id="A",
+        residue_name="SER",
+        residue_number=2,
+        atom_type="N",
+        element_symbol="N",
+        coords=np.array([2.527, 54.656, -1.667], dtype=np.float32),
+        b_factor=52.72999954223633,
+        meiler=ser_meiler,
+    )
+
+    G_3eiy.add_node(
+        "A:SER:2:CA",
+        chain_id="A",
+        residue_name="SER",
+        residue_number=2,
+        atom_type="CA",
+        element_symbol="C",
+        coords=np.array([3.259, 54.783, -0.368], dtype=np.float32),
+        b_factor=52.540000915527344,
+        meiler=ser_meiler,
+    )
+
+    G_3eiy.add_node(
+        "A:SER:2:C",
+        chain_id="A",
+        residue_name="SER",
+        residue_number=2,
+        atom_type="C",
+        element_symbol="C",
+        coords=np.array([4.127, 53.553, -0.105], dtype=np.float32),
+        b_factor=52.029998779296875,
+        meiler=ser_meiler,
+    )
+
+    G_3eiy.add_node(
+        "A:SER:2:CB",
+        chain_id="A",
+        residue_name="SER",
+        residue_number=2,
+        atom_type="CB",
+        element_symbol="C",
+        coords=np.array([2.273, 54.944, 0.792], dtype=np.float32),
+        b_factor=52.689998626708984,
+        meiler=ser_meiler,
+    )
+
+    G_3eiy.add_edge(
+        "A:SER:2:N",
+        "A:SER:2:CA",
+        kind={"covalent"},
+        distance=1.4964474586440166,
+    )
+
+    G_3eiy.add_edge(
+        "A:SER:2:CA",
+        "A:SER:2:C",
+        kind={"covalent"},
+        distance=1.5282314991800388,
+    )
+
+    G_3eiy.add_edge(
+        "A:SER:2:CA",
+        "A:SER:2:CB",
+        kind={"covalent"},
+        distance=1.5309202742310504,
+    )
+
+
+    pdb_graphs = {
+        "104L": [G_104L],
+        "3eiy": [G_3eiy],
+    }
+
+    # print(pdb_graphs)
+
+    # for pdb_code, graphs in pdb_graphs.items():
+    #     graph = graphs[0]
+    #     print(pdb_code)
+    #     for n in graph.nodes():
+    #         print(graph.nodes[n]['chain_id'])
+    #         # 
+    #     for e in graph.edges():
+    #         print(graph.edges[e])
+
+    body_parts, _ = Builder.compress_pdb_graphs(pdb_graphs)
+    pdb_store = PDBGraphStore(body_parts)
+
+    pdb_store.print_attr()
+
+def experiment_o1(pdb_graphs):
+    result_columns = [
+        "dataset",
+        "avg_time_to_extract"
+    ]
+
+    result_line = []
+
+    result_line.append(dataset_name)
+
+    if os.getenv("EXCOUNT") == '0':
+        msg = ",".join(result_columns)
+        create_dataset_result_file(result_path=result_path,experiment_fields=msg, func=experiment_o1.__name__)
+    
+    pdb_codes = pdb_graphs.keys()
+
+    times_to_extract = []
+    for code in pdb_codes:
+        time_start = time.time()
+        _ = pdb_graphs[code]
+        times_to_extract.append(time_count(time_start=time_start))
+    
+    result_line.append(f'{np.mean(times_to_extract):.10f}')
+
+    print(result_line)
+    msg = ",".join(result_line)
+
+    write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_o1.__name__)
+
 if __name__=="__main__":
-    exp_1_misc, pdb_store = build_graph()
-    # pdb_graphs = build_graph(True)
+    # exp_1_misc, pdb_store = build_graph()
+    
+    pdb_graphs = build_graph(True)
+    experiment_o1(pdb_graphs)
 
     # experiment_1(exp_1_misc, pdb_store)
     # del exp_1_misc
@@ -562,6 +772,8 @@ if __name__=="__main__":
     # experiment_7(exp_1_misc["protein_graph_with_data"], pdb_store)
     # experiment_8()
     # print_(pdb_graphs)
-    with open(f"min_max_results/{dataset_name}.csv", "w") as f:
-        f.write("min_edges,max_edges,min_nodes,max_nodes")
-    extract_max_min_graphs(exp_1_misc["protein_graph_with_data"])
+    # with open(f"min_max_results/{dataset_name}.csv", "w") as f:
+    #     f.write("min_edges,max_edges,min_nodes,max_nodes")
+    # extract_max_min_graphs(exp_1_misc["protein_graph_with_data"])
+
+    # toy_exemple()
