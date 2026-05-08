@@ -30,12 +30,13 @@ python -m memory_profiler src/compress/trash_measure_memory.py > "times/trash.tx
 
 EXCOUNT=0
 
-for dataset in data/*.txt
-do
+# for dataset in data/*.txt
+# do
     # for i in {1..5};
     # do
-        dataset_name=$(basename $dataset)
-        export DATASET=$dataset_name
+        # dataset_name=$(basename $dataset)
+        # export DATASET=$dataset_name
+        export DATASET="ligand_PO4.txt"
         export EXCOUNT
         echo $dataset_name
         python src/compress/main.py >> /app/logs/metadata.log 2>&1
@@ -47,4 +48,4 @@ do
 
         EXCOUNT=$i
     # done
-done
+# done
