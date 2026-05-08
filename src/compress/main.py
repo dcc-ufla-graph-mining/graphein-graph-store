@@ -769,7 +769,7 @@ if __name__=="__main__":
     # experiment_4(pdb_store)
     # experiment_5(pdb_store)
     # experiment_6()
-    # experiment_7(exp_1_misc["protein_graph_with_data"], pdb_store)
+    experiment_7(exp_1_misc["protein_graph_with_data"], pdb_store)
     # experiment_8()
     # print_(pdb_graphs)
     # with open(f"min_max_results/{dataset_name}.csv", "w") as f:
