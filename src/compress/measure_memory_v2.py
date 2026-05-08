@@ -1,4 +1,5 @@
 import pickle
+import time
 from memory_profiler import profile
 
 @profile
