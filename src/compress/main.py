@@ -757,10 +757,10 @@ def experiment_o1(pdb_graphs):
     write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_o1.__name__)
 
 if __name__=="__main__":
-    # exp_1_misc, pdb_store = build_graph()
+    exp_1_misc, pdb_store = build_graph()
     
-    pdb_graphs = build_graph(True)
-    experiment_o1(pdb_graphs)
+    # pdb_graphs = build_graph(True)
+    # experiment_o1(pdb_graphs)
 
     # experiment_1(exp_1_misc, pdb_store)
     # del exp_1_misc
@@ -769,7 +769,7 @@ if __name__=="__main__":
     # experiment_4(pdb_store)
     # experiment_5(pdb_store)
     # experiment_6()
-    # experiment_7(exp_1_misc["protein_graph_with_data"], pdb_store)
+    experiment_7(exp_1_misc["protein_graph_with_data"], pdb_store)
     # experiment_8()
     # print_(pdb_graphs)
     # with open(f"min_max_results/{dataset_name}.csv", "w") as f:
