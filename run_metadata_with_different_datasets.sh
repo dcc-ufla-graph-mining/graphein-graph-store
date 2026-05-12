@@ -36,7 +36,7 @@ EXCOUNT=0
     # do
         # dataset_name=$(basename $dataset)
         # export DATASET=$dataset_name
-        dataset_name="ligand_PLP.txt"
+        dataset_name="bcl_ppigremlin.txt"
         export DATASET=$dataset_name
         export EXCOUNT
         echo $dataset_name
