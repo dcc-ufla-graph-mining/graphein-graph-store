@@ -804,7 +804,7 @@ def experiment_o1(pdb_graphs):
     write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_o1.__name__)
 
 if __name__=="__main__":
-    # exp_1_misc, pdb_store = build_graph()
+    exp_1_misc, pdb_store = build_graph()
     
     # pdb_graphs = build_graph(True)
     # experiment_o1(pdb_graphs)
