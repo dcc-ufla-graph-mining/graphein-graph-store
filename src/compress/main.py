@@ -558,157 +558,204 @@ def toy_exemple():
         )
 
 
-    met_meiler = make_meiler("MET", [2.35, 0.22, 4.43, 1.23, 5.71, 0.38, 0.32])
-    ser_meiler = make_meiler("SER", [1.31, 0.06, 1.60, -0.04, 5.70, 0.20, 0.28])
+    ala_meiler = make_meiler("ALA", [1.28, 0.05, 1.00, 0.31, 6.11, 0.42, 0.23])
+    gln_meiler = make_meiler("GLN", [1.56, 0.18, 3.95, -0.22, 5.65, 0.35, 0.25])
+    glu_meiler = make_meiler("GLU", [1.56, 0.15, 3.78, -0.64, 3.09, 0.42, 0.21])
 
 
-    G_104L = nx.Graph()
+    G_1bxl = nx.Graph()
 
-    G_104L.add_node(
-        "A:MET:1:N",
+    G_1bxl.add_node(
+        "A:ALA:89:N",
         chain_id="A",
-        residue_name="MET",
-        residue_number=1,
+        residue_name="ALA",
+        residue_number=89,
         atom_type="N",
         element_symbol="N",
-        coords=np.array([-17.775, 41.398, 46.220], dtype=np.float32),
-        b_factor=26.260000228881836,
-        meiler=met_meiler,
+        coords=np.array([8.240, 5.876, -2.816], dtype=np.float32),
+        b_factor=0.3700000047683716,
+        meiler=ala_meiler,
     )
 
-    G_104L.add_node(
-        "A:MET:1:CA",
+    G_1bxl.add_node(
+        "A:ALA:89:CA",
         chain_id="A",
-        residue_name="MET",
-        residue_number=1,
+        residue_name="ALA",
+        residue_number=89,
         atom_type="CA",
         element_symbol="C",
-        coords=np.array([-16.791, 40.917, 45.201], dtype=np.float32),
-        b_factor=30.690000534057617,
-        meiler=met_meiler,
+        coords=np.array([8.590, 4.452, -2.554], dtype=np.float32),
+        b_factor=0.3700000047683716,
+        meiler=ala_meiler,
     )
 
-    G_104L.add_node(
-        "A:MET:1:C",
+    G_1bxl.add_node(
+        "A:GLN:88:C",
         chain_id="A",
-        residue_name="MET",
-        residue_number=1,
+        residue_name="GLN",
+        residue_number=88,
         atom_type="C",
         element_symbol="C",
-        coords=np.array([-16.728, 39.422, 45.076], dtype=np.float32),
-        b_factor=28.399999618530273,
-        meiler=met_meiler,
+        coords=np.array([7.761, 6.236, -3.975], dtype=np.float32),
+        b_factor=0.3799999952316284,
+        meiler=gln_meiler,
     )
 
-    G_104L.add_node(
-        "A:MET:1:CB",
+    G_1bxl.add_node(
+        "A:ALA:89:C",
         chain_id="A",
-        residue_name="MET",
-        residue_number=1,
+        residue_name="ALA",
+        residue_number=89,
+        atom_type="C",
+        element_symbol="C",
+        coords=np.array([7.328, 3.582, -2.581], dtype=np.float32),
+        b_factor=0.3499999940395355,
+        meiler=ala_meiler,
+    )
+
+    G_1bxl.add_node(
+        "A:ALA:89:CB",
+        chain_id="A",
+        residue_name="ALA",
+        residue_number=89,
         atom_type="CB",
         element_symbol="C",
-        coords=np.array([-15.361, 41.348, 45.496], dtype=np.float32),
-        b_factor=36.40999984741211,
-        meiler=met_meiler,
+        coords=np.array([9.253, 4.341, -1.180], dtype=np.float32),
+        b_factor=0.3700000047683716,
+        meiler=ala_meiler,
     )
 
-    G_104L.add_edge(
-        "A:MET:1:N",
-        "A:MET:1:CA",
+    G_1bxl.add_edge(
+        "A:ALA:89:N",
+        "A:ALA:89:CA",
         kind={"covalent"},
-        distance=1.495987169792978,
+        bond_length=1.4896038743929203,
+        distance=1.4896038743929203,
     )
 
-    G_104L.add_edge(
-        "A:MET:1:CA",
-        "A:MET:1:C",
+    G_1bxl.add_edge(
+        "A:ALA:89:N",
+        "A:GLN:88:C",
         kind={"covalent"},
-        distance=1.5015378022979415,
+        bond_length=1.3047304477692825,
+        distance=1.3047304477692825,
     )
 
-    G_104L.add_edge(
-        "A:MET:1:CA",
-        "A:MET:1:CB",
+    G_1bxl.add_edge(
+        "A:ALA:89:CA",
+        "A:ALA:89:C",
         kind={"covalent"},
-        distance=1.5223946866810707,
+        bond_length=1.533060154638553,
+        distance=1.533060154638553,
+    )
+
+    G_1bxl.add_edge(
+        "A:ALA:89:CA",
+        "A:ALA:89:CB",
+        kind={"covalent"},
+        bond_length=1.5296293756226533,
+        distance=1.5296293756226533,
     )
 
 
-    G_3eiy = nx.Graph()
+    G_1g5j = nx.Graph()
 
-    G_3eiy.add_node(
-        "A:SER:2:N",
+    G_1g5j.add_node(
+        "A:ALA:89:N",
         chain_id="A",
-        residue_name="SER",
-        residue_number=2,
+        residue_name="ALA",
+        residue_number=89,
         atom_type="N",
         element_symbol="N",
-        coords=np.array([2.527, 54.656, -1.667], dtype=np.float32),
-        b_factor=52.72999954223633,
-        meiler=ser_meiler,
+        coords=np.array([-16.303, -7.686, -10.552], dtype=np.float32),
+        b_factor=0.4399999976158142,
+        meiler=ala_meiler,
     )
 
-    G_3eiy.add_node(
-        "A:SER:2:CA",
+    G_1g5j.add_node(
+        "A:ALA:89:CA",
         chain_id="A",
-        residue_name="SER",
-        residue_number=2,
+        residue_name="ALA",
+        residue_number=89,
         atom_type="CA",
         element_symbol="C",
-        coords=np.array([3.259, 54.783, -0.368], dtype=np.float32),
-        b_factor=52.540000915527344,
-        meiler=ser_meiler,
+        coords=np.array([-16.895, -6.506, -9.935], dtype=np.float32),
+        b_factor=0.4000000059604645,
+        meiler=ala_meiler,
     )
 
-    G_3eiy.add_node(
-        "A:SER:2:C",
+    G_1g5j.add_node(
+        "A:GLU:48:C",
         chain_id="A",
-        residue_name="SER",
-        residue_number=2,
+        residue_name="GLU",
+        residue_number=48,
         atom_type="C",
         element_symbol="C",
-        coords=np.array([4.127, 53.553, -0.105], dtype=np.float32),
-        b_factor=52.029998779296875,
-        meiler=ser_meiler,
+        coords=np.array([-15.052, -7.681, -11.000], dtype=np.float32),
+        b_factor=0.46000000834465027,
+        meiler=glu_meiler,
     )
 
-    G_3eiy.add_node(
-        "A:SER:2:CB",
+    G_1g5j.add_node(
+        "A:ALA:89:C",
         chain_id="A",
-        residue_name="SER",
-        residue_number=2,
+        residue_name="ALA",
+        residue_number=89,
+        atom_type="C",
+        element_symbol="C",
+        coords=np.array([-16.100, -6.084, -8.705], dtype=np.float32),
+        b_factor=0.36000001430511475,
+        meiler=ala_meiler,
+    )
+
+    G_1g5j.add_node(
+        "A:ALA:89:CB",
+        chain_id="A",
+        residue_name="ALA",
+        residue_number=89,
         atom_type="CB",
         element_symbol="C",
-        coords=np.array([2.273, 54.944, 0.792], dtype=np.float32),
-        b_factor=52.689998626708984,
-        meiler=ser_meiler,
+        coords=np.array([-18.345, -6.776, -9.563], dtype=np.float32),
+        b_factor=0.44999998807907104,
+        meiler=ala_meiler,
     )
 
-    G_3eiy.add_edge(
-        "A:SER:2:N",
-        "A:SER:2:CA",
+    G_1g5j.add_edge(
+        "A:ALA:89:N",
+        "A:ALA:89:CA",
         kind={"covalent"},
-        distance=1.4964474586440166,
+        bond_length=1.457241665525958,
+        distance=1.457241665525958,
     )
 
-    G_3eiy.add_edge(
-        "A:SER:2:CA",
-        "A:SER:2:C",
+    G_1g5j.add_edge(
+        "A:ALA:89:N",
+        "A:GLU:48:C",
         kind={"covalent"},
-        distance=1.5282314991800388,
+        bond_length=1.3288072023326782,
+        distance=1.3288072023326782,
     )
 
-    G_3eiy.add_edge(
-        "A:SER:2:CA",
-        "A:SER:2:CB",
+    G_1g5j.add_edge(
+        "A:ALA:89:CA",
+        "A:ALA:89:C",
         kind={"covalent"},
-        distance=1.5309202742310504,
+        bond_length=1.5241424747361823,
+        distance=1.5241424747361823,
+    )
+
+    G_1g5j.add_edge(
+        "A:ALA:89:CA",
+        "A:ALA:89:CB",
+        kind={"covalent"},
+        bond_length=1.5211118260851224,
+        distance=1.5211118260851224,
     )
 
 
     pdb_graphs = {
-        "104L": [G_104L],
-        "3eiy": [G_3eiy],
+        "1bxl": [G_1bxl],
+        "1g5j": [G_1g5j],
     }
 
     # print(pdb_graphs)
@@ -757,7 +804,7 @@ def experiment_o1(pdb_graphs):
     write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_o1.__name__)
 
 if __name__=="__main__":
-    exp_1_misc, pdb_store = build_graph()
+    # exp_1_misc, pdb_store = build_graph()
     
     # pdb_graphs = build_graph(True)
     # experiment_o1(pdb_graphs)
