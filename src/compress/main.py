@@ -519,15 +519,6 @@ def experiment_7(protein_graphs, pdb_store):
     with open("v2.pkl", "wb") as f:
         pk.dump(pdb_store, f)
 
-def experiment_8():
-    pass
-
-def print_(pdb_graphs, pdb_store=None):
-    for pdb_code, graph_list in pdb_graphs.items():
-        for n in graph_list[0].nodes():
-            for k, v in graph_list[0].nodes[n].items():
-                print(k, v)
-            print("\n\n")
 
 def extract_max_min_graphs(protein_graphs):
     qtd_edges = {}
@@ -774,53 +765,89 @@ def toy_exemple():
 
     pdb_store.print_attr()
 
-def experiment_o1(pdb_graphs):
-    result_columns = [
-        "dataset",
-        "avg_time_to_extract"
-    ]
-
-    result_line = []
-
-    result_line.append(dataset_name)
-
-    if os.getenv("EXCOUNT") == '0':
-        msg = ",".join(result_columns)
-        create_dataset_result_file(result_path=result_path,experiment_fields=msg, func=experiment_o1.__name__)
-    
-    pdb_codes = pdb_graphs.keys()
-
-    times_to_extract = []
-    for code in pdb_codes:
-        time_start = time.time()
-        _ = pdb_graphs[code]
-        times_to_extract.append(time_count(time_start=time_start))
-    
-    result_line.append(f'{np.mean(times_to_extract):.10f}')
-
-    print(result_line)
-    msg = ",".join(result_line)
-
-    write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_o1.__name__)
 
 if __name__=="__main__":
+
+    #exp_1
+    ############################################
+    '''
     exp_1_misc, pdb_store = build_graph()
-    
-    # pdb_graphs = build_graph(True)
-    # experiment_o1(pdb_graphs)
+    experiment_1(exp_1_misc, pdb_store)
+    '''
+    ############################################
 
-    # experiment_1(exp_1_misc, pdb_store)
-    # del exp_1_misc
-    # experiment_2(pdb_store)
-    # experiment_3(pdb_store)
-    # experiment_4(pdb_store)
-    # experiment_5(pdb_store)
-    # experiment_6()
+
+    #exp_2
+    ############################################
+    '''
+    _, pdb_store = build_graph()
+    experiment_2(pdb_store)
+    '''
+    ############################################
+
+
+    #exp_3
+    ############################################
+    '''
+    _, pdb_store = build_graph()
+    experiment_3(pdb_store)
+    '''
+    ############################################
+
+
+    #exp_4
+    ############################################
+    '''
+    _, pdb_store = build_graph()
+    experiment_4(pdb_store)
+    '''
+    ############################################
+
+
+    #exp_5
+    ############################################
+    '''
+    _, pdb_store = build_graph()
+    experiment_5(pdb_store)
+    '''
+    ############################################
+
+
+    #exp_6
+    ############################################
+    '''
+    experiment_6()
+    '''
+    ############################################
+
+
+    #exp_7
+    ############################################
+    '''
+    exp_1_misc, pdb_store = build_graph()
     experiment_7(exp_1_misc["protein_graph_with_data"], pdb_store)
-    # experiment_8()
-    # print_(pdb_graphs)
-    # with open(f"min_max_results/{dataset_name}.csv", "w") as f:
-    #     f.write("min_edges,max_edges,min_nodes,max_nodes")
-    # extract_max_min_graphs(exp_1_misc["protein_graph_with_data"])
+    '''
+    ############################################
 
-    # toy_exemple()
+
+    #exp_8
+    ############################################
+    '''
+    _, pdb_store = build_graph()
+    experiment_2(pdb_store)
+    '''
+    ############################################
+
+
+    #extract_nodes_and_edges_infos
+    ############################################
+    '''
+    exp_1_misc, _ = build_graph()
+
+    with open(f"min_max_results/{dataset_name}.csv", "w") as f:
+        f.write("min_edges,max_edges,min_nodes,max_nodes")
+    extract_max_min_graphs(exp_1_misc["protein_graph_with_data"])
+    '''
+    ############################################
+
+    pass
