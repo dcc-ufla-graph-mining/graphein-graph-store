@@ -1,0 +1,18 @@
+services:
+  jupyter:
+    image: jupyter/base-notebook
+    container_name: pdb_store
+    user: root
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./../data:/home/jovyan/app/data
+      - ./../src:/home/jovyan/app/src
+      - ./../requirements.txt:/home/jovyan/app/r.txt
+    working_dir: /home/jovyan/app
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - GRANT_SUDO=yes
+      - CHOWN_HOME=yes
+      - CHOWN_HOME_OPTS=-R
+    command: start-notebook.sh --NotebookApp.token='' --NotebookApp.password=''
