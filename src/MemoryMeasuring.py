@@ -1,6 +1,7 @@
 import PDBGraphStore
 import pickle as pk
-from pympler import asizeof 
+from pympler import asizeof
+import numpy as np 
 
 class MemoryMeasuring:
     def __init__(self, pdbObject: PDBGraphStore):
@@ -83,6 +84,11 @@ class MemoryMeasuring:
         vetor = self.__body_parts["node_local_attr_keyvalue_mapping"]
 
         return asizeof.asizeof(vetor)/1024/1024
+    
+    def teste(self):
+        vetor = self.__body_parts["node_global_attr_keyvalue_mapping"]
+
+        return vetor.nbytes/1024/1024
     
     def node_local_attr_keyvalue_mapping_serialized_memory(self):
         return len(pk.dumps(self.__body_parts["node_local_attr_keyvalue_mapping"]))/1024/1024

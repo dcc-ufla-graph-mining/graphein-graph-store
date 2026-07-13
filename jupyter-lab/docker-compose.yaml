@@ -16,3 +16,10 @@ services:
       - CHOWN_HOME=yes
       - CHOWN_HOME_OPTS=-R
     command: start-notebook.sh --NotebookApp.token='' --NotebookApp.password=''
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
