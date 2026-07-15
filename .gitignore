@@ -1,7 +1,11 @@
 .ipynb_checkpoints/
 __pycache__/
 .idea
-data/pdb_files/
+data/*
+src/data/raw/*
+src/*.pkl
+src/lightning_logs/*
+src/graphein_model/*
 fractal/
 spark/
 type=docker/

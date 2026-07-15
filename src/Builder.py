@@ -82,8 +82,11 @@ def process_global_node_attrs(body_parts: dict, node: dict, node_id: int):
         attr_value = node[node_global_attr]
 
         if isinstance(attr_value, pd.Series):
-            attr_value = tuple([tuple(attr_value.tolist()), tuple(attr_value.name)])
-        
+            if attr_value.name is None:
+                attr_value = (tuple(attr_value.tolist()), None)
+            else:
+                attr_value = (tuple(attr_value.tolist()), tuple(attr_value.name))
+
         if attr_value not in body_parts["node_attr_values"]:
             body_parts["node_attr_values"][attr_value] = len(body_parts["node_attr_values"])
 
@@ -173,11 +176,17 @@ def reconstruct_node_global_attrs(body_parts: dict, node_id: int, g: nx.Graph):
         attr_value = body_parts["node_attr_values"].inverse[attr_value_id]
 
         if isinstance(attr_value, tuple):
-            attr_value = pd.Series(
-                attr_value[0],
-                name=''.join(list(attr_value[1])),
-                index=[f'dim_{x}' for x in [1,2,3,4,5,6,7]]
-            )
+            if attr_value[1]:
+                attr_value = pd.Series(
+                    attr_value[0],
+                    name=''.join(list(attr_value[1])),
+                    index=[f'dim_{x}' for x in [1,2,3,4,5,6,7]]
+                )
+            else:
+                attr_value = pd.Series(
+                    attr_value[0],
+                    index=[f'dim_{x}' for x in [1,2,3,4,5,6,7]]
+                )
         
         g.nodes[node_label][attr_key] = attr_value
 
@@ -290,8 +299,12 @@ def reconstruct_and_validate(protein_graphs: dict, body_parts: dict):
                 for k, v in original_node.items():
                     w = extracted_node[k]
                     if isinstance(v, pd.Series):
-                        original_node[k] = tuple([tuple(v.to_list()), tuple(v.name)])
-                        extracted_node[k] = tuple([tuple(w.to_list()), tuple(w.name)])
+                        if v.name:
+                            original_node[k] = tuple([tuple(v.to_list()), tuple(v.name)])
+                            extracted_node[k] = tuple([tuple(w.to_list()), tuple(w.name)])
+                        else:
+                            original_node[k] = tuple([tuple(v.to_list())])
+                            extracted_node[k] = tuple([tuple(w.to_list())])
 
                     elif isinstance(v, np.ndarray):
                         original_node[k] = tuple([tuple(v)])
