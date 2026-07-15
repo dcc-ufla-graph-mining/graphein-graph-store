@@ -3,6 +3,7 @@ from pyroaring import BitMap64, BitMap
 from bidict import bidict
 import numpy as np
 import pandas as pd
+from graphein.protein.config import ProteinGraphConfig
 
 class PDBGraphStore:
     def __init__(self, body_parts):
@@ -24,15 +25,24 @@ class PDBGraphStore:
             }
 
         self.granularity = ""
+        self.config = ""
 
     def __str__(self):
-        return f'PDBGraphStore with {len(self.get_this_pdb_list())} pdbs'
+        return f'PDBGraphStore with {len(self.get_pdb_list())} pdbs'
     
     def __set_granularity(self, granularity: str):
         self.granularity = granularity
+    
+    def __set_config(self, config: dict):
+        self.config = config
+        granularity = config.dict()['granularity']
+        self.__set_granularity(granularity)
 
     def __get_granularity(self):
         return self.granularity
+
+    def get_config(self):
+        return self.config
     
     def print_attr(self):
         for k, v in self.__body_parts.items():
@@ -200,12 +210,14 @@ class PDBGraphStore:
             __construct_edge_structure(g, pdb_id)
 
         def insert():
-            if not self.granularity:
-                k = list(pdb_to_insert.keys())
-                gr = pdb_to_insert[k[0]][0].graph['config'].dict()['granularity']
-                self.__set_granularity(gr)
+            if not self.get_config():
+                k = list(pdb_to_insert.keys())[0]
+                config = pdb_to_insert[k].graph['config']
+                self.__set_config(config)
 
             for pdb_code, pdb_graph in pdb_to_insert.items():
+                pdb_code = pdb_code.upper()
+
                 if pdb_code not in self.__body_parts["pdb_code_to_id"]:
                     self.__body_parts["pdb_code_to_id"][pdb_code] = len(self.__body_parts["pdb_code_to_id"])
                 
@@ -304,17 +316,25 @@ class PDBGraphStore:
 
                 __reconstruct_edge_kinds(attributes[2:], extracted_graph, edge_label)
                 __reconstruct_edge_distance(attributes[:2], extracted_graph, edge_label)
+        
+        def extract():
+            pdb_upper = pdb_to_extract.upper()
+            extracted_graph = nx.Graph()
+            pdb_id = self.__body_parts["pdb_code_to_id"][pdb_upper]
 
-        extracted_graph = nx.Graph()
-        pdb_id = self.__body_parts["pdb_code_to_id"][pdb_to_extract]
+            nodes = [self.__body_parts["node_label_to_node_id"].inverse[node_id] for node_id in self.__body_parts["pdb_id_to_nodes"][pdb_id]]
+            edges = [self.__body_parts["edge_label_to_edge_id"].inverse[edge_id] for edge_id in self.__body_parts["pdb_id_to_edges"][pdb_id]]
 
-        nodes = [self.__body_parts["node_label_to_node_id"].inverse[node_id] for node_id in self.__body_parts["pdb_id_to_nodes"][pdb_id]]
-        edges = [self.__body_parts["edge_label_to_edge_id"].inverse[edge_id] for edge_id in self.__body_parts["pdb_id_to_edges"][pdb_id]]
+            extracted_graph.add_nodes_from(nodes)
+            extracted_graph.add_edges_from(edges)
 
-        extracted_graph.add_nodes_from(nodes)
-        extracted_graph.add_edges_from(edges)
+            __reconstruct_nodes(extracted_graph, pdb_id)
+            __reconstruct_edges(extracted_graph, pdb_id)
 
-        __reconstruct_nodes(extracted_graph, pdb_id)
-        __reconstruct_edges(extracted_graph, pdb_id)
+            extracted_graph.graph['config'] = self.get_config()
+            
+            extracted_graph.graph['pdb_code'] = pdb_upper
 
-        return extracted_graph
+            return extracted_graph
+        
+        return extract()
