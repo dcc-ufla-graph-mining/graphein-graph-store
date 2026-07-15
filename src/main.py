@@ -123,7 +123,7 @@ def prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path, func_idx):
     graph.graph["config"] = graph_config
     graph.graph["pdb_code"] = graph_pdb_code
 
-    protein_graph_with_metadata_dict.setdefault(pdb_code, []).append(graph.copy())
+    protein_graph_with_metadata_dict[pdb_code] = graph.copy()
 
     for node in graph.nodes():
         graph.nodes[node].clear()
@@ -132,7 +132,7 @@ def prepare_graph(pdb_data_path, pdb_code, dataset_name, error_path, func_idx):
         graph.edges[u, v].clear()
 
 
-    protein_graph_without_metadata_dict.setdefault(pdb_code, []).append(graph.copy())
+    protein_graph_without_metadata_dict[pdb_code] = graph.copy()
 
     del graph
 

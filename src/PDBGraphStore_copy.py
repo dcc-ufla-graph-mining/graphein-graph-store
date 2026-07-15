@@ -16,11 +16,9 @@ class PDBGraphStore:
                 "node_label_to_node_id": bidict(),
                 "edge_label_to_edge_id": bidict(),
                 "edge_attr_keys": ["kind", "distance"],
-                # "node_global_attr_keys": ["chain_id", "residue_name", "atom_type", "element_symbol", "meiler"],
                 "node_local_attr_keys": ["coords", "b_factor"],
                 "node_attr_values": bidict(),
                 "edge_attr_values": bidict(),
-                # "node_global_attr_keyvalue_mapping": '',
                 "node_local_attr_keyvalue_mapping": {},
                 "edge_local_attr_keyvalue_mapping": {}
             }
@@ -99,7 +97,10 @@ class PDBGraphStore:
     def __get_element_symbol_by_atom_type(self, atom_type: str):
         return self.__get_atom_type_to_element_symbol_dict()[atom_type]
 
-    def insert_pdb(self, pdb_to_insert: dict):
+    def insert(self, pdb_to_insert: dict):
+        '''
+        input: dict[str: nx.Graph]
+        '''
         def __process_edge_distances(distance: float)-> list:
             distance_keyvalue_mapping_list = []
 
@@ -214,14 +215,14 @@ class PDBGraphStore:
                 if pdb_id not in self.__body_parts["pdb_id_to_nodes"]:
                     self.__body_parts["pdb_id_to_nodes"][pdb_id] = BitMap64()
 
-                __construct_structure_attributes(pdb_graph[0], pdb_id)
+                __construct_structure_attributes(pdb_graph, pdb_id)
 
-                __process_nodes(pdb_graph[0], pdb_id)
-                __process_edges(pdb_graph[0], pdb_id)
+                __process_nodes(pdb_graph, pdb_id)
+                __process_edges(pdb_graph, pdb_id)
         
         insert()
 
-    def extract_pdb(self, pdb_to_extract: str) -> nx.Graph:        
+    def extract(self, pdb_to_extract: str) -> nx.Graph:        
         def __reconstruct_node_global_attrs(node_label: str, extracted_graph: nx.Graph):
             # global_attribute_keys = ["chain_id", "residue_name","residue_number", "atom_type", "element_symbol", "meiler"]
             # node_label = {chain_id} : {residue_name} : {residue_number} : {atom_type}
