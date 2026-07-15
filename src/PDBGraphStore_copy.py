@@ -17,7 +17,7 @@ class PDBGraphStore:
                 "edge_label_to_edge_id": bidict(),
                 "edge_attr_keys": ["kind", "distance"],
                 # "node_global_attr_keys": ["chain_id", "residue_name", "atom_type", "element_symbol", "meiler"],
-                "node_local_attr_keys": ["residue_number", "coords", "b_factor"],
+                "node_local_attr_keys": ["coords", "b_factor"],
                 "node_attr_values": bidict(),
                 "edge_attr_values": bidict(),
                 # "node_global_attr_keyvalue_mapping": '',
