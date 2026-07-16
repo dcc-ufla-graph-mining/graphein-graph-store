@@ -58,9 +58,9 @@ class PDBGraphStore:
     def __edge_label_undirected(self, edge_label: tuple) -> tuple:
         return tuple(sorted(edge_label))
 
-    def __get_residue_name_to_meiler_dict(self):
+    def __get_meiler_by_residue(self, residue_name: str):
         '''
-        retorna um dicionario mapeando um `residue_name` para seu respectivo `meiler`
+        retorna o Meiler de um residuo especifico
         '''
         MEILER = {
             "ALA": (1.28, 0.05, 1.00, 0.31, 6.11, 0.42, 0.23),
@@ -86,10 +86,42 @@ class PDBGraphStore:
             "UNK": (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
         }
 
-        return MEILER
+        m = pd.Series(MEILER[residue_name],
+                            name=residue_name,
+                            index=[f'dim_{x}' for x in [1,2,3,4,5,6,7]])
+
+        return m
     
-    def __get_meiler_by_residue(self, residue_name: str):
-        return self.__get_residue_name_to_meiler_dict()[residue_name]
+    def __get_one_hot_by_residue(self, residue_name: str):
+        '''
+        retorna o one_hot de um residuo especifico
+        '''
+
+        ONE_HOT = {
+            'ALA': np.array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+            'CYS': np.array([0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+            'ASP': np.array([0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+            'GLU': np.array([0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+            'PHE': np.array([0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+            'GLY': np.array([0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+            'HIS': np.array([0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+            'ILE': np.array([0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+            'LYS': np.array([0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+            'LEU': np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+            'MET': np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+            'ASN': np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]),
+            'PRO': np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]),
+            'GLN': np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]),
+            'ARG': np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]),
+            'SER': np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]),
+            'THR': np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]),
+            'VAL': np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]),
+            'TRP': np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]),
+            'TYR': np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]),
+        }
+
+        return ONE_HOT[residue_name]
+
 
     def __get_atom_type_to_element_symbol_dict(self):
         '''
@@ -218,8 +250,10 @@ class PDBGraphStore:
             for pdb_code, pdb_graph in pdb_to_insert.items():
                 pdb_code = pdb_code.upper()
 
-                if pdb_code not in self.__body_parts["pdb_code_to_id"]:
-                    self.__body_parts["pdb_code_to_id"][pdb_code] = len(self.__body_parts["pdb_code_to_id"])
+                if pdb_code in self.__body_parts["pdb_code_to_id"]:
+                    print(f'pdb {pdb_code} is already stored')
+                    pass
+                self.__body_parts["pdb_code_to_id"][pdb_code] = len(self.__body_parts["pdb_code_to_id"])
                 
                 pdb_id = self.__body_parts["pdb_code_to_id"][pdb_code]
                 if pdb_id not in self.__body_parts["pdb_id_to_edges"]:
@@ -252,18 +286,20 @@ class PDBGraphStore:
                 atom_type = granularity
 
             element_symbol = self.__get_element_symbol_by_atom_type(atom_type)
-            meiler_tuple = self.__get_meiler_by_residue(residue_name)
-
-            meiler = pd.Series(meiler_tuple,
-                            name=residue_name,
-                            index=[f'dim_{x}' for x in [1,2,3,4,5,6,7]])
                 
             extracted_graph.nodes[node_label]['chain_id'] = chain_id
             extracted_graph.nodes[node_label]['residue_name'] = residue_name
             extracted_graph.nodes[node_label]['residue_number'] = residue_number
             extracted_graph.nodes[node_label]['atom_type'] = atom_type
             extracted_graph.nodes[node_label]['element_symbol'] = element_symbol
-            extracted_graph.nodes[node_label]['meiler'] = meiler
+
+            if 'meiler' in str(self.get_config()):
+                meiler = self.__get_meiler_by_residue(residue_name)
+                extracted_graph.nodes[node_label]['meiler'] = meiler
+            
+            if 'amino_acid_one_hot' in str(self.get_config()):
+                amino_acid_one_hot = self.__get_one_hot_by_residue(residue_name)
+                extracted_graph.nodes[node_label]['amino_acid_one_hot'] = amino_acid_one_hot
 
 
         def __reconstruct_node_local_attrs(node_id: int, pdb_id: int, extracted_graph):
