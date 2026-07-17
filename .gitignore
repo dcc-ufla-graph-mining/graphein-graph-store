@@ -4,6 +4,7 @@ __pycache__/
 data/*
 src/data/raw/*
 src/*.pkl
+src/Graphein_notebooks/data/raw/*
 src/lightning_logs/*
 src/graphein_model/*
 fractal/
