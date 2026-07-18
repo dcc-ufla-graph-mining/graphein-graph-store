@@ -6,7 +6,22 @@ import pandas as pd
 from graphein.protein.config import ProteinGraphConfig
 
 class PDBGraphStore:
-    def __init__(self, body_parts):
+    def __init__(self, body_parts=None):
+        self.__body_parts: dict | None = None
+        self.granularity: str | None = None
+        self.config: dict | None = None
+
+        self.__set_body_parts(body_parts)
+
+    def __str__(self):
+        return f'PDBGraphStore with {len(self.get_pdb_list())} pdbs'
+
+    def close(self):
+        self.__set_config(None)
+        self.__set_granularity(None)
+        self.__set_body_parts(None)
+    
+    def __set_body_parts(self, body_parts: dict=None):
         if body_parts:
             self.__body_parts = body_parts
         else:
@@ -24,12 +39,6 @@ class PDBGraphStore:
                 "edge_local_attr_keyvalue_mapping": {}
             }
 
-        self.granularity = ""
-        self.config = ""
-
-    def __str__(self):
-        return f'PDBGraphStore with {len(self.get_pdb_list())} pdbs'
-    
     def __set_granularity(self, granularity: str):
         self.granularity = granularity
     

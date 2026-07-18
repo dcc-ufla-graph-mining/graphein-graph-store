@@ -4,6 +4,7 @@ __pycache__/
 data/*
 src/data/raw/*
 src/*.pkl
+src/Graphein_notebooks/data/raw/*
 src/lightning_logs/*
 src/graphein_model/*
 fractal/
@@ -12,3 +13,5 @@ type=docker/
 logs/metadata.log
 v1.pkl
 v2.pkl
+src/Graphein_notebooks/???/
+src/Graphein_notebooks/data/
