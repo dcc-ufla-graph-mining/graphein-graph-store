@@ -1,4 +1,4 @@
-import PDBGraphStore
+from pkg.PDBGraphStore import PDBGraphStore
 import pickle as pk
 from pympler import asizeof
 import numpy as np 
