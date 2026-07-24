@@ -9,7 +9,7 @@ class PDBGraphStore:
     def __init__(self, body_parts=None):
         self.__body_parts: dict | None = None
         self.granularity: str | None = None
-        self.config: dict | None = None
+        self.config: ProteinGraphConfig | None = None
 
         self.__set_body_parts(body_parts)
 
@@ -127,26 +127,10 @@ class PDBGraphStore:
             'VAL': np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]),
             'TRP': np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]),
             'TYR': np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]),
+            'UNK': np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
         }
 
         return ONE_HOT[residue_name]
-
-
-    def __get_atom_type_to_element_symbol_dict(self):
-        '''
-        retorna um dicionario que mapeia todos os `atom_type` existentes para seus respectivos `element_symbol` 
-        '''
-        atom_types = [
-            "N", "CA", "C", "O", "CB", "OG", "CG", "CD1", "CD2", "CE1", "CE2",
-            "CZ", "OD1", "ND2", "CG1", "CG2", "CD", "CE", "NZ", "OD2", "OE1",
-            "NE2", "OE2", "OH", "NE", "NH1", "NH2", "OG1", "SD", "ND1", "SG",
-            "NE1", "CE3", "CZ2", "CZ3", "CH2", "OXT"
-        ]
-
-        return {atom: atom[0] for atom in atom_types}
-    
-    def __get_element_symbol_by_atom_type(self, atom_type: str):
-        return self.__get_atom_type_to_element_symbol_dict()[atom_type]
 
     def insert(self, pdb_to_insert: dict):
         '''
@@ -294,7 +278,7 @@ class PDBGraphStore:
             else:
                 atom_type = granularity
 
-            element_symbol = self.__get_element_symbol_by_atom_type(atom_type)
+            element_symbol = atom_type[0]
                 
             extracted_graph.nodes[node_label]['chain_id'] = chain_id
             extracted_graph.nodes[node_label]['residue_name'] = residue_name
