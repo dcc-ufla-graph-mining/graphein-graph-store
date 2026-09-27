@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
     make \
-    bash
+    bash \
 
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -U memory_profiler

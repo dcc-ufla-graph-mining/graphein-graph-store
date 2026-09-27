@@ -1,6 +1,9 @@
 services:
   jupyter:
-    image: jupyter/base-notebook
+    build:
+      context: ..
+      dockerfile: jupyter-lab/Dockerfile
+    image: pdb_store
     container_name: pdb_store
     user: root
     ports:
