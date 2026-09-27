@@ -107,23 +107,14 @@ class MemoryMeasuring:
     def edge_attributes_memory(self):
         return self.edge_local_attr_keyvalue_mapping_memory()
     
+    def total_body_parts_memory(self):
+        return asizeof.asizeof(self.__body_parts)/1024/1024
+
     def total_memory(self):
-        return (
-            self.graph_structure_memory() +
-            self.dict_attributes_memory() +
-            self.node_attributes_memory() +
-            self.edge_attributes_memory() 
-        )
+        return self.total_body_parts_memory()
+
+    def total_body_parts_serialized_memory(self):
+        return len(pk.dumps(self.__body_parts))/1024/1024
 
     def total_serialized_memory(self):
-        return (
-            self.attr_keys_serialized_memory() +
-            self.edge_attr_values_serialized_memory() +
-            self.node_attr_values_serialized_memory() +
-            self.edge_label_to_edge_id_serialized_memory() +
-            self.edge_local_attr_keyvalue_mapping_serialized_memory() +
-            self.node_local_attr_keyvalue_mapping_serialized_memory() +
-            self.pdb_id_to_edges_serialized_memory() +
-            self.pdb_code_to_id_serialized_memory() +
-            self.pdb_id_to_nodes_serialized_memory()
-        )
+        return self.total_body_parts_serialized_memory()
