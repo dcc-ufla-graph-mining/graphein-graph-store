@@ -3,8 +3,8 @@ services:
     build:
       context: ..
       dockerfile: jupyter-lab/Dockerfile
-    image: pdb_store
-    container_name: pdb_store
+    image: jupyter-lab
+    container_name: jupyter-lab
     user: root
     ports:
       - "8888:8888"
