@@ -1,4 +1,6 @@
-import os, metadata, time, traceback, random
+import os, time, traceback, random
+
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -7,10 +9,10 @@ import networkx as nx
 import pickle as pk
 
 import Builder
-from MemoryMeasuring import MemoryMeasuring
-from PDBGraphStore import PDBGraphStore
-import edge_functions_Model as edgeModel
-from operations import *
+from pkg.MemoryMeasuring import MemoryMeasuring
+from pkg.PDBGraphStore import PDBGraphStore
+import pkg.edge_functions_Model as edgeModel
+from pkg.operations import *
 
 from graphein.protein.config import ProteinGraphConfig
 from graphein.protein.graphs import construct_graph
@@ -31,7 +33,7 @@ def create_dataset_error_file(error_path, dataset_name):
         file.write(f"Errors log for {dataset_name}")
 
 def initialize_results_directory(current_file_path):
-    result_path = os.path.abspath(f"{current_file_path}/../../results/")
+    result_path = os.path.abspath(f"{current_file_path}/results_new/")
 
     if not os.path.exists(result_path):
         os.makedirs(result_path)
@@ -91,7 +93,7 @@ def get_pdb_file(pdb_data_path, pdb_code):
     else:
         print(f"Downloading {pdb_code} from PDB")
         try:
-            pdb_file = download_pdb(pdb_code, f"{pdb_data_path}/")
+            pdb_file = download_pdb(pdb_code=pdb_code, out_dir=f"{pdb_data_path}/", format='cif')
         except Exception as e:
             raise e
 
@@ -143,7 +145,7 @@ def measure_node_attributes_memory(graphs: dict):
     node_attributes_memory = 0
 
     for _, graph_list in graphs.items():
-        g = graph_list[0]
+        g = graph_list
         for n in g.nodes:
             attrs = g.nodes[n]
             node_attr = {}
@@ -166,7 +168,7 @@ def measure_edge_attributes_memory(graphs: dict):
     edge_attrs = []
 
     for _, graph_list in graphs.items():
-        g = graph_list[0]
+        g = graph_list
 
         for e in g.edges:
             edge_attr = g.edges[e]
@@ -212,17 +214,20 @@ def build_graph(return_list_of_graphs=False):
         protein_graph_with_metadata_dict[pdb_code] = graph_with_data[pdb_code]
         protein_graph_without_metadata_dict[pdb_code] = graph_without_data[pdb_code]
 
-        number_of_edges+=len(protein_graph_without_metadata_dict[pdb_code][-1].edges())
-        number_of_nodes+=len(protein_graph_without_metadata_dict[pdb_code][-1].nodes())
+        number_of_edges+=len(protein_graph_without_metadata_dict[pdb_code].edges())
+        number_of_nodes+=len(protein_graph_without_metadata_dict[pdb_code].nodes())
 
     time_to_construct = time_count(time_start=time_start)
 
     if return_list_of_graphs:
         return protein_graph_with_metadata_dict
 
-    body_parts, time_to_compress = Builder.compress_pdb_graphs(protein_graph_with_metadata_dict)
-    pdb_store = PDBGraphStore(body_parts)
+    start_counter = time.time()
+    pdb_store = PDBGraphStore()
+    for k, v in protein_graph_with_metadata_dict.items():
+        pdb_store.insert({k: v})
 
+    time_to_compress = time.time() - start_counter
     exp_1_misc = {
         "time_to_construct": time_to_construct,
         "time_to_compress": time_to_compress,
@@ -234,7 +239,7 @@ def build_graph(return_list_of_graphs=False):
 
     return exp_1_misc, pdb_store
 
-current_file_path = os.path.dirname(os.path.realpath(metadata.__file__))
+current_file_path = '/app/src'
 general_data_path = os.environ.get("DATA_DIR") if os.environ.get("DATA_DIR") is not None else os.path.abspath(f"{current_file_path}/../../data/")
 dataset_txt_file_name = os.environ.get("DATASET")
 dataset_name = dataset_txt_file_name.split(".")[0]
@@ -306,9 +311,11 @@ def experiment_1(misc, pdb_store):
     memory = MemoryMeasuring(pdb_store)
 
     result_line.append(asizeof.asizeof(misc["protein_graph_with_data"]) /1024 / 1024)
-    result_line.append(len(pickle.dumps(misc["protein_graph_with_data"])) /1024 / 1024)
+    result_line.append(len(pk.dumps(misc["protein_graph_with_data"])) /1024 / 1024)
+    print(asizeof.asizeof(misc["protein_graph_with_data"]) /1024 / 1024)
     result_line.append(asizeof.asizeof(misc["protein_graph_without_data"])/1024/1024)
     result_line.append(memory.total_memory())
+    print(memory.total_memory())
     result_line.append(memory.graph_structure_memory())
     result_line.append(memory.pdb_code_to_id_memory())
     result_line.append(memory.pdb_code_to_id_serialized_memory())
@@ -338,12 +345,13 @@ def experiment_1(misc, pdb_store):
     result_line.append(memory.edge_local_attr_keyvalue_mapping_memory())
     result_line.append(memory.edge_local_attr_keyvalue_mapping_serialized_memory())
     result_line.append(asizeof.asizeof(pdb_store)/1024/1024)
-    result_line.append(len(pickle.dumps(pdb_store))/1024/1024)
+    result_line.append(len(pk.dumps(pdb_store))/1024/1024)
 
     result_line = [f'{item:.2f}' if type(item) == float else f'{item}' for item in result_line]
 
     msg = ",".join(result_line)
-
+    print(msg)
+    print(result_path)
     write_result(msg=msg, result_path=result_path, file_mode='a', func=experiment_1.__name__)
 
 def experiment_2(pdb_store):
@@ -521,7 +529,7 @@ def extract_max_min_graphs(protein_graphs):
     qtd_nodes = {}
 
     for pdb_code, graphs in protein_graphs.items():
-        graph = graphs[0]
+        graph = graphs
 
         qtd_edges[pdb_code] = len(graph.edges)
         qtd_nodes[pdb_code] = len(graph.nodes)
@@ -766,10 +774,10 @@ if __name__=="__main__":
 
     #exp_1
     ############################################
-    '''
+    
     exp_1_misc, pdb_store = build_graph()
     experiment_1(exp_1_misc, pdb_store)
-    '''
+    
     ############################################
 
 
