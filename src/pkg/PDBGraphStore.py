@@ -106,33 +106,12 @@ class PDBGraphStore:
         retorna o one_hot array de um residuo especifico
         '''
 
-        ONE_HOT = {
-            'ALA': 0,
-            'CYS': 1,
-            'ASP': 2,
-            'GLU': 3,
-            'PHE': 4,
-            'GLY': 5,
-            'HIS': 6,
-            'ILE': 7,
-            'LYS': 8,
-            'LEU': 9,
-            'MET': 10,
-            'ASN': 11,
-            'PRO': 12,
-            'GLN': 13,
-            'ARG': 14,
-            'SER': 15,
-            'THR': 16,
-            'VAL': 17,
-            'TRP': 18,
-            'TYR': 19,
-        }
+        ONE_HOT = ['ALA', 'CYS', 'ASP', 'GLU', 'PHE', 'GLY', 'HIS', 'ILE', 'LYS', 'LEU', 'MET', 'ASN', 'PRO', 'GLN', 'ARG', 'SER', 'THR', 'VAL', 'TRP', 'TYR']
 
         UNK = np.zeros(20, dtype=uint8)
 
         if residue_name.upper() != 'UNK': 
-            UNK[ONE_HOT[residue_name.upper()]] = 1
+            UNK[ONE_HOT.index(residue_name.upper())] = 1
 
         return UNK
 
