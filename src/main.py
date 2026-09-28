@@ -93,7 +93,7 @@ def get_pdb_file(pdb_data_path, pdb_code):
     else:
         print(f"Downloading {pdb_code} from PDB")
         try:
-            pdb_file = download_pdb(pdb_code, f"{pdb_data_path}/")
+            pdb_file = download_pdb(pdb_code=pdb_code, out_dir=f"{pdb_data_path}/", format='cif')
         except Exception as e:
             raise e
 
@@ -312,8 +312,10 @@ def experiment_1(misc, pdb_store):
 
     result_line.append(asizeof.asizeof(misc["protein_graph_with_data"]) /1024 / 1024)
     result_line.append(len(pk.dumps(misc["protein_graph_with_data"])) /1024 / 1024)
+    print(asizeof.asizeof(misc["protein_graph_with_data"]) /1024 / 1024)
     result_line.append(asizeof.asizeof(misc["protein_graph_without_data"])/1024/1024)
     result_line.append(memory.total_memory())
+    print(memory.total_memory())
     result_line.append(memory.graph_structure_memory())
     result_line.append(memory.pdb_code_to_id_memory())
     result_line.append(memory.pdb_code_to_id_serialized_memory())
