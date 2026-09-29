@@ -285,11 +285,11 @@ def experiment_1(misc, pdb_store):
         "node_attr_values",
         "node_attr_values_serialized",
         "Compressed node attributes",
-        "node_local_attr_keyvalue_mapping",
-        "node_local_attr_keyvalue_mapping_serialized",
+        "node_attr_keyvalue_mapping",
+        "node_attr_keyvalue_mapping_serialized",
         "Compressed edge attributes",
-        "edge_local_attr_keyvalue_mapping",
-        "edge_local_attr_keyvalue_mapping_serialized",
+        "edge_attr_keyvalue_mapping",
+        "edge_attr_keyvalue_mapping_serialized",
         "Compressed graph object size",
         "Compressed graph complete size serialized"
     ]
@@ -330,8 +330,8 @@ def experiment_1(misc, pdb_store):
     result_line.append(measure_node_attributes_memory(misc["protein_graph_with_data"]))
     result_line.append(measure_edge_attributes_memory(misc["protein_graph_with_data"]))
     result_line.append(memory.dict_attributes_memory())
-    result_line.append(memory.node_attr_values_memory() + memory.node_local_attr_keyvalue_mapping_memory())
-    result_line.append(memory.edge_attr_values_memory() + memory.edge_local_attr_keyvalue_mapping_memory())
+    result_line.append(memory.node_attr_values_memory() + memory.node_attr_keyvalue_mapping_memory())
+    result_line.append(memory.edge_attr_values_memory() + memory.edge_attr_keyvalue_mapping_memory())
     result_line.append(memory.attr_keys_memory())
     result_line.append(memory.attr_keys_serialized_memory())
     result_line.append(memory.edge_attr_values_memory())
@@ -339,11 +339,11 @@ def experiment_1(misc, pdb_store):
     result_line.append(memory.node_attr_values_memory())
     result_line.append(memory.node_attr_values_serialized_memory())
     result_line.append(memory.node_attributes_memory())
-    result_line.append(memory.node_local_attr_keyvalue_mapping_memory())
-    result_line.append(memory.node_local_attr_keyvalue_mapping_serialized_memory())
+    result_line.append(memory.node_attr_keyvalue_mapping_memory())
+    result_line.append(memory.node_attr_keyvalue_mapping_serialized_memory())
     result_line.append(memory.edge_attributes_memory())
-    result_line.append(memory.edge_local_attr_keyvalue_mapping_memory())
-    result_line.append(memory.edge_local_attr_keyvalue_mapping_serialized_memory())
+    result_line.append(memory.edge_attr_keyvalue_mapping_memory())
+    result_line.append(memory.edge_attr_keyvalue_mapping_serialized_memory())
     result_line.append(asizeof.asizeof(pdb_store)/1024/1024)
     result_line.append(len(pk.dumps(pdb_store))/1024/1024)
 

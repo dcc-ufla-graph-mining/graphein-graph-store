@@ -115,7 +115,6 @@ class PDBGraphStore:
 
         return UNK
 
-    
     def insert(self, pdb_to_insert: dict):
         '''
         input: dict[str: nx.Graph]
@@ -158,12 +157,12 @@ class PDBGraphStore:
             return kind_keyvalue_mapping_list
 
         def __process_edge_attrs(pdb_id: int, edge_id: int, edge: dict):
-            local_attr_keyvalue_mapping = []
+            edge_attr_keyvalue_mapping = []
 
-            local_attr_keyvalue_mapping.extend(__process_edge_distances(edge["distance"]))
-            local_attr_keyvalue_mapping.extend(__process_edge_kinds(edge["kind"]))
+            edge_attr_keyvalue_mapping.extend(__process_edge_distances(edge["distance"]))
+            edge_attr_keyvalue_mapping.extend(__process_edge_kinds(edge["kind"]))
 
-            self.__body_parts["edge_attr_keyvalue_mapping"][(pdb_id, edge_id)] = local_attr_keyvalue_mapping
+            self.__body_parts["edge_attr_keyvalue_mapping"][(pdb_id, edge_id)] = edge_attr_keyvalue_mapping
 
         def __process_edges(g: nx.Graph, pdb_id: int):
             for e in g.edges:
@@ -175,8 +174,8 @@ class PDBGraphStore:
                 edge_id = self.__body_parts["edge_label_to_edge_id"][(n1_idx, n2_idx)]
                 __process_edge_attrs(pdb_id, edge_id, g.edges[e])
 
-        def __process_local_node_attrs(node: dict) -> list:
-            local_attr_list = []
+        def __process_node_attr_values(node: dict) -> list:
+            node_attr_list = []
 
             #coords é um np.ndarray de float32
             coords = node["coords"]
@@ -186,7 +185,7 @@ class PDBGraphStore:
                     self.__body_parts["node_coords_values"][coord] = len(self.__body_parts["node_coords_values"])
                 
                 coord_id = self.__body_parts["node_coords_values"][coord]
-                local_attr_list.append(coord_id)
+                node_attr_list.append(coord_id)
 
             #b_factor é um float64
             b_factor = node['b_factor']
@@ -195,18 +194,18 @@ class PDBGraphStore:
                 self.__body_parts["node_b_factor_values"][b_factor] = len(self.__body_parts["node_b_factor_values"])
             
             b_factor_id = self.__body_parts["node_b_factor_values"][b_factor]
-            local_attr_list.append(b_factor_id)
+            node_attr_list.append(b_factor_id)
 
-            if len(local_attr_list) != 4:
+            if len(node_attr_list) != 4:
                 print("ERROR processing node_attr_values in insert")
                 raise ValueError("ERROR")
 
-            return local_attr_list
+            return node_attr_list
 
         def __process_node_attrs(pdb_id: int, node_id: int, node: dict):
-            local_attr_list = __process_local_node_attrs(node)
+            node_attr_list = __process_node_attr_values(node)
 
-            self.__body_parts["node_attr_keyvalue_mapping"][(pdb_id, node_id)] = local_attr_list
+            self.__body_parts["node_attr_keyvalue_mapping"][(pdb_id, node_id)] = node_attr_list
 
         def __process_nodes(g: nx.Graph, pdb_id: int):
             for n in g.nodes:
@@ -301,26 +300,24 @@ class PDBGraphStore:
                 extracted_graph.nodes[node_label]['amino_acid_one_hot'] = amino_acid_one_hot
 
 
-        def __reconstruct_node_local_attrs(node_id: int, pdb_id: int, extracted_graph):
-            local_attributes = self.__body_parts["node_attr_keyvalue_mapping"][(pdb_id, node_id)]
-            # local_attributes_keys = self.__body_parts["node_local_attr_keys"]
+        def __reconstruct_node_attrs(node_id: int, pdb_id: int, extracted_graph):
+            node_attributes = self.__body_parts["node_attr_keyvalue_mapping"][(pdb_id, node_id)]
 
             node_label = self.__body_parts["node_label_to_node_id"].inverse[node_id]
 
-            coords_id = local_attributes[:3]
+            coords_id = node_attributes[:3]
             coords_values = [self.__body_parts["node_coords_values"].inverse[x] for x in coords_id]
 
             print(f'coords_values: {coords_values}')
 
             coords = np.array(coords_values, dtype=np.float32)
-            b_factor = np.float64(self.__body_parts["node_coords_values"].inverse[local_attributes[3]])
+            b_factor = np.float64(self.__body_parts["node_b_factor_values"].inverse[node_attributes[3]])
 
             print(f'b_factor: {b_factor}')
 
             extracted_graph.nodes[node_label]['coords'] = coords
             extracted_graph.nodes[node_label]['b_factor'] = b_factor
 
-        
         def __reconstruct_edge_kinds(attributes: list, g: nx.Graph, edge_label: str):
             attr_key = "kind"
             kind_list = []
@@ -347,7 +344,7 @@ class PDBGraphStore:
                 node_id = self.__body_parts["node_label_to_node_id"][node_label]
 
                 __reconstruct_node_global_attrs(node_label, extracted_graph)
-                __reconstruct_node_local_attrs(node_id, pdb_id, extracted_graph)
+                __reconstruct_node_attrs(node_id, pdb_id, extracted_graph)
 
         def __reconstruct_edges(extracted_graph: nx.Graph, pdb_id: int):
             for edge_label in extracted_graph.edges:
