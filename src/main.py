@@ -93,7 +93,7 @@ def get_pdb_file(pdb_data_path, pdb_code):
     else:
         print(f"Downloading {pdb_code} from PDB")
         try:
-            pdb_file = download_pdb(pdb_code=pdb_code, out_dir=f"{pdb_data_path}/", format='cif')
+            pdb_file = download_pdb(pdb_code=pdb_code, out_dir=f"{pdb_data_path}/")
         except Exception as e:
             raise e
 

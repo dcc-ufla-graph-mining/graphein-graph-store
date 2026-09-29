@@ -115,6 +115,7 @@ class PDBGraphStore:
 
         return UNK
 
+    
     def insert(self, pdb_to_insert: dict):
         '''
         input: dict[str: nx.Graph]
@@ -166,7 +167,12 @@ class PDBGraphStore:
 
         def __process_edges(g: nx.Graph, pdb_id: int):
             for e in g.edges:
-                edge_id = self.__body_parts["edge_label_to_edge_id"][self.__edge_label_undirected(e)]
+                edge = self.__edge_label_undirected(e)
+
+                n1_idx = self.__body_parts["node_label_to_node_id"][edge[0]]
+                n2_idx = self.__body_parts["node_label_to_node_id"][edge[1]] 
+
+                edge_id = self.__body_parts["edge_label_to_edge_id"][(n1_idx, n2_idx)]
                 __process_edge_attrs(pdb_id, edge_id, g.edges[e])
 
         def __process_local_node_attrs(node: dict) -> list:
@@ -207,10 +213,15 @@ class PDBGraphStore:
             for e in g.edges:
                 edge_label = self.__edge_label_undirected(e)
 
-                if edge_label not in self.__body_parts["edge_label_to_edge_id"]:
-                    self.__body_parts["edge_label_to_edge_id"][edge_label] = len(self.__body_parts["edge_label_to_edge_id"])
-                
-                edge_id = self.__body_parts["edge_label_to_edge_id"][edge_label]
+                n1_idx = self.__body_parts["node_label_to_node_id"][edge_label[0]]
+                n2_idx = self.__body_parts["node_label_to_node_id"][edge_label[1]] 
+
+                e_ = (n1_idx, n2_idx)
+
+                if e_ not in self.__body_parts["edge_label_to_edge_id"]:
+                    self.__body_parts["edge_label_to_edge_id"][e_] = len(self.__body_parts["edge_label_to_edge_id"])
+
+                edge_id = self.__body_parts["edge_label_to_edge_id"][e_]
                 self.__body_parts["pdb_id_to_edges"][pdb_id].add(edge_id)
 
         def __construct_structure_attributes(g: nx.Graph, pdb_id: int):
@@ -323,7 +334,13 @@ class PDBGraphStore:
 
         def __reconstruct_edges(extracted_graph: nx.Graph, pdb_id: int):
             for edge_label in extracted_graph.edges:
-                edge_id = self.__body_parts["edge_label_to_edge_id"][self.__edge_label_undirected(edge_label)]
+
+                e = self.__edge_label_undirected(edge_label)
+
+                n1_idx = self.__body_parts["node_label_to_node_id"][e[0]]
+                n2_idx = self.__body_parts["node_label_to_node_id"][e[1]]
+
+                edge_id = self.__body_parts["edge_label_to_edge_id"][(n1_idx, n2_idx)]
                 attributes = self.__body_parts["edge_local_attr_keyvalue_mapping"][(pdb_id, edge_id)]
 
                 __reconstruct_edge_kinds(attributes[1:], extracted_graph, edge_label)
@@ -335,7 +352,15 @@ class PDBGraphStore:
             pdb_id = self.__body_parts["pdb_code_to_id"][pdb]
 
             nodes = [self.__body_parts["node_label_to_node_id"].inverse[node_id] for node_id in self.__body_parts["pdb_id_to_nodes"][pdb_id]]
-            edges = [self.__body_parts["edge_label_to_edge_id"].inverse[edge_id] for edge_id in self.__body_parts["pdb_id_to_edges"][pdb_id]]
+            edges = []
+
+            for edge_id in self.__body_parts["pdb_id_to_edges"][pdb_id]:
+                (n1_idx, n2_idx) = self.__body_parts["edge_label_to_edge_id"].inverse[edge_id]
+                n1 = self.__body_parts["node_label_to_node_id"].inverse[n1_idx]
+                n2 = self.__body_parts["node_label_to_node_id"].inverse[n2_idx]
+
+                edges.append((n1, n2))
+
 
             extracted_graph.add_nodes_from(nodes)
             extracted_graph.add_edges_from(edges)
