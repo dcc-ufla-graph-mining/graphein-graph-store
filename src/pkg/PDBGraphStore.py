@@ -3,8 +3,6 @@ from typing import Optional, Union, Dict, Any, Tuple
 import networkx as nx
 from pyroaring import BitMap64
 from bidict import bidict
-import numpy as np
-import pandas as pd
 from graphein.protein.config import ProteinGraphConfig
 from pkg.Insert import Insert
 from pkg.Extract import Extract
@@ -84,27 +82,10 @@ class PDBGraphStore:
     def get_pdb_list(self):
         return self.__body_parts["pdb_code_to_id"].keys()
     
-    @staticmethod
-    def edge_label_undirected(edge_label: tuple) -> tuple:
+    def edge_label_undirected(self, edge_label: tuple) -> tuple:
         return tuple(sorted(edge_label))
 
     __edge_label_undirected = edge_label_undirected
-
-    def get_meiler_by_residue(self, residue_name: str) -> pd.Series:
-        '''
-        retorna o Meiler de um residuo especifico
-        '''
-        return self.extractor.get_meiler_by_residue(residue_name)
-
-    __get_meiler_by_residue = get_meiler_by_residue
-
-    def get_one_hot_by_residue(self, residue_name: str) -> np.ndarray:
-        '''
-        retorna o one_hot array de um residuo especifico
-        '''
-        return self.extractor.get_one_hot_by_residue(residue_name)
-
-    __get_one_hot_by_residue = get_one_hot_by_residue
 
     def insert(self, pdb_to_insert: dict):
         '''

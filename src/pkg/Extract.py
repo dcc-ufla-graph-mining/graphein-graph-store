@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 class Extract:
     """
     Auxiliary class responsible for extracting PDB graphs from a PDBGraphStore.
-    Works in coordination with the controlling (mother) PDBGraphStore instance.
+    Works in coordination with the controlling PDBGraphStore instance.
     """
 
     MEILER = {
@@ -50,8 +50,7 @@ class Extract:
     def body_parts(self) -> dict | None:
         return self.store.get_body_parts() if self.store else None
 
-    @staticmethod
-    def edge_label_undirected(edge_label: tuple) -> tuple:
+    def edge_label_undirected(self, edge_label: tuple) -> tuple:
         return tuple(sorted(edge_label))
 
     def _get_target_store_and_body_parts(self, store: PDBGraphStore | None) -> tuple[PDBGraphStore, dict]:
