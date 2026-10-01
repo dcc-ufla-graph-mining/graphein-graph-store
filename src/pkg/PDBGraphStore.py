@@ -1,9 +1,12 @@
+from __future__ import annotations
+from typing import Optional, Union, Dict, Any, Tuple
 import networkx as nx
 from pyroaring import BitMap64
 from bidict import bidict
 import numpy as np
 import pandas as pd
 from graphein.protein.config import ProteinGraphConfig
+from pkg.Insert import Insert
 
 class PDBGraphStore:
     def __init__(self, body_parts=None):
@@ -12,13 +15,14 @@ class PDBGraphStore:
         self.config: ProteinGraphConfig | None = None
 
         self.__set_body_parts(body_parts)
+        self.inserter = Insert(self)
 
     def __str__(self):
         return f'PDBGraphStore with {len(self.get_pdb_list())} pdbs'
 
     def close(self):
-        self.__set_config(None)
-        self.__set_granularity(None)
+        self.set_config(None)
+        self.set_granularity(None)
         self.__set_body_parts(None)
     
     def __set_body_parts(self, body_parts: dict=None):
@@ -39,16 +43,30 @@ class PDBGraphStore:
                 "node_b_factor_values": bidict() #array de float64
             }
 
-    def __set_granularity(self, granularity: str):
+    def set_granularity(self, granularity: str | None):
         self.granularity = granularity
     
-    def __set_config(self, config: dict):
-        self.config = config
-        granularity = config.dict()['granularity']
-        self.__set_granularity(granularity)
+    __set_granularity = set_granularity
 
-    def __get_granularity(self):
+    def set_config(self, config: dict | ProteinGraphConfig | None):
+        self.config = config
+        if config is not None:
+            if hasattr(config, 'dict'):
+                granularity = config.dict()['granularity']
+            elif isinstance(config, dict):
+                granularity = config.get('granularity')
+            else:
+                granularity = getattr(config, 'granularity', None)
+            self.set_granularity(granularity)
+        else:
+            self.set_granularity(None)
+
+    __set_config = set_config
+
+    def get_granularity(self):
         return self.granularity
+
+    __get_granularity = get_granularity
 
     def get_config(self):
         return self.config
@@ -64,8 +82,11 @@ class PDBGraphStore:
     def get_pdb_list(self):
         return self.__body_parts["pdb_code_to_id"].keys()
     
-    def __edge_label_undirected(self, edge_label: tuple) -> tuple:
+    @staticmethod
+    def edge_label_undirected(edge_label: tuple) -> tuple:
         return tuple(sorted(edge_label))
+
+    __edge_label_undirected = edge_label_undirected
 
     def __get_meiler_by_residue(self, residue_name: str):
         '''
@@ -119,152 +140,7 @@ class PDBGraphStore:
         '''
         input: dict[str: nx.Graph]
         '''
-        def __process_edge_distances(distance: float)-> list:
-            distance_keyvalue_mapping_list = []
-
-            attr_key = "distance"
-            attr_value = distance
-
-            if attr_value not in self.__body_parts["edge_attr_values"]:
-                self.__body_parts["edge_attr_values"][attr_value] = len(self.__body_parts["edge_attr_values"])
-
-            attr_key_id = self.__body_parts["edge_attr_keys"].index(attr_key)
-            attr_value_id = self.__body_parts["edge_attr_values"][attr_value]
-
-            # distance_keyvalue_mapping_list.append(attr_key_id)
-            distance_keyvalue_mapping_list.append(attr_value_id)
-
-            return distance_keyvalue_mapping_list
-
-        def __process_edge_kinds(kinds: set) -> list:
-            kind_keyvalue_mapping_list = []
-
-            attr_key = "kind"
-            attr_key_id = self.__body_parts["edge_attr_keys"].index(attr_key)
-
-            # kind_keyvalue_mapping_list.append(attr_key_id)
-
-            for kind in kinds:
-                attr_value = kind
-
-                if attr_value not in self.__body_parts["edge_attr_values"]:
-                    self.__body_parts["edge_attr_values"][attr_value] = len(self.__body_parts["edge_attr_values"])
-
-                attr_value_id = self.__body_parts["edge_attr_values"][attr_value]
-
-                kind_keyvalue_mapping_list.append(attr_value_id)
-
-            return kind_keyvalue_mapping_list
-
-        def __process_edge_attrs(pdb_id: int, edge_id: int, edge: dict):
-            edge_attr_keyvalue_mapping = []
-
-            edge_attr_keyvalue_mapping.extend(__process_edge_distances(edge["distance"]))
-            edge_attr_keyvalue_mapping.extend(__process_edge_kinds(edge["kind"]))
-
-            self.__body_parts["edge_attr_keyvalue_mapping"][(pdb_id, edge_id)] = edge_attr_keyvalue_mapping
-
-        def __process_edges(g: nx.Graph, pdb_id: int):
-            for e in g.edges:
-                edge = self.__edge_label_undirected(e)
-
-                n1_idx = self.__body_parts["node_label_to_node_id"][edge[0]]
-                n2_idx = self.__body_parts["node_label_to_node_id"][edge[1]] 
-
-                edge_id = self.__body_parts["edge_label_to_edge_id"][(n1_idx, n2_idx)]
-                __process_edge_attrs(pdb_id, edge_id, g.edges[e])
-
-        def __process_node_attr_values(node: dict) -> list:
-            node_attr_list = []
-
-            #coords é um np.ndarray de float32
-            coords = node["coords"]
-
-            for coord in coords:
-                if coord not in self.__body_parts["node_coords_values"]:
-                    self.__body_parts["node_coords_values"][coord] = len(self.__body_parts["node_coords_values"])
-                
-                coord_id = self.__body_parts["node_coords_values"][coord]
-                node_attr_list.append(coord_id)
-
-            #b_factor é um float64
-            b_factor = node['b_factor']
-
-            if b_factor not in self.__body_parts["node_b_factor_values"]:
-                self.__body_parts["node_b_factor_values"][b_factor] = len(self.__body_parts["node_b_factor_values"])
-            
-            b_factor_id = self.__body_parts["node_b_factor_values"][b_factor]
-            node_attr_list.append(b_factor_id)
-
-            if len(node_attr_list) != 4:
-                print("ERROR processing node_attr_values in insert")
-                raise ValueError("ERROR")
-
-            return node_attr_list
-
-        def __process_node_attrs(pdb_id: int, node_id: int, node: dict):
-            node_attr_list = __process_node_attr_values(node)
-
-            self.__body_parts["node_attr_keyvalue_mapping"][(pdb_id, node_id)] = node_attr_list
-
-        def __process_nodes(g: nx.Graph, pdb_id: int):
-            for n in g.nodes:
-                node_id = self.__body_parts["node_label_to_node_id"][n]
-                __process_node_attrs(pdb_id, node_id, g.nodes[n])
-
-        def __construct_node_structure(g: nx.graph, pdb_id: int):
-            for node_label in g.nodes:
-                if node_label not in self.__body_parts["node_label_to_node_id"]:
-                    self.__body_parts["node_label_to_node_id"][node_label] = len(self.__body_parts["node_label_to_node_id"])
-
-                node_id = self.__body_parts["node_label_to_node_id"][node_label]
-                self.__body_parts["pdb_id_to_nodes"][pdb_id].add(node_id)
-
-        def __construct_edge_structure(g: nx.Graph, pdb_id: int): 
-            for e in g.edges:
-                edge_label = self.__edge_label_undirected(e)
-
-                n1_idx = self.__body_parts["node_label_to_node_id"][edge_label[0]]
-                n2_idx = self.__body_parts["node_label_to_node_id"][edge_label[1]] 
-
-                e_ = (n1_idx, n2_idx)
-
-                if e_ not in self.__body_parts["edge_label_to_edge_id"]:
-                    self.__body_parts["edge_label_to_edge_id"][e_] = len(self.__body_parts["edge_label_to_edge_id"])
-
-                edge_id = self.__body_parts["edge_label_to_edge_id"][e_]
-                self.__body_parts["pdb_id_to_edges"][pdb_id].add(edge_id)
-
-        def __construct_structure_attributes(g: nx.Graph, pdb_id: int):
-            __construct_node_structure(g, pdb_id)
-            __construct_edge_structure(g, pdb_id)
-
-        def insert():
-            if not self.get_config():
-                k = list(pdb_to_insert.keys())[0]
-                config = pdb_to_insert[k].graph['config']
-                self.__set_config(config)
-
-            for pdb_code, pdb_graph in pdb_to_insert.items():
-                pdb_code = pdb_code.lower()
-
-                if pdb_code in self.__body_parts["pdb_code_to_id"]:
-                    print(f'pdb {pdb_code} is already stored')
-                    continue
-                self.__body_parts["pdb_code_to_id"][pdb_code] = len(self.__body_parts["pdb_code_to_id"])
-                
-                pdb_id = self.__body_parts["pdb_code_to_id"][pdb_code]
-                if pdb_id not in self.__body_parts["pdb_id_to_edges"]:
-                    self.__body_parts["pdb_id_to_edges"][pdb_id] = BitMap64()
-                if pdb_id not in self.__body_parts["pdb_id_to_nodes"]:
-                    self.__body_parts["pdb_id_to_nodes"][pdb_id] = BitMap64()
-
-                __construct_structure_attributes(pdb_graph, pdb_id)
-
-                __process_nodes(pdb_graph, pdb_id)
-                __process_edges(pdb_graph, pdb_id)
-        
-        insert()
+        return self.inserter.insert(pdb_to_insert)
 
     def extract(self, pdb_to_extract: str) -> nx.Graph:        
         def __reconstruct_node_global_attrs(node_label: str, extracted_graph: nx.Graph):
