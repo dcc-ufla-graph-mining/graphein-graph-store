@@ -1,7 +1,7 @@
 .ipynb_checkpoints/
 __pycache__/
 .idea
-data/*
+data/pdb_files/*
 src/data/raw/*
 src/*.pkl
 src/Graphein_notebooks/data/raw/*
