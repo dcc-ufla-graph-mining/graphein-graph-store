@@ -126,12 +126,12 @@ class Extract:
         coords_id = node_attributes[:3]
         coords_values = [body_parts["node_coords_values"].inverse[x] for x in coords_id]
 
-        print(f'coords_values: {coords_values}')
+        # print(f'coords_values: {coords_values}')
 
         coords = np.array(coords_values, dtype=np.float32)
         b_factor = np.float64(body_parts["node_b_factor_values"].inverse[node_attributes[3]])
 
-        print(f'b_factor: {b_factor}')
+        # print(f'b_factor: {b_factor}')
 
         extracted_graph.nodes[node_label]['coords'] = coords
         extracted_graph.nodes[node_label]['b_factor'] = b_factor
