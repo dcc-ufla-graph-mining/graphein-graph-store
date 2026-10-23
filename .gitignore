@@ -16,3 +16,7 @@ v2.pkl
 src/Graphein_notebooks/???/
 src/Graphein_notebooks/data/
 src/playground.ipynb
+src/PDBGraphStore_notebooks/graphein_model
+src/PDBGraphStore_notebooks/lightning_logs
+src/Graphein_notebooks/graphein_model
+src/Graphein_notebooks/lightning_logs
