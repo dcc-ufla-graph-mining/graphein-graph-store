@@ -8,7 +8,7 @@ from pympler import asizeof
 import networkx as nx
 import pickle as pk
 
-import Builder
+# import Builder
 from pkg.MemoryMeasuring import MemoryMeasuring
 from pkg.PDBGraphStore import PDBGraphStore
 import pkg.edge_functions_Model as edgeModel
