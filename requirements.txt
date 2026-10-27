@@ -1,3 +1,4 @@
+setuptools<71.0.0
 gensim==3.4.0
 graphein[all]==1.7.8
 bidict==0.23.1
@@ -10,5 +11,4 @@ torch-geometric==2.8.1
 pytdc==1.1.15
 pytorch_lightning==2.6.6
 torchmetrics==1.9.0
-setuptools<71.0.0
 typing
